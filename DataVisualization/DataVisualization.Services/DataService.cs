@@ -1,12 +1,11 @@
-﻿using System;
-using CsvHelper;
+﻿using CsvHelper;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace DataVisualization.Services
 {
-    public class DataService
+    public class DataService : IDataService
     {
 
         public double Highest { get; set; } = double.MinValue;
@@ -18,11 +17,9 @@ namespace DataVisualization.Services
 
         public async Task<IEnumerable<double>> GetDataAsync()
         {
-            await Task.Yield();
-
             var data = new List<double>();
-
             var path = GetFilePath();
+
             using (TextReader file = File.OpenText(path))
             {
                 var reader = new CsvReader(file);
@@ -46,6 +43,29 @@ namespace DataVisualization.Services
             }
 
             _count += data.Count;
+            return data;
+        }
+
+        public async Task<IEnumerable<string>> GetSampleDataAsync(string filePath, int sampleSize)
+        {
+            var data = new List<string>();
+            
+            using (TextReader file = File.OpenText(filePath))
+            {
+                var reader = new CsvReader(file);
+                reader.Configuration.Delimiter = ";";
+                reader.Configuration.HasHeaderRecord = false;
+
+                await reader.ReadAsync();
+
+                for (var index = 0; index < sampleSize; index++)
+                {
+                    await reader.ReadAsync();
+                    var record = reader.GetField(typeof(string), 2).ToString();
+                    data.Add(record);
+                }
+            }
+
             return data;
         }
 

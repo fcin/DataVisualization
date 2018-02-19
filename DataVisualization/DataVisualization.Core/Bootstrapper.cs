@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Caliburn.Micro;
+using DataVisualization.Core.ViewModels;
+using DataVisualization.Services;
+using System;
 using System.Collections.Generic;
 using System.Windows;
-using Caliburn.Micro;
-using DataVisualization.Core.ViewModels;
 
 namespace DataVisualization.Core
 {
@@ -25,6 +26,7 @@ namespace DataVisualization.Core
             _container.Singleton<MainViewModel, MainViewModel>();
             _container.Singleton<IWindowManager, WindowManager>();
             _container.Singleton<IEventAggregator, EventAggregator>();
+            _container.Singleton<IDataService, DataService>();
 
             base.Configure();
         }

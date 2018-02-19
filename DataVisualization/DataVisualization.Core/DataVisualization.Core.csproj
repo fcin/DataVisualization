@@ -75,6 +75,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\DataLoaderViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -82,9 +83,16 @@
     </Compile>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
+    <Compile Include="Views\DataLoaderView.xaml.cs">
+      <DependentUpon>DataLoaderView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\VisualizerView.xaml.cs">
       <DependentUpon>VisualizerView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\DataLoaderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

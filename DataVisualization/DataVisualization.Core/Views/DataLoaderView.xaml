@@ -1,0 +1,26 @@
+﻿<Window x:Class="DataVisualization.Core.Views.DataLoaderView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DataVisualization.Core.Views"
+        xmlns:cal="http://www.caliburnproject.org"
+        mc:Ignorable="d"
+        Title="DataLoaderView" Height="450" Width="600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="5*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBox Grid.Column="0" Grid.Row="1" Height="20" Text="{Binding FilePath}" HorizontalAlignment="Stretch" IsEnabled="False" Foreground="Gray"></TextBox>
+        <Button Grid.Column="1" Grid.Row="1" Width="50" Height="20" Content="Select" cal:Message.Attach="[Event Click] = [Action OnFileSelectionClicked]" HorizontalAlignment="Left"></Button>
+        <Button Content="Load" Grid.Column="1" Grid.Row="2" Width="50" Height="20" cal:Message.Attach="[Event Click] = [Action OnDataLoad]"></Button>
+        <DataGrid Name="SampleGrid" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding SampledData}"></DataGrid>
+    </Grid>
+</Window>

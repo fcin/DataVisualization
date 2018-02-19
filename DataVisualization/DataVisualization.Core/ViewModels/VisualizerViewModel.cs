@@ -43,20 +43,20 @@ namespace DataVisualization.Core.ViewModels
 
         protected override async void OnActivate()
         {
-            var data = await _dataService.GetDataAsync();
-            FromY = (int)_dataService.Lowest / 2;
-            ToY = (int)_dataService.Highest * 2;
-            FromX = -10;
-            ToX = _dataService.AverageCount + 10;
+            //var data = await _dataService.GetDataAsync();
+            //FromY = (int)_dataService.Lowest / 2;
+            //ToY = (int)_dataService.Highest * 2;
+            //FromX = -10;
+            //ToX = _dataService.AverageCount + 10;
 
-            SeriesCollection.AddRange(new ISeriesView[]
-            {
-                new GLineSeries
-                {
-                    Values = new GearedValues<double>(data) {Quality = Quality.Low },
-                    LineSmoothness = 0
-                }
-            });
+            //SeriesCollection.AddRange(new ISeriesView[]
+            //{
+            //    new GLineSeries
+            //    {
+            //        Values = new GearedValues<double>(data) {Quality = Quality.Low },
+            //        LineSmoothness = 0
+            //    }
+            //});
 
             base.OnActivate();
         }
