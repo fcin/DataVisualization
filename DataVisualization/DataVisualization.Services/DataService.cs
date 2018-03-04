@@ -1,6 +1,9 @@
 ﻿using CsvHelper;
 using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DataVisualization.Services
@@ -46,24 +49,40 @@ namespace DataVisualization.Services
             return data;
         }
 
-        public async Task<IEnumerable<string>> GetSampleDataAsync(string filePath, int sampleSize)
+        public async Task<DataTable> GetSampleDataAsync(string filePath, int sampleSize)
         {
-            var data = new List<string>();
-            
+            var data = new DataTable();
+
             using (TextReader file = File.OpenText(filePath))
             {
                 var reader = new CsvReader(file);
                 reader.Configuration.Delimiter = ";";
                 reader.Configuration.HasHeaderRecord = false;
-
-                await reader.ReadAsync();
-
-                for (var index = 0; index < sampleSize; index++)
+                
+                var index = 0;
+                do
                 {
                     await reader.ReadAsync();
-                    var record = reader.GetField(typeof(string), 2).ToString();
-                    data.Add(record);
-                }
+
+                    if (data.Columns.Count == 0)
+                    {
+                        for (var colIndex = 0; colIndex < reader.Parser.Context.Record.Length; colIndex++)
+                        {
+                            data.Columns.Add(new DataColumn($"Column_{colIndex}", typeof(string)));
+                        }
+                    }
+
+                    var row = data.NewRow();
+                    var fieldIndex = 0;
+                    while (reader.TryGetField(typeof(string), fieldIndex, out var field))
+                    {
+                        row[fieldIndex] = field;
+                        fieldIndex++;
+                    }
+                    data.Rows.Add(row);
+
+                    index++;
+                } while (index < sampleSize);
             }
 
             return data;

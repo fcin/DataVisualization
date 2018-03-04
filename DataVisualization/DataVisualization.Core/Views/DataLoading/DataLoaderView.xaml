@@ -1,0 +1,54 @@
+﻿<Window x:Class="DataVisualization.Core.Views.DataLoading.DataLoaderView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DataVisualization.Core.Views"
+        xmlns:cal="http://www.caliburnproject.org"
+        mc:Ignorable="d"
+        Title="DataLoaderView" Height="650" Width="600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="5*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBox Grid.Column="0" Grid.Row="1" Height="20" Text="{Binding FilePath}" HorizontalAlignment="Stretch" IsEnabled="False" Foreground="Gray"></TextBox>
+        <Button Grid.Column="1" Grid.Row="1" Width="50" Height="20" Content="Select" cal:Message.Attach="[Event Click] = [Action OnFileSelectionClicked]" HorizontalAlignment="Left"></Button>
+        <Button Content="Load" Grid.Column="1" Grid.Row="2" Width="50" Height="20" cal:Message.Attach="[Event Click] = [Action OnDataLoad]"></Button>
+
+        <ListView Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Mappings}" HorizontalAlignment="Stretch">
+            <ListView.ItemTemplate>
+                <ItemContainerTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding CustomColumnName, ValidatesOnDataErrors=True}" 
+                                 cal:Message.Attach="[Event TextChanged] = [Action OnColumnNameChanged($eventArgs)];[Event LostFocus] = [Action OnLostFocus()]">
+                            <TextBox.Style>
+                                <Style TargetType="{x:Type FrameworkElement}">
+                                    <Style.Triggers>
+                                        <Trigger Property="Validation.HasError" Value="True">
+                                            <Setter Property="ToolTip" Value="{Binding Path=(Validation.Errors)[0].ErrorContent, RelativeSource={x:Static RelativeSource.Self}}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                        <!--Allow drop fixes issue with other controls not loosing focus when clicking on combobox-->
+                        <ComboBox AllowDrop="True" ItemsSource="{Binding ColumnTypes}" SelectedIndex="{Binding SelectedTypeIndex}"
+                                  cal:Message.Attach="[Event SelectionChanged] = [Action OnColumnTypeSelected($eventArgs, $dataContext)]"
+                                  IsEnabled="{Binding IsValid}"></ComboBox>
+                        <CheckBox Content="Ignore" IsChecked="{Binding IsDisabled}"></CheckBox>
+                    </StackPanel>
+                </ItemContainerTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <DataGrid x:Name="SampleGrid" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" ItemsSource="{Binding SampledData}" />
+    </Grid>
+</Window>
