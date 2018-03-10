@@ -1,9 +1,7 @@
 ﻿using CsvHelper;
 using System.Collections.Generic;
 using System.Data;
-using System.Dynamic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DataVisualization.Services

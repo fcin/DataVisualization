@@ -23,9 +23,9 @@
             <RowDefinition Height="3*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBox Grid.Column="0" Grid.Row="1" Height="20" Text="{Binding FilePath}" HorizontalAlignment="Stretch" IsEnabled="False" Foreground="Gray"
-                 cal:Message.Attach="[Event TextChanged] = [Action RecreateGrid()]"></TextBox>
-        <Button Grid.Column="1" Grid.Row="1" Width="50" Height="20" Content="Select" cal:Message.Attach="[Event Click] = [Action OnFileSelectionClicked]" HorizontalAlignment="Left"></Button>
-        <Button Content="Load" Grid.Column="1" Grid.Row="2" Width="50" Height="20" cal:Message.Attach="[Event Click] = [Action OnDataLoad]"></Button>
+                 cal:Message.Attach="[Event TextChanged] = [Action RecreateGrid()]; [Event TextChanged] = [Action ValidateSubmit()]"></TextBox>
+        <Button Grid.Column="1" Grid.Row="1" Width="50" Height="20" Content="Select" cal:Message.Attach="[Event Click] = [Action OnFileSelectionClicked()]" HorizontalAlignment="Left"></Button>
+        <Button Content="Load" Grid.Column="1" Grid.Row="2" Width="50" Height="20" cal:Message.Attach="[Event Click] = [Action OnDataLoad()]"></Button>
 
         <DataGrid Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="True">
             <DataGrid.Resources>

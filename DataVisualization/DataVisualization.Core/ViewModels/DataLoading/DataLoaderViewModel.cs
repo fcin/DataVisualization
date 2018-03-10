@@ -5,7 +5,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -69,10 +69,13 @@ namespace DataVisualization.Core.ViewModels.DataLoading
         }
 
         private readonly DataService _dataService;
+        private readonly DataConfigurationService _dataConfigurationService;
+
         public DataLoaderViewModel()
         {
             DataGridCollection = new ObservableCollection<object>();
             _dataService = new DataService();
+            _dataConfigurationService = new DataConfigurationService();
         }
 
         private DataGridColumnsModel _dataGridColumnsModel = new DataGridColumnsModel();
@@ -109,6 +112,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
                 var safeValue = comboBox.SelectedItem.ToString();
                 DataGridColumnsModel.Columns[index] = new Tuple<string, string>(columnName, safeValue);
                 MessageBox.Show("Cannot convert data to this type. Please select a different one.");
+                ValidateSubmit();
                 return;
             }
 
@@ -123,6 +127,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             // Assing new type to header.
             DataGridColumnsModel.Columns[index] = new Tuple<string, string>(columnName, newType);
             NotifyOfPropertyChange(() => MyColumnTypes);
+            ValidateSubmit();
         }
 
         public async Task RecreateGrid()
@@ -156,6 +161,8 @@ namespace DataVisualization.Core.ViewModels.DataLoading
 
                 DataGridCollection.Add(columnModel);
             }
+
+            ValidateSubmit();
         }
 
         public void OnColumnNameChanged(string oldName, string newName, TextBox textBox)
@@ -164,14 +171,15 @@ namespace DataVisualization.Core.ViewModels.DataLoading
                 return;
 
             var index = DataGridColumnsModel.GetColumnIndex(oldName);
-            // TODO: INDEX SOMETIMES RETURNS 1 0.o
+            // TODO: INDEX SOMETIMES RETURNS -1 0.o
             var type = DataGridColumnsModel.Columns[index].Item2;
+            var isNameValid = newName.All(character => char.IsLetterOrDigit(character) || character.Equals('_'));
 
-            if (DataGridColumnsModel.Columns.Any(col => col.Item1.Equals(newName)))
+            if (!isNameValid || DataGridColumnsModel.Columns.Any(col => col.Item1.Equals(newName)))
             {
                 DataGridColumnsModel.Columns[index] = new Tuple<string, string>(oldName, type);
                 textBox.Text = oldName;
-                MessageBox.Show($"Column with name {newName} already exists.");
+                MessageBox.Show($"Column with name {newName} already exists or contains illegal character.");
             }
             else 
             {
@@ -194,6 +202,37 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             {
                 FilePath = fileDialog.FileName;
             }
+        }
+
+        public bool CanOnDataLoad => !_dataConfigurationService.ConfigurationExists(FilePath) && 
+            !string.IsNullOrEmpty(FilePath) && !DataGridColumnsModel.Columns.Any(col => col.Item2.Equals(typeof(string).ToString()));
+
+        public void OnDataLoad()
+        {
+            var config = new DataConfiguration
+            {
+                DataName = Path.GetFileNameWithoutExtension(FilePath),
+                Columns = DataGridColumnsModel.Columns.Select(col => new Models.DataColumn
+                {
+                    Name = col.Item1,
+                    ColumnType = col.Item2
+                }).ToList()
+            };
+
+            try
+            {
+                _dataConfigurationService.AddConfigurationAsync(config);
+                TryClose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void ValidateSubmit()
+        {
+            NotifyOfPropertyChange(() => CanOnDataLoad);
         }
     }
 }

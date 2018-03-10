@@ -1,32 +1,56 @@
-﻿using System;
-using System.Threading.Tasks;
-using DataVisualization.Models;
-using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using DataVisualization.Models;
+using LiteDB;
+using System;
+using System.IO;
 
 namespace DataVisualization.Services
 {
     public class DataConfigurationService
     {
-        public async Task AddConfigurationAsync(DataConfiguration configuration)
+        private readonly string _dbPath;
+        private const string DataConfigurationDocumentName = "_DataConfigurationName";
+
+        public DataConfigurationService()
+        {
+            _dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data.db");
+        }
+
+        public void AddConfigurationAsync(DataConfiguration configuration)
         {
             if (string.IsNullOrWhiteSpace(configuration.DataName) || configuration.Columns.Count == 0)
             {
                 throw new ArgumentException("Configuration contains invalid values.");
             }
-
-            var client = new MongoClient("mongodb://localhost:27017");
-            var db = client.GetDatabase("DataVisualizationDb");
-
-            var collection = db.GetCollection<BsonDocument>("DataConfiguration");
-
-            var document = new BsonDocument { ["DataName"] = configuration.DataName };
-            foreach (var column in configuration.Columns)
+            
+            using (var db = new LiteDatabase(_dbPath))
             {
-                document[column.Name] = column.ColumnType;
-            }
+                var collection = db.GetCollection("DataConfiguration");
 
-            await collection.InsertOneAsync(document);
+                if(collection.Exists(doc => doc[DataConfigurationDocumentName].Equals(configuration.DataName)))
+                    throw new ArgumentException($"Document with name {configuration.DataName} already exists!");
+
+                var document = new BsonDocument
+                {
+                    { DataConfigurationDocumentName, configuration.DataName }
+                };
+
+                foreach (var column in configuration.Columns)
+                {
+                    document.Add(column.Name, column.ColumnType);
+                }
+
+                collection.Insert(document);
+                collection.EnsureIndex(DataConfigurationDocumentName);
+            }
+        }
+
+        public bool ConfigurationExists(string configName)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection("DataConfiguration");
+                return collection.Exists(x => x[DataConfigurationDocumentName].Equals(configName));
+            }
         }
     }
 }
