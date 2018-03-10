@@ -1,27 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Controls;
-using Caliburn.Micro;
-using DataVisualization.Core.Annotations;
+﻿using Caliburn.Micro;
+using DataVisualization.Models;
 using DataVisualization.Services;
 using Microsoft.Win32;
-using Action = System.Action;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using DataColumn = System.Data.DataColumn;
 
 namespace DataVisualization.Core.ViewModels.DataLoading
 {
+    public class CustomColumnTypes : BindableCollection<Type>
+    {
+        private readonly List<Type> _myColumnTypes = new List<Type>
+        {
+            typeof(string), typeof(int), typeof(DateTime)
+        };
+
+        public CustomColumnTypes()
+        {
+            if(base.Count == 0)
+                base.AddRange(_myColumnTypes);
+        }
+    }
+
     /// <summary>
     /// Temporary solution for loading data. It will be replaced soon.
     /// </summary>
-    public class DataLoaderViewModel : PropertyChangedBase
+    public class DataLoaderViewModel : Screen
     {
-        private string _filePath = "Path to a file...";
 
+        private CustomColumnTypes _myColumnTypes = new CustomColumnTypes();
+        public CustomColumnTypes MyColumnTypes
+        {
+            get => _myColumnTypes;
+            set
+            {
+                _myColumnTypes = value;
+                NotifyOfPropertyChange(() => MyColumnTypes);
+            }
+        }
+
+        private string _filePath;
         public string FilePath
         {
             get => _filePath;
@@ -29,33 +54,130 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             {
                 _filePath = value;
                 NotifyOfPropertyChange(() => FilePath);
-                PreviewSample();
             }
         }
 
-        private DataTable _sampledData = new DataTable();
-
-        public DataTable SampledData
+        private ObservableCollection<object> _dataGridCollection;
+        public ObservableCollection<object> DataGridCollection
         {
-            get => _sampledData;
-            set { _sampledData = value; NotifyOfPropertyChange(() => SampledData); }
+            get => _dataGridCollection;
+            set
+            {
+                _dataGridCollection = value;
+                NotifyOfPropertyChange(() => DataGridCollection);
+            }
         }
 
-        private readonly IDataService _dataService;
-        private readonly string[] _types = { "Not Set", "Number", "Date" };
-
-        public DataLoaderViewModel(IDataService dataService)
+        private readonly DataService _dataService;
+        public DataLoaderViewModel()
         {
-            _dataService = dataService;
-            Mappings = new List<DataListBoxItem>();
+            DataGridCollection = new ObservableCollection<object>();
+            _dataService = new DataService();
         }
 
-        private List<DataListBoxItem> _mappings;
-
-        public List<DataListBoxItem> Mappings
+        private DataGridColumnsModel _dataGridColumnsModel = new DataGridColumnsModel();
+        public DataGridColumnsModel DataGridColumnsModel
         {
-            get => _mappings;
-            set { _mappings = value; NotifyOfPropertyChange(() => Mappings); }
+            get => _dataGridColumnsModel;
+            set
+            {
+                _dataGridColumnsModel = value;
+                NotifyOfPropertyChange(() => DataGridColumnsModel);
+            }
+        }
+
+        public void OnColumnTypeChanged(SelectionChangedEventArgs args, string columnName, ComboBox comboBox)
+        {
+            var newType = args.AddedItems[0].ToString();
+            var index = DataGridColumnsModel.GetColumnIndex(columnName);
+            var newValues = new List<string>();
+
+            try
+            {
+                // Try to convert Rows.
+                foreach (var item in DataGridCollection)
+                {
+                    var prop = item.GetType().GetProperty(columnName);
+                    var oldValue = prop.GetValue(item);
+                    var newValue = Convert.ChangeType(oldValue, Type.GetType(newType)).ToString();
+                    newValues.Add(newValue);
+                }
+            }
+            catch
+            {
+                comboBox.SelectedIndex = 0;
+                var safeValue = comboBox.SelectedItem.ToString();
+                DataGridColumnsModel.Columns[index] = new Tuple<string, string>(columnName, safeValue);
+                MessageBox.Show("Cannot convert data to this type. Please select a different one.");
+                return;
+            }
+
+            // If all rows were converted then assign all values.
+            for (var propIndex = 0; propIndex < DataGridCollection.Count; propIndex++)
+            {
+                var item = DataGridCollection[propIndex];
+                var prop = item.GetType().GetProperty(columnName);
+                prop.SetValue(item, newValues[propIndex]);
+            }
+
+            // Assing new type to header.
+            DataGridColumnsModel.Columns[index] = new Tuple<string, string>(columnName, newType);
+            NotifyOfPropertyChange(() => MyColumnTypes);
+        }
+
+        public async Task RecreateGrid()
+        {
+            DataGridCollection.Clear();
+
+            var data = await _dataService.GetSampleDataAsync(FilePath, 30);
+
+            var properties = (from DataColumn column in data.Columns
+                              select new Tuple<string, Type>(column.ColumnName, typeof(string))).ToList();
+
+            // Add columns.
+            foreach (var property in properties)
+            {
+                var column = new Tuple<string, string>(property.Item1, property.Item2.ToString());
+                if (!DataGridColumnsModel.Columns.Contains(column))
+                    DataGridColumnsModel.Columns.Add(column);
+            }
+
+            // Add rows.
+            for (var rowIndex = 0; rowIndex < data.Rows.Count; rowIndex++)
+            {
+                var columnModel = ModelCreator.Create(properties.ToArray());
+                var row = data.Rows[rowIndex];
+
+                for (var columnIndex = 0; columnIndex < row.ItemArray.Length; columnIndex++)
+                {
+                    var cell = row[columnIndex];
+                    columnModel.GetType().InvokeMember(properties[columnIndex].Item1, BindingFlags.SetProperty, null, columnModel, new [] { cell });
+                }
+
+                DataGridCollection.Add(columnModel);
+            }
+        }
+
+        public void OnColumnNameChanged(string oldName, string newName, TextBox textBox)
+        {
+            if (oldName.Equals(newName))
+                return;
+
+            var index = DataGridColumnsModel.GetColumnIndex(oldName);
+            // TODO: INDEX SOMETIMES RETURNS 1 0.o
+            var type = DataGridColumnsModel.Columns[index].Item2;
+
+            if (DataGridColumnsModel.Columns.Any(col => col.Item1.Equals(newName)))
+            {
+                DataGridColumnsModel.Columns[index] = new Tuple<string, string>(oldName, type);
+                textBox.Text = oldName;
+                MessageBox.Show($"Column with name {newName} already exists.");
+            }
+            else 
+            {
+                DataGridColumnsModel.Columns[index] = new Tuple<string, string>(newName, type);
+                textBox.Text = newName;
+            }
         }
 
         public void OnFileSelectionClicked()
@@ -73,199 +195,5 @@ namespace DataVisualization.Core.ViewModels.DataLoading
                 FilePath = fileDialog.FileName;
             }
         }
-
-        public void OnDataLoad()
-        {
-            if (string.IsNullOrWhiteSpace(FilePath) || !File.Exists(FilePath))
-            {
-                MessageBox.Show("You have to provide a valid path.");
-                return;
-            }
-        }
-
-        private async void PreviewSample()
-        {
-            SampledData = await _dataService.GetSampleDataAsync(FilePath, 30);
-            Mappings = new List<DataListBoxItem>();
-            foreach (DataColumn column in SampledData.Columns)
-            {
-                var item = new DataListBoxItem(_types, column.ColumnName);
-                item.CanChangeName += newName => SampledData.Columns.IndexOf(newName) == -1;
-                // check if every item is valid
-                item.ColumnNameChanged += () =>
-                {
-                    if (Mappings.Any(c => !c.IsValid))
-                        return;
-                    var copy = SampledData.Clone();
-                    foreach (var configItem in Mappings)
-                    {
-                        var colId = SampledData.Columns.IndexOf(configItem.IdentifiableColumnName);
-                        copy.Columns[colId].ColumnName = configItem.CustomColumnName;
-                        configItem.Reset();
-                    }
-                    foreach (DataRow row in SampledData.Rows)
-                    {
-                        copy.Rows.Add(row.ItemArray);
-                    }
-                    SampledData = copy;
-                };
-                Mappings.Add(item);
-            }
-        }
-
-        public void OnColumnTypeSelected(SelectionChangedEventArgs eventArgs, DataListBoxItem item)
-        {
-            if (eventArgs.AddedItems.Count <= 0)
-                return;
-
-            switch (eventArgs.AddedItems[0].ToString())
-            {
-                case "Not Set":
-                    item.CurrentType = typeof(string);
-                    break;
-                case "Number":
-                    item.CurrentType = typeof(double);
-                    break;
-                case "Date":
-                    item.CurrentType = typeof(DateTime);
-                    break;
-                default: throw new ArgumentException("Invalid enum value");
-            }
-
-            var copy = SampledData.Clone();
-            var column = copy.Columns[SampledData.Columns.IndexOf(item.CustomColumnName)];
-            column.DataType = item.CurrentType;
-
-            try
-            {
-                foreach (DataRow row in SampledData.Rows)
-                {
-                    copy.ImportRow(row);
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Cannot convert to selected type. No conversion found");
-                item.SelectedTypeIndex = Array.IndexOf(item.ColumnTypes, eventArgs.RemovedItems[0].ToString());
-                return;
-            }
-
-            SampledData = copy;
-        }
-    }
-
-    public class DataListBoxItem : ListBoxItem, INotifyPropertyChanged, IDataErrorInfo
-    {
-        public event Func<string, bool> CanChangeName;
-        public event Action ColumnNameChanged;
-        public string[] ColumnTypes { get; set; }
-
-        public Type CurrentType { get; set; } = typeof(string);
-
-        private bool _isValid = true;
-        public bool IsValid
-        {
-            get => _isValid;
-            set
-            {
-                _isValid = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _changed;
-        private string _identifiableColumnName;
-        public string IdentifiableColumnName
-        {
-            get => _identifiableColumnName;
-            set
-            {
-                if (!_changed)
-                    _identifiableColumnName = value;
-            }
-        }
-
-        public void Reset()
-        {
-            _changed = false;
-            IdentifiableColumnName = CustomColumnName;
-        }
-
-        private string _customColumnName;
-        public string CustomColumnName
-        {
-            get => _customColumnName;
-            set { _customColumnName = value; OnPropertyChanged(); }
-        }
-
-        private int _selectedTypeIndex;
-        public int SelectedTypeIndex
-        {
-            get => _selectedTypeIndex;
-            set { _selectedTypeIndex = value; OnPropertyChanged(); }
-        }
-
-        private bool _isDisabled;
-        public bool IsDisabled
-        {
-            get => _isDisabled;
-            set { _isDisabled = value; OnPropertyChanged(); }
-        }
-
-        public DataListBoxItem(string[] columnTypes, string text)
-        {
-            ColumnTypes = columnTypes;
-            CustomColumnName = text;
-            SelectedTypeIndex = 0;
-            IdentifiableColumnName = CustomColumnName;
-        }
-
-        public void OnColumnNameChanged(TextChangedEventArgs eventArgs)
-        {
-            var newText = ((TextBox)eventArgs.Source).Text;
-            if (CanChangeName?.Invoke(newText) == true)
-            {
-                IsValid = true;
-                if (!_changed)
-                {
-                    IdentifiableColumnName = CustomColumnName;
-                    _changed = true;
-                }
-                CustomColumnName = newText;
-            }
-            else
-            {
-                IsValid = false;
-            }
-        }
-
-        public void OnLostFocus()
-        {
-            if(IsValid)
-                ColumnNameChanged?.Invoke();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                string errorMsg = null;
-
-                if (columnName == nameof(CustomColumnName) && !IsValid)
-                    errorMsg = "Invalid column name!";
-
-                return errorMsg;
-            }
-        }
-
-        public string Error => null;
     }
 }

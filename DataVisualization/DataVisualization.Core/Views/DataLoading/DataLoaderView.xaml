@@ -4,9 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataVisualization.Core.Views"
+        xmlns:convs="clr-namespace:DataVisualization.Core.Converters"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
         Title="DataLoaderView" Height="650" Width="600">
+    <Window.Resources>
+        <convs:ColumnNameConverter x:Key="ColumnNameConverter"></convs:ColumnNameConverter>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"></ColumnDefinition>
@@ -17,38 +21,40 @@
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="3*"></RowDefinition>
-            <RowDefinition Height="5*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBox Grid.Column="0" Grid.Row="1" Height="20" Text="{Binding FilePath}" HorizontalAlignment="Stretch" IsEnabled="False" Foreground="Gray"></TextBox>
+        <TextBox Grid.Column="0" Grid.Row="1" Height="20" Text="{Binding FilePath}" HorizontalAlignment="Stretch" IsEnabled="False" Foreground="Gray"
+                 cal:Message.Attach="[Event TextChanged] = [Action RecreateGrid()]"></TextBox>
         <Button Grid.Column="1" Grid.Row="1" Width="50" Height="20" Content="Select" cal:Message.Attach="[Event Click] = [Action OnFileSelectionClicked]" HorizontalAlignment="Left"></Button>
         <Button Content="Load" Grid.Column="1" Grid.Row="2" Width="50" Height="20" cal:Message.Attach="[Event Click] = [Action OnDataLoad]"></Button>
 
-        <ListView Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Mappings}" HorizontalAlignment="Stretch">
-            <ListView.ItemTemplate>
-                <ItemContainerTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox Text="{Binding CustomColumnName, ValidatesOnDataErrors=True}" 
-                                 cal:Message.Attach="[Event TextChanged] = [Action OnColumnNameChanged($eventArgs)];[Event LostFocus] = [Action OnLostFocus()]">
-                            <TextBox.Style>
-                                <Style TargetType="{x:Type FrameworkElement}">
-                                    <Style.Triggers>
-                                        <Trigger Property="Validation.HasError" Value="True">
-                                            <Setter Property="ToolTip" Value="{Binding Path=(Validation.Errors)[0].ErrorContent, RelativeSource={x:Static RelativeSource.Self}}" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
-                        <!--Allow drop fixes issue with other controls not loosing focus when clicking on combobox-->
-                        <ComboBox AllowDrop="True" ItemsSource="{Binding ColumnTypes}" SelectedIndex="{Binding SelectedTypeIndex}"
-                                  cal:Message.Attach="[Event SelectionChanged] = [Action OnColumnTypeSelected($eventArgs, $dataContext)]"
-                                  IsEnabled="{Binding IsValid}"></ComboBox>
-                        <CheckBox Content="Ignore" IsChecked="{Binding IsDisabled}"></CheckBox>
-                    </StackPanel>
-                </ItemContainerTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <DataGrid x:Name="SampleGrid" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" ItemsSource="{Binding SampledData}" />
+        <DataGrid Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="True">
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="ContentTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBox cal:Message.Attach="[Event LostFocus] = [Action OnColumnNameChanged($dataContext, $this, $source)]">
+                                        <TextBox.Text>
+                                            <MultiBinding Converter="{StaticResource ColumnNameConverter}">
+                                                <Binding RelativeSource="{RelativeSource AncestorType={x:Type DataGrid}}" 
+                                                         Path="DataContext.DataGridColumnsModel.Columns"/>
+                                                <Binding Path="DisplayIndex" Mode="OneWay" 
+                                                         RelativeSource="{RelativeSource AncestorType={x:Type DataGridColumnHeader}}"/>
+                                            </MultiBinding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <!--<ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnColumnTypeChanged($eventArgs, $dataContext)]" 
+                                              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DataGridColumnsModel.ColumnTypes}">-->
+                                    <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnColumnTypeChanged($eventArgs, $dataContext, $source)]" 
+                                              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.MyColumnTypes}">
+                                    </ComboBox>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.Resources>
+        </DataGrid>
     </Grid>
 </Window>

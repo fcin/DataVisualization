@@ -19,7 +19,7 @@ namespace DataVisualization.Core.ViewModels
 
         public void OnDataLoad()
         {
-            var dataLoaderVm = new DataLoaderViewModel(_dataService);
+            var dataLoaderVm = new DataLoaderViewModel();
             _windowManager.ShowDialog(dataLoaderVm);
         }
     }

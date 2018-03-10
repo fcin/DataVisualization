@@ -75,6 +75,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\ColumnNameConverter.cs" />
+    <Compile Include="ModelCreator.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\DataLoading\DataLoaderViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
