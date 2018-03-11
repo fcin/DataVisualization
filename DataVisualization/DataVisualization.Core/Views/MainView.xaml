@@ -8,9 +8,9 @@
         mc:Ignorable="d"
         Title="MainView" Height="600" Width="800">
     <Grid>
-        <StackPanel>
-            <Button Content="Load data" Width="300" cal:Message.Attach="[Event Click] = [Action OnDataLoad]"></Button>
+        <DockPanel>
+            <Button DockPanel.Dock="Top" Content="Load data" Width="300" cal:Message.Attach="[Event Click] = [Action OnDataLoad]"></Button>
             <ContentControl x:Name="VisualizerVm"></ContentControl>
-        </StackPanel>
+        </DockPanel>
     </Grid>
 </Window>

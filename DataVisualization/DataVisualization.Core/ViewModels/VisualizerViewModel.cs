@@ -1,62 +1,56 @@
-﻿using System.Threading.Tasks;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
+using DataVisualization.Models;
 using DataVisualization.Services;
 using LiveCharts;
-using LiveCharts.Definitions.Series;
+using LiveCharts.Configurations;
 using LiveCharts.Geared;
+using System;
+using System.Linq;
 
 namespace DataVisualization.Core.ViewModels
 {
     public class VisualizerViewModel : Screen
     {
         public SeriesCollection SeriesCollection { get; set; } = new SeriesCollection();
-
-        private int _fromY = -10;
-        public int FromY
-        {
-            get => _fromY;
-            private set { _fromY = value; NotifyOfPropertyChange(() => FromY); }
-        }
-
-        private int _toY = 10;
-        public int ToY
-        {
-            get => _toY;
-            private set { _toY = value; NotifyOfPropertyChange(() => ToY); }
-        }
-
-        private int _fromX = -10;
-        public int FromX
-        {
-            get => _fromX;
-            private set { _fromX = value; NotifyOfPropertyChange(() => FromX); }
-        }
-
-        private int _toX = 10;
-        public int ToX
-        {
-            get => _toX;
-            private set { _toX = value; NotifyOfPropertyChange(() => ToX); }
-        }
+        public Func<double, string> FormatterX { get; set; }
 
         private readonly DataService _dataService = new DataService();
+        private readonly DataConfigurationService _dataConfigurationService = new DataConfigurationService();
 
         protected override async void OnActivate()
         {
-            //var data = await _dataService.GetDataAsync();
-            //FromY = (int)_dataService.Lowest / 2;
-            //ToY = (int)_dataService.Highest * 2;
-            //FromX = -10;
-            //ToX = _dataService.AverageCount + 10;
+            var config = _dataConfigurationService.Get(conf => conf.DataName.Equals("SmallSample"));
+            if (config == null)
+                return;
+            var data = (await _dataService.GetDataAsync(config)).ToList();
 
-            //SeriesCollection.AddRange(new ISeriesView[]
-            //{
-            //    new GLineSeries
-            //    {
-            //        Values = new GearedValues<double>(data) {Quality = Quality.Low },
-            //        LineSmoothness = 0
-            //    }
-            //});
+            var dayConfig = Mappers.Xy<DateModel>()
+                .X(dayModel => (double)dayModel.DateTime.Ticks / TimeSpan.FromHours(1).Ticks)
+                .Y(dayModel => dayModel.Value);
+
+            for (var index = 1; index < data.Count; index++)
+            {
+                var dateRow = data[0];
+                var row = data[index];
+
+                var values = new GearedValues<DateModel>();
+                for (var cellIndex = 0; cellIndex < row.Count; cellIndex++)
+                {
+                    values.Add(new DateModel
+                    {
+                        DateTime = (DateTime)dateRow[cellIndex],
+                        Value = (double)row[cellIndex]
+                    });
+                    values.Quality = Quality.Low;
+                }
+
+                SeriesCollection.Add(new GLineSeries(dayConfig)
+                {
+                    Values = values
+                });
+            }
+
+            FormatterX = val => new DateTime((long)val * TimeSpan.FromHours(1).Ticks).ToString("t");
 
             base.OnActivate();
         }

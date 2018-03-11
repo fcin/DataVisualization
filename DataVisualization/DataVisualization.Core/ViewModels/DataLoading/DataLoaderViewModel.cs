@@ -19,7 +19,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
     {
         private readonly List<Type> _myColumnTypes = new List<Type>
         {
-            typeof(string), typeof(int), typeof(DateTime)
+            typeof(string), typeof(double), typeof(DateTime)
         };
 
         public CustomColumnTypes()
@@ -212,6 +212,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             var config = new DataConfiguration
             {
                 DataName = Path.GetFileNameWithoutExtension(FilePath),
+                FilePath = FilePath,
                 Columns = DataGridColumnsModel.Columns.Select(col => new Models.DataColumn
                 {
                     Name = col.Item1,

@@ -2,6 +2,8 @@
 using LiteDB;
 using System;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace DataVisualization.Services
 {
@@ -29,16 +31,7 @@ namespace DataVisualization.Services
                 if(collection.Exists(doc => doc[DataConfigurationDocumentName].Equals(configuration.DataName)))
                     throw new ArgumentException($"Document with name {configuration.DataName} already exists!");
 
-                var document = new BsonDocument
-                {
-                    { DataConfigurationDocumentName, configuration.DataName }
-                };
-
-                foreach (var column in configuration.Columns)
-                {
-                    document.Add(column.Name, column.ColumnType);
-                }
-
+                var document = BsonMapper.Global.ToDocument(configuration);
                 collection.Insert(document);
                 collection.EnsureIndex(DataConfigurationDocumentName);
             }
@@ -50,6 +43,15 @@ namespace DataVisualization.Services
             {
                 var collection = db.GetCollection("DataConfiguration");
                 return collection.Exists(x => x[DataConfigurationDocumentName].Equals(configName));
+            }
+        }
+
+        public DataConfiguration Get(Expression<Func<DataConfiguration, bool>> predicate)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection<DataConfiguration>("DataConfiguration");
+                return collection.Find(predicate).FirstOrDefault();
             }
         }
     }

@@ -46,6 +46,7 @@
     <Compile Include="DataColumn.cs" />
     <Compile Include="DataConfiguration.cs" />
     <Compile Include="DataGridColumnsModel.cs" />
+    <Compile Include="DateModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

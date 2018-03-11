@@ -1,50 +1,49 @@
-﻿using CsvHelper;
+﻿using System;
+using CsvHelper;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Threading.Tasks;
+using DataVisualization.Models;
+using DataColumn = System.Data.DataColumn;
 
 namespace DataVisualization.Services
 {
     public class DataService : IDataService
     {
-
-        public double Highest { get; set; } = double.MinValue;
-        public double Lowest { get; set; } = double.MaxValue;
         public int ColumnsCount { get; set; }
-        public int AverageCount => _count / (ColumnsCount * 100);
 
-        private int _count;
-
-        public async Task<IEnumerable<double>> GetDataAsync()
+        public async Task<IEnumerable<List<object>>> GetDataAsync(DataConfiguration config)
         {
-            var data = new List<double>();
-            var path = GetFilePath();
+            var path = config.FilePath;
 
             using (TextReader file = File.OpenText(path))
+            using(var reader = new CsvReader(file))
             {
-                var reader = new CsvReader(file);
                 reader.Configuration.Delimiter = ";";
                 reader.Configuration.HasHeaderRecord = false;
 
                 await reader.ReadAsync();
 
                 ColumnsCount = reader.Context.Record.Length;
+                var data = new List<List<object>>(ColumnsCount);
+                for (var index = ColumnsCount - 1; index >= 0; index--)
+                {
+                    data.Add(new List<object>());
+                }
                 
                 while (await reader.ReadAsync())
                 {
-                    var record = (double)reader.GetField(typeof(double), 2);
-                    data.Add(record);
-
-                    if (record > Highest)
-                        Highest = record;
-                    else if (record < Lowest)
-                        Lowest = record;
+                    for (var index = 0; index < reader.Context.Record.Length; index++)
+                    {
+                        var value = reader.Context.Record[index];
+                        var convertedValue = Convert.ChangeType(value, Type.GetType(config.Columns[index].ColumnType));
+                        data[index].Add(convertedValue);
+                    }
                 }
-            }
 
-            _count += data.Count;
-            return data;
+                return data;
+            }
         }
 
         public async Task<DataTable> GetSampleDataAsync(string filePath, int sampleSize)
@@ -84,16 +83,6 @@ namespace DataVisualization.Services
             }
 
             return data;
-        }
-
-        private string GetFilePath()
-        {
-#if DEBUG
-            var start = Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory()));
-            return Path.GetFullPath(Path.Combine(start, @"..\", "TestFiles", "VisualizationData", "CsvData.csv"));
-#else
-            throw new NotImplementedException();
-#endif
         }
     }
 }
