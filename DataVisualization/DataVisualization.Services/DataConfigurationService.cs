@@ -1,7 +1,6 @@
 ﻿using DataVisualization.Models;
 using LiteDB;
 using System;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -23,12 +22,12 @@ namespace DataVisualization.Services
             {
                 throw new ArgumentException("Configuration contains invalid values.");
             }
-            
+
             using (var db = new LiteDatabase(_dbPath))
             {
                 var collection = db.GetCollection("DataConfiguration");
 
-                if(collection.Exists(doc => doc[DataConfigurationDocumentName].Equals(configuration.DataName)))
+                if (collection.Exists(doc => doc[DataConfigurationDocumentName].Equals(configuration.DataName)))
                     throw new ArgumentException($"Document with name {configuration.DataName} already exists!");
 
                 var document = BsonMapper.Global.ToDocument(configuration);

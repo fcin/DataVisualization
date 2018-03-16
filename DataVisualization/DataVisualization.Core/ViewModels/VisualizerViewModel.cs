@@ -43,7 +43,7 @@ namespace DataVisualization.Core.ViewModels
             get => _maxX;
             set
             {
-                _maxX = value; 
+                _maxX = value;
                 NotifyOfPropertyChange(() => MaxX);
             }
         }
@@ -97,20 +97,14 @@ namespace DataVisualization.Core.ViewModels
                     PointGeometry = null
                 });
             }
-            
+
             FormatterX = val => new DateTime((long)val * TimeSpan.FromMinutes(1).Ticks).ToString("MM/dd/yyyy");
             MinX = ((DateTime)data[0][0]).Ticks / TimeSpan.FromMinutes(1).Ticks;
             var maxLength = data[0].Count;
-            var max = ((DateTime) data[0][maxLength - 1]).Ticks / TimeSpan.FromMinutes(1).Ticks;
+            var max = ((DateTime)data[0][maxLength - 1]).Ticks / TimeSpan.FromMinutes(1).Ticks;
             MaxX = max - ((max - MinX) / 100) * 95;
 
             base.OnActivate();
-        }
-
-        public void OnChartAxisChanged()
-        {
-            {
-            }
         }
     }
 }

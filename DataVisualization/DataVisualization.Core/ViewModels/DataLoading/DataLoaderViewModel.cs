@@ -24,7 +24,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
 
         public CustomColumnTypes()
         {
-            if(base.Count == 0)
+            if (base.Count == 0)
                 base.AddRange(_myColumnTypes);
         }
     }
@@ -156,7 +156,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
                 for (var columnIndex = 0; columnIndex < row.ItemArray.Length; columnIndex++)
                 {
                     var cell = row[columnIndex];
-                    columnModel.GetType().InvokeMember(properties[columnIndex].Item1, BindingFlags.SetProperty, null, columnModel, new [] { cell });
+                    columnModel.GetType().InvokeMember(properties[columnIndex].Item1, BindingFlags.SetProperty, null, columnModel, new[] { cell });
                 }
 
                 DataGridCollection.Add(columnModel);
@@ -181,7 +181,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
                 textBox.Text = oldName;
                 MessageBox.Show($"Column with name {newName} already exists or contains illegal character.");
             }
-            else 
+            else
             {
                 DataGridColumnsModel.Columns[index] = new Tuple<string, string, bool>(newName, type, DataGridColumnsModel.Columns[index].Item3);
                 textBox.Text = newName;
@@ -212,7 +212,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             }
         }
 
-        public bool CanOnDataLoad => !_dataConfigurationService.Exists(FilePath) && !string.IsNullOrEmpty(FilePath) && 
+        public bool CanOnDataLoad => !_dataConfigurationService.Exists(FilePath) && !string.IsNullOrEmpty(FilePath) &&
             !DataGridColumnsModel.Columns.Any(col => col.Item2.Equals(typeof(string).ToString()) && !col.Item3);
 
         public void OnDataLoad()

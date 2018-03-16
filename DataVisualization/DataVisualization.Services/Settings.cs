@@ -9,7 +9,6 @@ namespace DataVisualization.Services
 
         public static Settings Instance { get; } = new Settings();
 
-
         public string DbPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data.db");
     }
 }
