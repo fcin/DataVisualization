@@ -14,10 +14,10 @@ namespace DataVisualization.Services
 
         public DataConfigurationService()
         {
-            _dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data.db");
+            _dbPath = Settings.Instance.DbPath;
         }
 
-        public void AddConfigurationAsync(DataConfiguration configuration)
+        public void Add(DataConfiguration configuration)
         {
             if (string.IsNullOrWhiteSpace(configuration.DataName) || configuration.Columns.Count == 0)
             {
@@ -37,7 +37,7 @@ namespace DataVisualization.Services
             }
         }
 
-        public bool ConfigurationExists(string configName)
+        public bool Exists(string configName)
         {
             using (var db = new LiteDatabase(_dbPath))
             {

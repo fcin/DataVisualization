@@ -6,8 +6,8 @@ namespace DataVisualization.Models
 {
     public class DataGridColumnsModel : PropertyChangedBase
     {
-        private ObservableCollection<Tuple<string, string>> _columns = new ObservableCollection<Tuple<string, string>>();
-        public ObservableCollection<Tuple<string, string>> Columns
+        private ObservableCollection<Tuple<string, string, bool>> _columns = new ObservableCollection<Tuple<string, string, bool>>();
+        public ObservableCollection<Tuple<string, string, bool>> Columns
         {
             get => _columns;
             set

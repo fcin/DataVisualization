@@ -54,9 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataConfigurationService.cs" />
+    <Compile Include="DataFileReader.cs" />
     <Compile Include="DataService.cs" />
-    <Compile Include="IDataService.cs" />
+    <Compile Include="IDataFileReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataVisualization.Models\DataVisualization.Models.csproj">

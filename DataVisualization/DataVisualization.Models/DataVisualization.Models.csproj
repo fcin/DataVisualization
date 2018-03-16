@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data.cs" />
     <Compile Include="DataColumn.cs" />
     <Compile Include="DataConfiguration.cs" />
     <Compile Include="DataGridColumnsModel.cs" />

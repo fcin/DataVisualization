@@ -10,10 +10,10 @@ namespace DataVisualization.Core.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(values?[0] is ObservableCollection<Tuple<string, string>>) || values[1] == null)
+            if (!(values?[0] is ObservableCollection<Tuple<string, string, bool>>) || values[1] == null)
                 return null;
 
-            var columns = (ObservableCollection<Tuple<string, string>>)values[0];
+            var columns = (ObservableCollection<Tuple<string, string, bool>>)values[0];
             var selectedColumnIndex = (int)values[1];
 
             return selectedColumnIndex == -1 ? null : columns[selectedColumnIndex].Item1;

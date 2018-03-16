@@ -1,88 +1,48 @@
-﻿using System;
-using CsvHelper;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Threading.Tasks;
-using DataVisualization.Models;
-using DataColumn = System.Data.DataColumn;
+﻿using DataVisualization.Models;
+using LiteDB;
 
 namespace DataVisualization.Services
 {
-    public class DataService : IDataService
+    public class DataService
     {
-        public int ColumnsCount { get; set; }
+        private const string DocumentDistinctName = "_DataName";
+        private readonly string _dbPath;
 
-        public async Task<IEnumerable<List<object>>> GetDataAsync(DataConfiguration config)
+        public DataService()
         {
-            var path = config.FilePath;
+            _dbPath = Settings.Instance.DbPath;
+        }
 
-            using (TextReader file = File.OpenText(path))
-            using(var reader = new CsvReader(file))
+        public void AddData(Data data)
+        {
+            using (var db = new LiteDatabase(_dbPath))
             {
-                reader.Configuration.Delimiter = ";";
-                reader.Configuration.HasHeaderRecord = false;
+                var collection = db.GetCollection("Data");
+                if (collection.Exists(f => f[DocumentDistinctName].Equals(data.Name)))
+                    return;
 
-                await reader.ReadAsync();
-
-                ColumnsCount = reader.Context.Record.Length;
-                var data = new List<List<object>>(ColumnsCount);
-                for (var index = ColumnsCount - 1; index >= 0; index--)
-                {
-                    data.Add(new List<object>());
-                }
-                
-                while (await reader.ReadAsync())
-                {
-                    for (var index = 0; index < reader.Context.Record.Length; index++)
-                    {
-                        var value = reader.Context.Record[index];
-                        var convertedValue = Convert.ChangeType(value, Type.GetType(config.Columns[index].ColumnType));
-                        data[index].Add(convertedValue);
-                    }
-                }
-
-                return data;
+                var document = BsonMapper.Global.ToDocument(data);
+                document.Add(DocumentDistinctName, data.Name);
+                collection.Insert(document);
             }
         }
 
-        public async Task<DataTable> GetSampleDataAsync(string filePath, int sampleSize)
+        public bool Exists(string name)
         {
-            var data = new DataTable();
-
-            using (TextReader file = File.OpenText(filePath))
+            using (var db = new LiteDatabase(_dbPath))
             {
-                var reader = new CsvReader(file);
-                reader.Configuration.Delimiter = ";";
-                reader.Configuration.HasHeaderRecord = false;
-                
-                var index = 0;
-                do
-                {
-                    await reader.ReadAsync();
-
-                    if (data.Columns.Count == 0)
-                    {
-                        for (var colIndex = 0; colIndex < reader.Parser.Context.Record.Length; colIndex++)
-                        {
-                            data.Columns.Add(new DataColumn($"Column_{colIndex}", typeof(string)));
-                        }
-                    }
-
-                    var row = data.NewRow();
-                    var fieldIndex = 0;
-                    while (reader.TryGetField(typeof(string), fieldIndex, out var field))
-                    {
-                        row[fieldIndex] = field;
-                        fieldIndex++;
-                    }
-                    data.Rows.Add(row);
-
-                    index++;
-                } while (index < sampleSize);
+                var collection = db.GetCollection("Data");
+                return collection.Exists(doc => doc[DocumentDistinctName].Equals(name));
             }
+        }
 
-            return data;
+        public Data GetData(string name)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection<Data>("Data");
+                return collection.FindOne(doc => doc.Name.Equals(name));
+            }
         }
     }
 }

@@ -49,6 +49,7 @@
                                     <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnColumnTypeChanged($eventArgs, $dataContext, $source)]" 
                                               ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.MyColumnTypes}">
                                     </ComboBox>
+                                    <CheckBox Content="Ignore" cal:Message.Attach="[Event Checked] = [Action OnIgnoreSelected($dataContext)];[Event Unchecked] = [Action OnIgnoreSelected($dataContext)]"></CheckBox>
                                 </StackPanel>
                             </DataTemplate>
                         </Setter.Value>
