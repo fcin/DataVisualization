@@ -8,9 +8,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using DataVisualization.Services.Transform;
 using DataColumn = System.Data.DataColumn;
 
 namespace DataVisualization.Core.ViewModels.DataLoading
@@ -39,33 +41,35 @@ namespace DataVisualization.Core.ViewModels.DataLoading
         public CustomColumnTypes MyColumnTypes
         {
             get => _myColumnTypes;
-            set
-            {
-                _myColumnTypes = value;
-                NotifyOfPropertyChange(() => MyColumnTypes);
-            }
+            set => SetValue(ref _myColumnTypes, value);
         }
 
         private string _filePath;
         public string FilePath
         {
             get => _filePath;
-            set
-            {
-                _filePath = value;
-                NotifyOfPropertyChange(() => FilePath);
-            }
+            set => SetValue(ref _filePath, value);
+        }
+
+        private string _thousandsSeparator = ".";
+        public string ThousandsSeparator
+        {
+            get => _thousandsSeparator;
+            set => SetValue(ref _thousandsSeparator, value);
+        }
+
+        private string _decimalSeparator = ",";
+        public string DecimalSeparator
+        {
+            get => _decimalSeparator;
+            set => SetValue(ref _decimalSeparator, value);
         }
 
         private ObservableCollection<object> _dataGridCollection;
         public ObservableCollection<object> DataGridCollection
         {
             get => _dataGridCollection;
-            set
-            {
-                _dataGridCollection = value;
-                NotifyOfPropertyChange(() => DataGridCollection);
-            }
+            set => SetValue(ref _dataGridCollection, value);
         }
 
         private readonly DataFileReader _dataFileReader;
@@ -82,11 +86,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
         public DataGridColumnsModel DataGridColumnsModel
         {
             get => _dataGridColumnsModel;
-            set
-            {
-                _dataGridColumnsModel = value;
-                NotifyOfPropertyChange(() => DataGridColumnsModel);
-            }
+            set => SetValue(ref _dataGridColumnsModel, value);
         }
 
         public void OnColumnTypeChanged(SelectionChangedEventArgs args, string columnName, ComboBox comboBox)
@@ -95,14 +95,16 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             var index = DataGridColumnsModel.GetColumnIndex(columnName);
             var newValues = new List<string>();
 
+            var parser = new ValueParser(ThousandsSeparator, DecimalSeparator);
+
             try
             {
                 // Try to convert Rows.
                 foreach (var item in DataGridCollection)
                 {
                     var prop = item.GetType().GetProperty(columnName);
-                    var oldValue = prop.GetValue(item);
-                    var newValue = Convert.ChangeType(oldValue, Type.GetType(newType)).ToString();
+                    var oldValue = prop.GetValue(item).ToString();
+                    var newValue = parser.Parse(oldValue, newType).ToString();
                     newValues.Add(newValue);
                 }
             }
@@ -221,6 +223,8 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             {
                 DataName = Path.GetFileNameWithoutExtension(FilePath),
                 FilePath = FilePath,
+                ThousandsSeparator = ThousandsSeparator,
+                DecimalSeparator = DecimalSeparator,
                 Columns = DataGridColumnsModel.Columns.Select((col, index) => new
                 {
                     Column = new Models.DataColumn
@@ -247,6 +251,15 @@ namespace DataVisualization.Core.ViewModels.DataLoading
         public void ValidateSubmit()
         {
             NotifyOfPropertyChange(() => CanOnDataLoad);
+        }
+
+        private void SetValue<T>(ref T oldValue, T newValue, [CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(oldValue, newValue))
+                return;
+
+            oldValue = newValue;
+            NotifyOfPropertyChange(propertyName);
         }
     }
 }

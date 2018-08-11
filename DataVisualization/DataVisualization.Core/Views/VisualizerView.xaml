@@ -14,7 +14,7 @@
                 <lvc:Axis DisableAnimations="True" MinValue="{Binding MinX, FallbackValue=0}" MaxValue="{Binding MaxX, FallbackValue=100}" LabelFormatter="{Binding FormatterX}"></lvc:Axis>
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis DisableAnimations="True" MinValue="0" MaxValue="100"></lvc:Axis>
+                <lvc:Axis DisableAnimations="True"></lvc:Axis>
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
     </Grid>

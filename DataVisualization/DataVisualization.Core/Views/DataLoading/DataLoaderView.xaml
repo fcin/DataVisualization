@@ -26,7 +26,24 @@
                  cal:Message.Attach="[Event TextChanged] = [Action RecreateGrid()]; [Event TextChanged] = [Action ValidateSubmit()]"></TextBox>
         <Button Grid.Column="1" Grid.Row="1" Width="50" Height="20" Content="Select" cal:Message.Attach="[Event Click] = [Action OnFileSelectionClicked()]" HorizontalAlignment="Left"></Button>
         <Button Content="Load" Grid.Column="1" Grid.Row="2" Width="50" Height="20" cal:Message.Attach="[Event Click] = [Action OnDataLoad()]"></Button>
-
+        
+        <StackPanel Grid.Row="2" Grid.Column="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Content="Thousands separator"></Label>
+                <TextBox Text="{Binding ThousandsSeparator, FallbackValue='.'}" MaxLength="1" Grid.Column="1" Grid.Row="0" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBox>
+                <Label Grid.Column="0" Grid.Row="1" Content="Decimal separator"></Label>
+                <TextBox Text="{Binding DecimalSeparator, FallbackValue=','}"  MaxLength="1" Grid.Column="1" Grid.Row="1" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBox>
+            </Grid>
+        </StackPanel>
+        
         <DataGrid Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="True">
             <DataGrid.Resources>
                 <Style TargetType="{x:Type DataGridColumnHeader}">

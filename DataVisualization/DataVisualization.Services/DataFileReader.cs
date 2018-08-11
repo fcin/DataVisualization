@@ -1,6 +1,6 @@
 ﻿using CsvHelper;
 using DataVisualization.Models;
-using System;
+using DataVisualization.Services.Transform;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -31,6 +31,8 @@ namespace DataVisualization.Services
                     data.Add(new List<object>());
                 }
 
+                var parser = new ValueParser(config.ThousandsSeparator, config.DecimalSeparator);
+
                 while (await reader.ReadAsync())
                 {
                     for (var index = 0; index < config.Columns.Count; index++)
@@ -38,7 +40,7 @@ namespace DataVisualization.Services
                         var configColumn = config.Columns[index];
                         var fileColumnIndex = configColumn.Index;
                         var value = reader.Context.Record[fileColumnIndex];
-                        var convertedValue = Convert.ChangeType(value, Type.GetType(configColumn.ColumnType));
+                        var convertedValue = parser.Parse(value, configColumn.ColumnType);
                         data[index].Add(convertedValue);
                     }
                 }
