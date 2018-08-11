@@ -28,6 +28,8 @@ namespace DataVisualization.Services.Transform
                     return double.Parse(value, _numberFormat);
                 case "System.DateTime":
                     return DateTime.Parse(value);
+                case "System.String":
+                    return value;
                 default:
                     throw new ArgumentException("Uknown type");
             }

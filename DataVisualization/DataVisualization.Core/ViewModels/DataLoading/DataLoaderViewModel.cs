@@ -196,6 +196,8 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             DataGridColumnsModel.Columns[index] = new Tuple<string, string, bool>(DataGridColumnsModel.Columns[index].Item1,
                                                                                   DataGridColumnsModel.Columns[index].Item2,
                                                                                   !DataGridColumnsModel.Columns[index].Item3);
+
+            ValidateSubmit();
         }
 
         public void OnFileSelectionClicked()
@@ -214,8 +216,10 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             }
         }
 
-        public bool CanOnDataLoad => !_dataConfigurationService.Exists(FilePath) && !string.IsNullOrEmpty(FilePath) &&
-            !DataGridColumnsModel.Columns.Any(col => col.Item2.Equals(typeof(string).ToString()) && !col.Item3);
+        public bool CanOnDataLoad => !_dataConfigurationService.Exists(FilePath) && 
+                                     !string.IsNullOrEmpty(FilePath) &&
+                                     !DataGridColumnsModel.Columns.Any(col => col.Item2.Equals($"{typeof(string)}") && !col.Item3) &&
+                                      DataGridColumnsModel.Columns.Count(col => !col.Item3) > 1;
 
         public void OnDataLoad()
         {
