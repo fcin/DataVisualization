@@ -26,7 +26,7 @@ namespace DataVisualization.Core.ViewModels
             }
         }
 
-        private long _minX;
+        private long _minX = 0;
         public long MinX
         {
             get => _minX;
@@ -37,7 +37,7 @@ namespace DataVisualization.Core.ViewModels
             }
         }
 
-        private long _maxX;
+        private long _maxX = 100;
         public long MaxX
         {
             get => _maxX;
@@ -54,7 +54,7 @@ namespace DataVisualization.Core.ViewModels
 
         protected override async void OnActivate()
         {
-            var config = _dataConfigurationService.Get(conf => conf.DataName.Equals("CsvData"));
+            var config = _dataConfigurationService.Get(conf => conf.DataName.Equals("SmallSample"));
 
             if (config == null)
                 return;
@@ -71,7 +71,7 @@ namespace DataVisualization.Core.ViewModels
             }
 
             var dayConfig = Mappers.Xy<DateModel>()
-                .X(dayModel => (double)dayModel.DateTime.Ticks / TimeSpan.FromMinutes(1).Ticks)
+                .X(dayModel => dayModel.DateTime.Ticks)
                 .Y(dayModel => dayModel.Value);
 
             for (var index = 1; index < data.Count; index++)
@@ -98,11 +98,12 @@ namespace DataVisualization.Core.ViewModels
                 });
             }
 
-            FormatterX = val => new DateTime((long)val * TimeSpan.FromMinutes(1).Ticks).ToString("MM/dd/yyyy");
-            MinX = ((DateTime)data[0][0]).Ticks / TimeSpan.FromMinutes(1).Ticks;
-            var maxLength = data[0].Count;
-            var max = ((DateTime)data[0][maxLength - 1]).Ticks / TimeSpan.FromMinutes(1).Ticks;
-            MaxX = max - ((max - MinX) / 100) * 95;
+            FormatterX = val => new DateTime((long)val).ToString("MM/dd/yyyy");
+
+            var firstValue = (DateTime)data[0][0];
+            var lastValue = (DateTime)data[0][data[0].Count - 1];
+            MinX = firstValue.Ticks;
+            MaxX = lastValue.Ticks;
 
             base.OnActivate();
         }
