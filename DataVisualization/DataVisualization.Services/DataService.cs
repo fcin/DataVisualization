@@ -1,4 +1,7 @@
-﻿using DataVisualization.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DataVisualization.Models;
 using LiteDB;
 
 namespace DataVisualization.Services

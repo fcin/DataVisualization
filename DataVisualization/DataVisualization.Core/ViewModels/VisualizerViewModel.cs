@@ -7,6 +7,7 @@ using LiveCharts.Geared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace DataVisualization.Core.ViewModels
@@ -54,7 +55,7 @@ namespace DataVisualization.Core.ViewModels
 
         protected override async void OnActivate()
         {
-            var config = _dataConfigurationService.Get(conf => conf.DataName.Equals("SmallSample"));
+            var config = _dataConfigurationService.Get(conf => conf.DataName.Equals("CsvData"));
 
             if (config == null)
                 return;
@@ -94,16 +95,18 @@ namespace DataVisualization.Core.ViewModels
                 {
                     Values = values,
                     Fill = Brushes.Transparent,
-                    PointGeometry = null
+                    PointGeometry = null,
+                    LineSmoothness = 0,
+                    DataLabels = false
                 });
             }
 
             FormatterX = val => new DateTime((long)val).ToString("MM/dd/yyyy");
 
-            var firstValue = (DateTime)data[0][0];
-            var lastValue = (DateTime)data[0][data[0].Count - 1];
-            MinX = firstValue.Ticks;
-            MaxX = lastValue.Ticks;
+            var rangeStart = (DateTime)data[0][Math.Max(data[0].Count - 10000, 0)];
+            var rangeEnd = (DateTime)data[0][data[0].Count - 1];
+            MinX = rangeStart.Ticks;
+            MaxX = rangeEnd.Ticks;
 
             base.OnActivate();
         }
