@@ -59,17 +59,14 @@ namespace DataVisualization.Core.ViewModels
 
             if (config == null)
                 return;
-
-            List<List<object>> data;
+            
             if (!_dataService.Exists(config.DataName))
             {
-                data = (await _dataFileReader.ReadDataAsync(config)).ToList();
-                _dataService.AddData(new Data { Name = config.DataName, Values = data });
+                var loadedData = await _dataFileReader.ReadDataAsync(config);
+                _dataService.AddData(loadedData);
             }
-            else
-            {
-                data = _dataService.GetData(config.DataName).Values.Select(s => s.ToList()).ToList();
-            }
+
+            var data = _dataService.GetData(config.DataName).Series.ToList();
 
             var dayConfig = Mappers.Xy<DateModel>()
                 .X(dayModel => dayModel.DateTime.Ticks)
@@ -81,12 +78,12 @@ namespace DataVisualization.Core.ViewModels
                 var row = data[index];
 
                 var values = new GearedValues<DateModel>();
-                for (var cellIndex = 0; cellIndex < row.Count; cellIndex++)
+                for (var cellIndex = 0; cellIndex < row.Values.Count; cellIndex++)
                 {
                     values.Add(new DateModel
                     {
-                        DateTime = (DateTime)dateRow[cellIndex],
-                        Value = (double)row[cellIndex]
+                        DateTime = new DateTime((long)dateRow.Values[cellIndex]),
+                        Value = row.Values[cellIndex]
                     });
                     values.Quality = Quality.Low;
                 }
@@ -102,9 +99,9 @@ namespace DataVisualization.Core.ViewModels
             }
 
             FormatterX = val => new DateTime((long)val).ToString("MM/dd/yyyy");
-
-            var rangeStart = (DateTime)data[0][Math.Max(data[0].Count - 10000, 0)];
-            var rangeEnd = (DateTime)data[0][data[0].Count - 1];
+            
+            var rangeStart = new DateTime((long)data[0].Values[Math.Max(data[0].Values.Count - 10000, 0)]);
+            var rangeEnd = new DateTime((long)data[0].Values[data[0].Values.Count - 1]);
             MinX = rangeStart.Ticks;
             MaxX = rangeEnd.Ticks;
 

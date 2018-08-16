@@ -1,9 +1,11 @@
-﻿using CsvHelper;
+﻿using System;
+using CsvHelper;
 using DataVisualization.Models;
 using DataVisualization.Services.Transform;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DataVisualization.Services
@@ -12,7 +14,7 @@ namespace DataVisualization.Services
     {
         public int ColumnsCount { get; set; }
 
-        public async Task<IEnumerable<List<object>>> ReadDataAsync(DataConfiguration config)
+        public async Task<Data> ReadDataAsync(DataConfiguration config)
         {
             var path = config.FilePath;
 
@@ -25,10 +27,10 @@ namespace DataVisualization.Services
                 await reader.ReadAsync();
 
                 ColumnsCount = reader.Context.Record.Length;
-                var data = new List<List<object>>(config.Columns.Count);
+                var data = new List<List<double>>(config.Columns.Count);
                 for (var index = config.Columns.Count - 1; index >= 0; index--)
                 {
-                    data.Add(new List<object>());
+                    data.Add(new List<double>());
                 }
 
                 var parser = new ValueParser(config.ThousandsSeparator, config.DecimalSeparator);
@@ -41,11 +43,18 @@ namespace DataVisualization.Services
                         var fileColumnIndex = configColumn.Index;
                         var value = reader.Context.Record[fileColumnIndex];
                         var convertedValue = parser.Parse(value, configColumn.ColumnType);
-                        data[index].Add(convertedValue);
+                        if(convertedValue is DateTime dtValue)
+                            data[index].Add(dtValue.Ticks);
+                        else
+                            data[index].Add((double)convertedValue);
                     }
                 }
 
-                return data;
+                return new Data
+                {
+                    Name = config.DataName,
+                    Series = data.Select(d => new Series{ Values = d.ToList() }).ToList()
+                };
             }
         }
 
