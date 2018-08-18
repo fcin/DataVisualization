@@ -6,11 +6,13 @@ namespace DataVisualization.Core.ViewModels
     public class MainViewModel : Conductor<object>
     {
         private readonly IWindowManager _windowManager;
-        public VisualizerViewModel VisualizerVm { get; set; } = new VisualizerViewModel();
+        public VisualizerViewModel VisualizerVm { get; set; }
 
-        public MainViewModel(IWindowManager windowManager)
+        public MainViewModel(IWindowManager windowManager, ISeriesFactory seriesFactory)
         {
             _windowManager = windowManager;
+
+            VisualizerVm = new VisualizerViewModel(seriesFactory);
             ActivateItem(VisualizerVm);
         }
 

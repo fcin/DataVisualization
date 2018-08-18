@@ -26,6 +26,7 @@ namespace DataVisualization.Core
             _container.Singleton<MainViewModel, MainViewModel>();
             _container.Singleton<IWindowManager, WindowManager>();
             _container.Singleton<IEventAggregator, EventAggregator>();
+            _container.Singleton<ISeriesFactory, SeriesFactory>();
 
             base.Configure();
         }

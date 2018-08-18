@@ -56,10 +56,12 @@ namespace DataVisualization.Services
                 return new Data
                 {
                     Name = config.DataName,
-                    Series = data.Select(d => new Series
+                    Series = data.Select((d, index) => new Series
                     {
                         Values = d.ToList(),
-                        SeriesColor = Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255))
+                        SeriesColor = Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)),
+                        Id = Guid.NewGuid(),
+                        IsHorizontalAxis = index == 0
                     }).ToList()
                 };
             }
