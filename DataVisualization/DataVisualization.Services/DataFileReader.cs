@@ -7,6 +7,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace DataVisualization.Services
 {
@@ -50,10 +51,16 @@ namespace DataVisualization.Services
                     }
                 }
 
+                var rand = new Random();
+
                 return new Data
                 {
                     Name = config.DataName,
-                    Series = data.Select(d => new Series{ Values = d.ToList() }).ToList()
+                    Series = data.Select(d => new Series
+                    {
+                        Values = d.ToList(),
+                        SeriesColor = Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255))
+                    }).ToList()
                 };
             }
         }

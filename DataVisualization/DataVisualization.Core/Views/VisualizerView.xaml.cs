@@ -26,5 +26,10 @@ namespace DataVisualization.Core.Views
         {
             InitializeComponent();
         }
+
+        private void Axis_OnPreviewRangeChanged(PreviewRangeChangedEventArgs eventargs)
+        {
+            ((VisualizerViewModel)DataContext)?.OnRangeChanged((long)eventargs.PreviewMinValue, (long)eventargs.PreviewMaxValue);
+        }
     }
 }
