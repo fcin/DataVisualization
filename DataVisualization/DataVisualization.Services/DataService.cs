@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DataVisualization.Models;
+﻿using DataVisualization.Models;
 using LiteDB;
 
 namespace DataVisualization.Services
@@ -21,11 +18,13 @@ namespace DataVisualization.Services
             using (var db = new LiteDatabase(_dbPath))
             {
                 var collection = db.GetCollection("Data");
-                if (collection.Exists(f => f[DocumentDistinctName].Equals(data.Name)))
+                if (collection.Exists(Query.EQ(nameof(Data.Name), data.Name)))
                     return;
 
                 var document = BsonMapper.Global.ToDocument(data);
                 document.Add(DocumentDistinctName, data.Name);
+
+                collection.EnsureIndex(nameof(Data.Name));
                 collection.Insert(document);
             }
         }
@@ -35,7 +34,7 @@ namespace DataVisualization.Services
             using (var db = new LiteDatabase(_dbPath))
             {
                 var collection = db.GetCollection("Data");
-                return collection.Exists(doc => doc[DocumentDistinctName].Equals(name));
+                return collection.Exists(Query.EQ(nameof(Data.Name), name));
             }
         }
 
@@ -44,7 +43,7 @@ namespace DataVisualization.Services
             using (var db = new LiteDatabase(_dbPath))
             {
                 var collection = db.GetCollection<Data>("Data");
-                return collection.FindOne(doc => doc.Name.Equals(name));
+                return collection.FindOne(Query.EQ(nameof(Data.Name), name));
             }
         }
     }
