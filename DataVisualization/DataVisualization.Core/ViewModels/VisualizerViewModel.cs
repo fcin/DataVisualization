@@ -14,15 +14,15 @@ namespace DataVisualization.Core.ViewModels
         public SeriesCollection SeriesCollection { get; set; } = new SeriesCollection();
         public Func<double, string> FormatterX { get; } = val => new DateTime((long)val).ToString("MM/dd/yyyy");
 
-        private long _minX = 0;
-        public long MinX
+        private long? _minX = null;
+        public long? MinX
         {
             get => _minX;
             set => SetValue(ref _minX, value);
         }
 
-        private long _maxX = 100;
-        public long MaxX
+        private long? _maxX = null;
+        public long? MaxX
         {
             get => _maxX;
             set => SetValue(ref _maxX, value);
@@ -46,7 +46,7 @@ namespace DataVisualization.Core.ViewModels
 
         protected override async void OnActivate()
         {
-            var config = _dataConfigurationService.Get(conf => conf.DataName.Equals("SmallSampleRandom"));
+            var config = _dataConfigurationService.Get(conf => conf.DataName.Equals("CsvData"));
 
             if (config == null)
                 return;

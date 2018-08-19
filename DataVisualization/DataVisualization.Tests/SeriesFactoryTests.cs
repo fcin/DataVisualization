@@ -21,25 +21,25 @@ namespace DataVisualization.Tests
         [Test]
         public void CreateSeriesPoints_MinIsBiggerOrEqualToMax_ShouldThrow()
         {
-            Assert.Throws<ArgumentException>(() => _seriesFactory.CreateSeriesPoints(new Series(), new Series(), long.MaxValue, long.MinValue));
+            Assert.Throws<ArgumentException>(() => _seriesFactory.CreateSeriesPoints(new Series(), new Series()));
         }
 
         [Test]
         public void CreateSeriesPoints_SeriesIsNull_ShouldThrow()
         {
-            Assert.Throws<ArgumentNullException>(() => _seriesFactory.CreateSeriesPoints(null, new Series(), long.MinValue, long.MaxValue));
-            Assert.Throws<ArgumentNullException>(() => _seriesFactory.CreateSeriesPoints(new Series(), null, long.MinValue, long.MaxValue));
+            Assert.Throws<ArgumentNullException>(() => _seriesFactory.CreateSeriesPoints(null, new Series()));
+            Assert.Throws<ArgumentNullException>(() => _seriesFactory.CreateSeriesPoints(new Series(), null));
         }
 
         [Test]
         public void CreateSeriesPoints_HorizontalAxis_NotHorizontal_ShouldThrow()
         {
             var horizontalSeries = new Series {IsHorizontalAxis = false};
-            Assert.Throws<ArgumentException>(() => _seriesFactory.CreateSeriesPoints(horizontalSeries, new Series(), long.MinValue, long.MaxValue));
+            Assert.Throws<ArgumentException>(() => _seriesFactory.CreateSeriesPoints(horizontalSeries, new Series()));
         }
 
         [Test]
-        public void CreateSeriesPoints_SortedAxis_ShouldReturnAllPoints()
+        public void CreateSeriesPoints_SortedHorizontalAxis_ShouldReturnAllPoints()
         {
             var horizontalSeries = new Series
             {
@@ -49,22 +49,20 @@ namespace DataVisualization.Tests
 
             var dataSeries = new Series { Values = new List<double> { 5, 8, 2 } };
 
-            var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries, long.MinValue, long.MaxValue).ToList();
+            var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries).ToList();
 
             Assert.AreEqual(horizontalSeries.Values.Count, points.Count);
 
             Assert.AreEqual(horizontalSeries.Values[0], points[0].DateTime.Ticks);
-            Assert.AreEqual(dataSeries.Values[0], points[0].Value);
-
             Assert.AreEqual(horizontalSeries.Values[1], points[1].DateTime.Ticks);
-            Assert.AreEqual(dataSeries.Values[1], points[1].Value);
-
             Assert.AreEqual(horizontalSeries.Values[2], points[2].DateTime.Ticks);
+            Assert.AreEqual(dataSeries.Values[0], points[0].Value);
+            Assert.AreEqual(dataSeries.Values[1], points[1].Value);
             Assert.AreEqual(dataSeries.Values[2], points[2].Value);
         }
 
         [Test]
-        public void CreateSeriesPoints_UnsortedAxis()
+        public void CreateSeriesPoints_UnsortedHorizontalAxis()
         {
             var horizontalSeries = new Series
             {
@@ -74,9 +72,56 @@ namespace DataVisualization.Tests
 
             var dataSeries = new Series { Values = new List<double> { 5, 8, 2 } };
 
-            // Todo: Should I support unsorted axis? How to find correct range if axis is unsorted?
+            var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries).ToList();
 
-            var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries, long.MinValue, long.MaxValue).ToList();
+            Assert.AreEqual(horizontalSeries.Values[0], points[0].DateTime.Ticks);
+            Assert.AreEqual(horizontalSeries.Values[1], points[1].DateTime.Ticks);
+            Assert.AreEqual(horizontalSeries.Values[2], points[2].DateTime.Ticks);
+            Assert.AreEqual(dataSeries.Values[0], points[0].Value);
+            Assert.AreEqual(dataSeries.Values[1], points[1].Value);
+            Assert.AreEqual(dataSeries.Values[2], points[2].Value);
+        }
+
+        [Test]
+        public void CreateSeriesPoints_SortedHorizontalAxis_MinAndMaxRangeSpecified_ShouldReturnPointsWithingRange()
+        {
+            const long min = 2;
+            const long max = 4;
+            var horizontalSeries = new Series
+            {
+                IsHorizontalAxis = true,
+                Values = new List<double> { 1, 2, 3, 4, 5 }
+            };
+            var dataSeries = new Series { Values = new List<double> { 1, 2, 3, 4, 5 } };
+
+            var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries, min, max).ToList();
+
+            Assert.AreEqual(2, points.Count);
+            Assert.AreEqual(horizontalSeries.Values[1], points[0].DateTime.Ticks);
+            Assert.AreEqual(horizontalSeries.Values[2], points[1].DateTime.Ticks);
+            Assert.AreEqual(dataSeries.Values[1], points[0].Value);
+            Assert.AreEqual(dataSeries.Values[2], points[1].Value);
+        }
+
+        [Test]
+        public void CreateSeriesPoints_UnsortedHorizontalAxis_MinAndMaxRangeSpecified_ShouldReturnPointsWithingRange()
+        {
+            const long min = 2;
+            const long max = 7;
+            var horizontalSeries = new Series
+            {
+                IsHorizontalAxis = true,
+                Values = new List<double> { 3, 1, 2, 5, 7, 6, 4 }
+            };
+            var dataSeries = new Series { Values = new List<double> { 1, 2, 3, 4, 5, 6, 7 } };
+
+            var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries, min, max).ToList();
+
+            Assert.AreEqual(2, points.Count);
+            Assert.AreEqual(horizontalSeries.Values[2], points[0].DateTime.Ticks);
+            Assert.AreEqual(horizontalSeries.Values[3], points[1].DateTime.Ticks);
+            Assert.AreEqual(dataSeries.Values[2], points[0].Value);
+            Assert.AreEqual(dataSeries.Values[3], points[1].Value);
         }
     }
 }

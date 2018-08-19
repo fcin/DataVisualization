@@ -11,7 +11,15 @@ namespace DataVisualization.Core
     public interface ISeriesFactory
     {
         ISeriesView CreateLineSeries(IEnumerable<DateModel> values, Series series);
-        IEnumerable<DateModel> CreateSeriesPoints(Series horizontalSeries, Series dataSeries, long min, long max);
+
+        /// <summary>
+        /// Returns a series of points with X with values from Horizontal Axis and Y from specified dataSeries.
+        /// </summary>
+        /// <param name="horizontalSeries">Data for X values</param>
+        /// <param name="dataSeries">Data for Y values</param>
+        /// <param name="min">Inclusive start of range</param>
+        /// <param name="max">Exclusive start of range</param>
+        IEnumerable<DateModel> CreateSeriesPoints(Series horizontalSeries, Series dataSeries, long? min = null, long? max = null);
     }
 
     public class SeriesFactory : ISeriesFactory
@@ -38,7 +46,7 @@ namespace DataVisualization.Core
             };
         }
 
-        public IEnumerable<DateModel> CreateSeriesPoints(Series horizontalSeries, Series dataSeries, long min, long max)
+        public IEnumerable<DateModel> CreateSeriesPoints(Series horizontalSeries, Series dataSeries, long? min = null, long? max = null)
         {
             if(min >= max)
                 throw new ArgumentException($"{nameof(min)} is bigger of equal to {nameof(max)}");
@@ -51,8 +59,9 @@ namespace DataVisualization.Core
 
             var dateRow = horizontalSeries;
             var row = dataSeries;
-
-            var (minIndex, maxIndex) = GetMinAndMaxIndex(dateRow.Values, min, max);
+            
+            var minIndex = min == null ? 0 : dateRow.Values.IndexOf(min.Value);
+            var maxIndex = max == null ? dateRow.Values.Count : dateRow.Values.IndexOf(max.Value);
             var increment = Math.Max((maxIndex - minIndex) / PointsCount, 1);
 
             var seriesPoints = new List<DateModel>();
@@ -67,30 +76,6 @@ namespace DataVisualization.Core
             }
 
             return seriesPoints;
-        }
-
-        private (int minIndex, int maxIndex) GetMinAndMaxIndex(IList<double> dateRowValues, long min, long max)
-        {
-            var foundMin = 0;
-            for (var index = 0; index < dateRowValues.Count; index++)
-            {
-                var item = dateRowValues[index];
-                if (item > min)
-                {
-                    foundMin = index;
-                    break;
-                }
-            }
-
-            for (int index = foundMin; index < dateRowValues.Count; index++)
-            {
-                var item = dateRowValues[index];
-
-                if (item > max)
-                    return (foundMin, index);
-            }
-
-            return (foundMin, dateRowValues.Count);
         }
     }
 }
