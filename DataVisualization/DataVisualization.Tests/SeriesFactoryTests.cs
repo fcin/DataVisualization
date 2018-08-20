@@ -53,9 +53,9 @@ namespace DataVisualization.Tests
 
             Assert.AreEqual(horizontalSeries.Values.Count, points.Count);
 
-            Assert.AreEqual(horizontalSeries.Values[0], points[0].DateTime.Ticks);
-            Assert.AreEqual(horizontalSeries.Values[1], points[1].DateTime.Ticks);
-            Assert.AreEqual(horizontalSeries.Values[2], points[2].DateTime.Ticks);
+            Assert.AreEqual(horizontalSeries.Values[0], points[0].HorizontalAxis);
+            Assert.AreEqual(horizontalSeries.Values[1], points[1].HorizontalAxis);
+            Assert.AreEqual(horizontalSeries.Values[2], points[2].HorizontalAxis);
             Assert.AreEqual(dataSeries.Values[0], points[0].Value);
             Assert.AreEqual(dataSeries.Values[1], points[1].Value);
             Assert.AreEqual(dataSeries.Values[2], points[2].Value);
@@ -74,9 +74,9 @@ namespace DataVisualization.Tests
 
             var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries).ToList();
 
-            Assert.AreEqual(horizontalSeries.Values[0], points[0].DateTime.Ticks);
-            Assert.AreEqual(horizontalSeries.Values[1], points[1].DateTime.Ticks);
-            Assert.AreEqual(horizontalSeries.Values[2], points[2].DateTime.Ticks);
+            Assert.AreEqual(horizontalSeries.Values[0], points[0].HorizontalAxis);
+            Assert.AreEqual(horizontalSeries.Values[1], points[1].HorizontalAxis);
+            Assert.AreEqual(horizontalSeries.Values[2], points[2].HorizontalAxis);
             Assert.AreEqual(dataSeries.Values[0], points[0].Value);
             Assert.AreEqual(dataSeries.Values[1], points[1].Value);
             Assert.AreEqual(dataSeries.Values[2], points[2].Value);
@@ -97,8 +97,8 @@ namespace DataVisualization.Tests
             var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries, min, max).ToList();
 
             Assert.AreEqual(2, points.Count);
-            Assert.AreEqual(horizontalSeries.Values[1], points[0].DateTime.Ticks);
-            Assert.AreEqual(horizontalSeries.Values[2], points[1].DateTime.Ticks);
+            Assert.AreEqual(horizontalSeries.Values[1], points[0].HorizontalAxis);
+            Assert.AreEqual(horizontalSeries.Values[2], points[1].HorizontalAxis);
             Assert.AreEqual(dataSeries.Values[1], points[0].Value);
             Assert.AreEqual(dataSeries.Values[2], points[1].Value);
         }
@@ -118,8 +118,8 @@ namespace DataVisualization.Tests
             var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries, min, max).ToList();
 
             Assert.AreEqual(2, points.Count);
-            Assert.AreEqual(horizontalSeries.Values[2], points[0].DateTime.Ticks);
-            Assert.AreEqual(horizontalSeries.Values[3], points[1].DateTime.Ticks);
+            Assert.AreEqual(horizontalSeries.Values[2], points[0].HorizontalAxis);
+            Assert.AreEqual(horizontalSeries.Values[3], points[1].HorizontalAxis);
             Assert.AreEqual(dataSeries.Values[2], points[0].Value);
             Assert.AreEqual(dataSeries.Values[3], points[1].Value);
         }

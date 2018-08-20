@@ -26,7 +26,7 @@ namespace DataVisualization.Core
     {
         private const int PointsCount = 10_000;
         private readonly CartesianMapper<DateModel> _dayConfig = Mappers.Xy<DateModel>()
-            .X(dayModel => dayModel.DateTime.Ticks)
+            .X(dayModel => dayModel.HorizontalAxis)
             .Y(dayModel => dayModel.Value);
 
 
@@ -67,10 +67,10 @@ namespace DataVisualization.Core
             var seriesPoints = new List<DateModel>();
             for (var cellIndex = minIndex; cellIndex < maxIndex; cellIndex += increment)
             {
-                var x = new DateTime((long)dateRow.Values[cellIndex]);
+                var x = (long)dateRow.Values[cellIndex];
                 seriesPoints.Add(new DateModel
                 {
-                    DateTime = x,
+                    HorizontalAxis = x,
                     Value = row.Values[cellIndex]
                 });
             }

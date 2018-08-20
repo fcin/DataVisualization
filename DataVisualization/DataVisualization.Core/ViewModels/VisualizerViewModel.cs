@@ -4,6 +4,7 @@ using DataVisualization.Services;
 using LiveCharts;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -12,7 +13,33 @@ namespace DataVisualization.Core.ViewModels
     public class VisualizerViewModel : Screen
     {
         public SeriesCollection SeriesCollection { get; set; } = new SeriesCollection();
-        public Func<double, string> FormatterX { get; } = val => new DateTime((long)val).ToString("MM/dd/yyyy");
+
+        private Func<double, string> _formatterX = null;
+        public Func<double, string> FormatterX
+        {
+            get
+            {
+                if (_formatterX == null)
+                {
+                    var xLineType = _data?.First(d => d.IsHorizontalAxis).InternalType;
+                    if (xLineType == null)
+                        return val => val.ToString(CultureInfo.CurrentCulture);
+                    switch (xLineType)
+                    {
+                        case "System.Double":
+                            _formatterX = val => val.ToString(CultureInfo.CurrentCulture);
+                            break;
+                        case "System.DateTime":
+                            _formatterX = val => new DateTime((long)val).ToString("MM/dd/yyyy");
+                            break;
+                        default:
+                            throw new ArgumentException("Unsupported type");
+                    }
+                }
+
+                return _formatterX;
+            }
+        }
 
         private long? _minX = null;
         public long? MinX
@@ -59,10 +86,8 @@ namespace DataVisualization.Core.ViewModels
 
             _data = _dataService.GetData(config.DataName).Series.ToList();
 
-            var rangeStart = new DateTime((long)_data[0].Values[0]);
-            var rangeEnd = new DateTime((long)_data[0].Values[_data[0].Values.Count - 1]);
-            MinX = rangeStart.Ticks;
-            MaxX = rangeEnd.Ticks;
+            MinX = (long)_data[0].Values[0];
+            MaxX = (long)_data[0].Values[_data[0].Values.Count - 1];
 
             RecreateSeries();
 

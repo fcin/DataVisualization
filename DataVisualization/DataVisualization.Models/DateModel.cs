@@ -4,7 +4,7 @@ namespace DataVisualization.Models
 {
     public class DateModel
     {
-        public DateTime DateTime { get; set; }
+        public long HorizontalAxis { get; set; }
         public double Value { get; set; }
     }
 }
