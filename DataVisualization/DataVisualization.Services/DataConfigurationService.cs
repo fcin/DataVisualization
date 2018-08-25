@@ -2,14 +2,12 @@
 using LiteDB;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace DataVisualization.Services
 {
     public class DataConfigurationService
     {
         private readonly string _dbPath;
-        private const string DataConfigurationDocumentName = "_DataConfigurationName";
 
         public DataConfigurationService()
         {
@@ -27,12 +25,14 @@ namespace DataVisualization.Services
             {
                 var collection = db.GetCollection("DataConfiguration");
 
-                if (collection.Exists(doc => doc[DataConfigurationDocumentName].Equals(configuration.DataName)))
+                if (Exists(configuration.DataName))
                     throw new ArgumentException($"Document with name {configuration.DataName} already exists!");
 
                 var document = BsonMapper.Global.ToDocument(configuration);
+                document.Add(nameof(DataConfiguration.DataName), configuration.DataName);
+
                 collection.Insert(document);
-                collection.EnsureIndex(DataConfigurationDocumentName);
+                collection.EnsureIndex(nameof(DataConfiguration.DataName));
             }
         }
 
@@ -40,17 +40,20 @@ namespace DataVisualization.Services
         {
             using (var db = new LiteDatabase(_dbPath))
             {
+                if (!db.CollectionExists("DataConfiguration"))
+                    return false;
+
                 var collection = db.GetCollection("DataConfiguration");
-                return collection.Exists(x => x[DataConfigurationDocumentName].Equals(configName));
+                return collection.Exists(Query.EQ(nameof(DataConfiguration.DataName), configName));
             }
         }
 
-        public DataConfiguration Get(Expression<Func<DataConfiguration, bool>> predicate)
+        public DataConfiguration GetByName(string name)
         {
             using (var db = new LiteDatabase(_dbPath))
             {
                 var collection = db.GetCollection<DataConfiguration>("DataConfiguration");
-                return collection.Find(predicate).FirstOrDefault();
+                return collection.Find(Query.EQ(nameof(DataConfiguration.DataName), name)).FirstOrDefault();
             }
         }
     }

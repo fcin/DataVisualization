@@ -73,7 +73,7 @@ namespace DataVisualization.Core.ViewModels
 
         protected override async void OnActivate()
         {
-            var config = _dataConfigurationService.Get(conf => conf.DataName.Equals("CsvData"));
+            var config = _dataConfigurationService.GetByName("CsvData");
 
             if (config == null)
                 return;

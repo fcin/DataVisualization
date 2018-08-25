@@ -216,8 +216,8 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             }
         }
 
-        public bool CanOnDataLoad => !_dataConfigurationService.Exists(FilePath) && 
-                                     !string.IsNullOrEmpty(FilePath) &&
+        public bool CanOnDataLoad => !string.IsNullOrEmpty(FilePath) &&
+                                     !_dataConfigurationService.Exists(Path.GetFileNameWithoutExtension(FilePath)) &&
                                      !DataGridColumnsModel.Columns.Any(col => col.Item2.Equals($"{typeof(string)}") && !col.Item3) &&
                                       DataGridColumnsModel.Columns.Count(col => !col.Item3) > 1;
 

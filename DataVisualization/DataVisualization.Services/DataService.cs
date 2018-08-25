@@ -5,7 +5,6 @@ namespace DataVisualization.Services
 {
     public class DataService
     {
-        private const string DocumentDistinctName = "_DataName";
         private readonly string _dbPath;
 
         public DataService()
@@ -18,11 +17,11 @@ namespace DataVisualization.Services
             using (var db = new LiteDatabase(_dbPath))
             {
                 var collection = db.GetCollection("Data");
-                if (collection.Exists(Query.EQ(nameof(Data.Name), data.Name)))
+                if (Exists(data.Name))
                     return;
 
                 var document = BsonMapper.Global.ToDocument(data);
-                document.Add(DocumentDistinctName, data.Name);
+                document.Add(nameof(Data.Name), data.Name);
 
                 collection.EnsureIndex(nameof(Data.Name));
                 collection.Insert(document);
@@ -33,6 +32,9 @@ namespace DataVisualization.Services
         {
             using (var db = new LiteDatabase(_dbPath))
             {
+                if (!db.CollectionExists("Data"))
+                    return false;
+
                 var collection = db.GetCollection("Data");
                 return collection.Exists(Query.EQ(nameof(Data.Name), name));
             }
