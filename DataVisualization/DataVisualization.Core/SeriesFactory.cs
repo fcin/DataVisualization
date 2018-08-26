@@ -55,7 +55,7 @@ namespace DataVisualization.Core
             if(horizontalSeries == null || dataSeries == null)
                 throw new ArgumentNullException($"{nameof(horizontalSeries)} or {nameof(dataSeries)} is null");
 
-            if(!horizontalSeries.IsHorizontalAxis)
+            if(horizontalSeries.Axis != Axes.X1)
                 throw new ArgumentException(nameof(horizontalSeries));
 
             var dateRow = horizontalSeries;

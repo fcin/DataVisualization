@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Data;
+using DataVisualization.Models;
 
 namespace DataVisualization.Core.Converters
 {
@@ -10,13 +11,13 @@ namespace DataVisualization.Core.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(values?[0] is ObservableCollection<Tuple<string, string, bool>>) || values[1] == null)
+            if (!(values?[0] is ObservableCollection<GridColumn>) || values[1] == null)
                 return null;
 
-            var columns = (ObservableCollection<Tuple<string, string, bool>>)values[0];
+            var columns = (ObservableCollection<GridColumn>)values[0];
             var selectedColumnIndex = (int)values[1];
 
-            return selectedColumnIndex == -1 ? null : columns[selectedColumnIndex].Item1;
+            return selectedColumnIndex == -1 ? null : columns[selectedColumnIndex].Name;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

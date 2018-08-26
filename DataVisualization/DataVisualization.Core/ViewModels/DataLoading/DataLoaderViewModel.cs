@@ -17,6 +17,20 @@ using DataColumn = System.Data.DataColumn;
 
 namespace DataVisualization.Core.ViewModels.DataLoading
 {
+    public class AxisTypes : BindableCollection<Axes>
+    {
+        private readonly List<Axes> _myColumnTypes = new List<Axes>
+        {
+            Axes.None, Axes.X1, Axes.X2, Axes.Y1, Axes.Y2
+        };
+
+        public AxisTypes()
+        {
+            if (base.Count == 0)
+                base.AddRange(_myColumnTypes);
+        }
+    }
+
     public class CustomColumnTypes : BindableCollection<Type>
     {
         private readonly List<Type> _myColumnTypes = new List<Type>
@@ -36,6 +50,12 @@ namespace DataVisualization.Core.ViewModels.DataLoading
     /// </summary>
     public class DataLoaderViewModel : Screen
     {
+        private AxisTypes _myAxisTypes = new AxisTypes();
+        public AxisTypes MyAxisTypes
+        {
+            get => _myAxisTypes;
+            set => SetValue(ref _myAxisTypes, value);
+        }
 
         private CustomColumnTypes _myColumnTypes = new CustomColumnTypes();
         public CustomColumnTypes MyColumnTypes
@@ -112,7 +132,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             {
                 comboBox.SelectedIndex = 0;
                 var safeValue = comboBox.SelectedItem.ToString();
-                DataGridColumnsModel.Columns[index] = new Tuple<string, string, bool>(columnName, safeValue, DataGridColumnsModel.Columns[index].Item3);
+                DataGridColumnsModel.Columns[index] = new GridColumn(columnName, safeValue, DataGridColumnsModel.Columns[index].IsIgnored, DataGridColumnsModel.Columns[index].Axis);
                 MessageBox.Show("Cannot convert data to this type. Please select a different one.");
                 ValidateSubmit();
                 return;
@@ -127,7 +147,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             }
 
             // Assing new type to header.
-            DataGridColumnsModel.Columns[index] = new Tuple<string, string, bool>(columnName, newType, DataGridColumnsModel.Columns[index].Item3);
+            DataGridColumnsModel.Columns[index] = new GridColumn(columnName, newType, DataGridColumnsModel.Columns[index].IsIgnored, DataGridColumnsModel.Columns[index].Axis);
             NotifyOfPropertyChange(() => MyColumnTypes);
             ValidateSubmit();
         }
@@ -144,7 +164,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             // Add columns.
             foreach (var property in properties)
             {
-                var column = new Tuple<string, string, bool>(property.Item1, property.Item2.ToString(), false);
+                var column = new GridColumn(property.Item1, property.Item2.ToString(), false, MyAxisTypes[0]);
                 if (!DataGridColumnsModel.Columns.Contains(column))
                     DataGridColumnsModel.Columns.Add(column);
             }
@@ -174,18 +194,18 @@ namespace DataVisualization.Core.ViewModels.DataLoading
 
             var index = DataGridColumnsModel.GetColumnIndex(oldName);
             // TODO: INDEX SOMETIMES RETURNS -1 0.o
-            var type = DataGridColumnsModel.Columns[index].Item2;
+            var type = DataGridColumnsModel.Columns[index].ColumnType;
             var isNameValid = newName.All(character => char.IsLetterOrDigit(character) || character.Equals('_'));
 
-            if (!isNameValid || DataGridColumnsModel.Columns.Any(col => col.Item1.Equals(newName)))
+            if (!isNameValid || DataGridColumnsModel.Columns.Any(col => col.Name.Equals(newName)))
             {
-                DataGridColumnsModel.Columns[index] = new Tuple<string, string, bool>(oldName, type, DataGridColumnsModel.Columns[index].Item3);
+                DataGridColumnsModel.Columns[index] = new GridColumn(oldName, type, DataGridColumnsModel.Columns[index].IsIgnored, DataGridColumnsModel.Columns[index].Axis);
                 textBox.Text = oldName;
                 MessageBox.Show($"Column with name {newName} already exists or contains illegal character.");
             }
             else
             {
-                DataGridColumnsModel.Columns[index] = new Tuple<string, string, bool>(newName, type, DataGridColumnsModel.Columns[index].Item3);
+                DataGridColumnsModel.Columns[index] = new GridColumn(newName, type, DataGridColumnsModel.Columns[index].IsIgnored, DataGridColumnsModel.Columns[index].Axis);
                 textBox.Text = newName;
             }
         }
@@ -193,10 +213,18 @@ namespace DataVisualization.Core.ViewModels.DataLoading
         public void OnIgnoreSelected(string columnName)
         {
             var index = DataGridColumnsModel.GetColumnIndex(columnName);
-            DataGridColumnsModel.Columns[index] = new Tuple<string, string, bool>(DataGridColumnsModel.Columns[index].Item1,
-                                                                                  DataGridColumnsModel.Columns[index].Item2,
-                                                                                  !DataGridColumnsModel.Columns[index].Item3);
+            DataGridColumnsModel.Columns[index] = new GridColumn(DataGridColumnsModel.Columns[index].Name,
+                                                                                  DataGridColumnsModel.Columns[index].ColumnType,
+                                                                                  !DataGridColumnsModel.Columns[index].IsIgnored,
+                                                                                  DataGridColumnsModel.Columns[index].Axis);
 
+            ValidateSubmit();
+        }
+
+        public void OnAxisTypeChanged(SelectionChangedEventArgs args, string columnName, ComboBox comboBox)
+        {
+            var index = DataGridColumnsModel.GetColumnIndex(columnName);
+            DataGridColumnsModel.Columns[index].Axis = (Axes)args.AddedItems[0];
             ValidateSubmit();
         }
 
@@ -218,8 +246,11 @@ namespace DataVisualization.Core.ViewModels.DataLoading
 
         public bool CanOnDataLoad => !string.IsNullOrEmpty(FilePath) &&
                                      !_dataConfigurationService.Exists(Path.GetFileNameWithoutExtension(FilePath)) &&
-                                     !DataGridColumnsModel.Columns.Any(col => col.Item2.Equals($"{typeof(string)}") && !col.Item3) &&
-                                      DataGridColumnsModel.Columns.Count(col => !col.Item3) > 1;
+                                     !DataGridColumnsModel.Columns.Any(col => col.ColumnType.Equals($"{typeof(string)}") && !col.IsIgnored) &&
+                                      DataGridColumnsModel.Columns.Count(col => !col.IsIgnored) > 1 &&
+                                      DataGridColumnsModel.Columns.Any(col => col.Axis == Axes.X1) &&
+                                      DataGridColumnsModel.Columns.Any(col => col.Axis == Axes.Y1) &&
+                                     !DataGridColumnsModel.Columns.Any(col => !col.IsIgnored && col.Axis == Axes.None);
 
         public void OnDataLoad()
         {
@@ -234,10 +265,11 @@ namespace DataVisualization.Core.ViewModels.DataLoading
                     Column = new Models.DataColumn
                     {
                         Index = index,
-                        Name = col.Item1,
-                        ColumnType = col.Item2
+                        Name = col.Name,
+                        ColumnType = col.ColumnType,
+                        Axis = col.Axis
                     },
-                    Ignore = col.Item3
+                    Ignore = col.IsIgnored
                 }).Where(column => !column.Ignore).Select(col => col.Column).ToList()
             };
 

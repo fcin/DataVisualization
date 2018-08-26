@@ -61,9 +61,9 @@ namespace DataVisualization.Services
                         Values = d.ToList(),
                         SeriesColor = Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)),
                         Id = Guid.NewGuid(),
-                        IsHorizontalAxis = index == 0,
                         InternalType = config.Columns[index].ColumnType,
-                        Name = config.Columns[index].Name
+                        Name = config.Columns[index].Name,
+                        Axis = config.Columns[index].Axis
                     }).ToList()
                 };
             }

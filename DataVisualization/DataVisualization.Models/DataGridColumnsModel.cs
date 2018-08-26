@@ -1,13 +1,31 @@
 ﻿using Caliburn.Micro;
-using System;
 using System.Collections.ObjectModel;
 
 namespace DataVisualization.Models
 {
+
+    public class GridColumn
+    {
+        public string Name { get; set; }
+        public string ColumnType { get; set; }
+        public bool IsIgnored { get; set; }
+        public Axes Axis { get; set; }
+
+        public GridColumn(string name, string columnType, bool isIgnored, Axes axis)
+        {
+            Name = name;
+            ColumnType = columnType;
+            IsIgnored = isIgnored;
+            Axis = axis;
+        }
+
+        public GridColumn() { }
+    }
+
     public class DataGridColumnsModel : PropertyChangedBase
     {
-        private ObservableCollection<Tuple<string, string, bool>> _columns = new ObservableCollection<Tuple<string, string, bool>>();
-        public ObservableCollection<Tuple<string, string, bool>> Columns
+        private ObservableCollection<GridColumn> _columns = new ObservableCollection<GridColumn>();
+        public ObservableCollection<GridColumn> Columns
         {
             get => _columns;
             set
@@ -24,7 +42,7 @@ namespace DataVisualization.Models
             for (index = 0; index < Columns.Count; index++)
             {
                 var column = Columns[index];
-                if (column.Item1.Equals(name))
+                if (column.Name.Equals(name))
                 {
                     found = true;
                     break;

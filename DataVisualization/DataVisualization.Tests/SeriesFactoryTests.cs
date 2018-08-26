@@ -34,7 +34,7 @@ namespace DataVisualization.Tests
         [Test]
         public void CreateSeriesPoints_HorizontalAxis_NotHorizontal_ShouldThrow()
         {
-            var horizontalSeries = new Series {IsHorizontalAxis = false};
+            var horizontalSeries = new Series { Axis = Axes.Y2 };
             Assert.Throws<ArgumentException>(() => _seriesFactory.CreateSeriesPoints(horizontalSeries, new Series()));
         }
 
@@ -43,7 +43,7 @@ namespace DataVisualization.Tests
         {
             var horizontalSeries = new Series
             {
-                IsHorizontalAxis = true,
+                Axis = Axes.X1,
                 Values = new List<double> { 1, 2, 3 }
             };
 
@@ -66,7 +66,7 @@ namespace DataVisualization.Tests
         {
             var horizontalSeries = new Series
             {
-                IsHorizontalAxis = true,
+                Axis = Axes.X1,
                 Values = new List<double> { 3, 1, 2 }
             };
 
@@ -89,7 +89,7 @@ namespace DataVisualization.Tests
             const long max = 4;
             var horizontalSeries = new Series
             {
-                IsHorizontalAxis = true,
+                Axis = Axes.X1,
                 Values = new List<double> { 1, 2, 3, 4, 5 }
             };
             var dataSeries = new Series { Values = new List<double> { 1, 2, 3, 4, 5 } };
@@ -110,7 +110,7 @@ namespace DataVisualization.Tests
             const long max = 7;
             var horizontalSeries = new Series
             {
-                IsHorizontalAxis = true,
+                Axis = Axes.X1,
                 Values = new List<double> { 3, 1, 2, 5, 7, 6, 4 }
             };
             var dataSeries = new Series { Values = new List<double> { 1, 2, 3, 4, 5, 6, 7 } };

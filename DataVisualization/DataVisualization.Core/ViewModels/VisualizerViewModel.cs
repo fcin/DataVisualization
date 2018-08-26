@@ -25,7 +25,7 @@ namespace DataVisualization.Core.ViewModels
             {
                 if (_formatterX == null)
                 {
-                    var xLineType = _data?.First(d => d.IsHorizontalAxis).InternalType;
+                    var xLineType = _data?.First(d => d.Axis == Axes.X1).InternalType;
                     if (xLineType == null)
                         return val => val.ToString(CultureInfo.CurrentCulture);
                     switch (xLineType)
@@ -93,8 +93,10 @@ namespace DataVisualization.Core.ViewModels
 
             _data = _dataService.GetData(config.DataName).Series.ToList();
 
-            MinX = (long)_data[0].Values[0];
-            MaxX = (long)_data[0].Values[_data[0].Values.Count - 1];
+            var horizontalAxis = _data.First(d => d.Axis == Axes.X1);
+
+            MinX = (long)horizontalAxis.Values[0];
+            MaxX = (long)horizontalAxis.Values[horizontalAxis.Values.Count - 1];
 
             RecreateSeries();
 
@@ -103,16 +105,17 @@ namespace DataVisualization.Core.ViewModels
 
         private void RecreateSeries()
         {
-            var horizontalAxisSeries = _data.First(d => d.IsHorizontalAxis);
-            var allSeries = _data.Where(s => !s.IsHorizontalAxis).ToList();
+            var horizontalAxisSeries = _data.First(d => d.Axis == Axes.X1);
+            var allSeries = _data.Where(s => s.Axis == Axes.Y1).ToList();
             for (var index = 0; index < allSeries.Count; index++)
             {
                 var series = allSeries[index];
                 var points = _seriesFactory.CreateSeriesPoints(horizontalAxisSeries, series, MinX, MaxX).ToList();
-                var gearedValues = new GearedValues<DateModel> { Quality = Quality.Low };
-                gearedValues.AddRange(points);
+
                 if (SeriesCollection.Count == allSeries.Count)
                 {
+                    var gearedValues = new GearedValues<DateModel> { Quality = Quality.Low };
+                    gearedValues.AddRange(points);
                     SeriesCollection[index].Values = gearedValues;
                 }
                 else
