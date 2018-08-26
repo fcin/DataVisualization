@@ -94,12 +94,19 @@
     </Compile>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
+    <Compile Include="Views\BasicChartLegendView.xaml.cs">
+      <DependentUpon>BasicChartLegendView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DataLoading\DataLoaderView.xaml.cs">
       <DependentUpon>DataLoaderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VisualizerView.xaml.cs">
       <DependentUpon>VisualizerView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\BasicChartLegendView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DataLoading\DataLoaderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

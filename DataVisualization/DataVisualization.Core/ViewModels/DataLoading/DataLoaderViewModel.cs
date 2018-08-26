@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using DataVisualization.Models;
 using DataVisualization.Services;
+using DataVisualization.Services.Transform;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using DataVisualization.Services.Transform;
 using DataColumn = System.Data.DataColumn;
 
 namespace DataVisualization.Core.ViewModels.DataLoading

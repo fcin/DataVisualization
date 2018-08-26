@@ -1,12 +1,16 @@
 ﻿using Caliburn.Micro;
+using DataVisualization.Core.Views;
 using DataVisualization.Models;
 using DataVisualization.Services;
 using LiveCharts;
+using LiveCharts.Geared;
+using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Series = DataVisualization.Models.Series;
 
 namespace DataVisualization.Core.ViewModels
 {
@@ -55,6 +59,8 @@ namespace DataVisualization.Core.ViewModels
             set => SetValue(ref _maxX, value);
         }
 
+        public IChartLegend Legend { get; set; }
+
         private readonly ISeriesFactory _seriesFactory;
         private readonly DataFileReader _dataFileReader = new DataFileReader();
         private readonly DataService _dataService = new DataService();
@@ -64,6 +70,7 @@ namespace DataVisualization.Core.ViewModels
         public VisualizerViewModel(ISeriesFactory seriesFactory)
         {
             _seriesFactory = seriesFactory;
+            Legend = new BasicChartLegendView();
         }
 
         public void OnRangeChanged(long newMin, long newMax)
@@ -96,15 +103,23 @@ namespace DataVisualization.Core.ViewModels
 
         private void RecreateSeries()
         {
-            foreach (var series in SeriesCollection)
-                series.Values.Clear();
-
             var horizontalAxisSeries = _data.First(d => d.IsHorizontalAxis);
-            foreach (var series in _data.Where(s => !s.IsHorizontalAxis))
+            var allSeries = _data.Where(s => !s.IsHorizontalAxis).ToList();
+            for (var index = 0; index < allSeries.Count; index++)
             {
-                var points = _seriesFactory.CreateSeriesPoints(horizontalAxisSeries, series, MinX, MaxX);
-                var seriesView = _seriesFactory.CreateLineSeries(points, series);
-                SeriesCollection.Add(seriesView);
+                var series = allSeries[index];
+                var points = _seriesFactory.CreateSeriesPoints(horizontalAxisSeries, series, MinX, MaxX).ToList();
+                var gearedValues = new GearedValues<DateModel> { Quality = Quality.Low };
+                gearedValues.AddRange(points);
+                if (SeriesCollection.Count == allSeries.Count)
+                {
+                    SeriesCollection[index].Values = gearedValues;
+                }
+                else
+                {
+                    var lineSeries = _seriesFactory.CreateLineSeries(points, series);
+                    SeriesCollection.Add(lineSeries);
+                }
             }
         }
 

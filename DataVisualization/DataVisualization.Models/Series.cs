@@ -12,5 +12,6 @@ namespace DataVisualization.Models
         public IList<double> Values { get; set; }
         public Color SeriesColor { get; set; }
         public string InternalType { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -42,7 +42,8 @@ namespace DataVisualization.Core
                 PointGeometry = null,
                 LineSmoothness = 0,
                 DataLabels = false,
-                Stroke = new SolidColorBrush(series.SeriesColor)
+                Stroke = new SolidColorBrush(series.SeriesColor),
+                Title = series.Name
             };
         }
 

@@ -9,7 +9,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="X" Pan="X" DisableAnimations="True" Hoverable="False" ToolTip="{x:Null}">
+        <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="X" Pan="X" 
+                            ChartLegend="{Binding Legend}" LegendLocation="Bottom"
+                            Hoverable="False" ToolTip="{x:Null}" DisableAnimations="True">
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis DisableAnimations="True" PreviewRangeChanged="Axis_OnPreviewRangeChanged" MinValue="{Binding MinX, FallbackValue=0}" MaxValue="{Binding MaxX, FallbackValue=100}" LabelFormatter="{Binding FormatterX}"></lvc:Axis>
             </lvc:CartesianChart.AxisX>
