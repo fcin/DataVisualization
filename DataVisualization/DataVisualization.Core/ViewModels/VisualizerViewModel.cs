@@ -59,7 +59,28 @@ namespace DataVisualization.Core.ViewModels
             set => SetValue(ref _maxX, value);
         }
 
+        private long? _minX2 = null;
+        public long? MinX2
+        {
+            get => _minX2;
+            set => SetValue(ref _minX2, value);
+        }
+
+        private long? _maxX2 = null;
+        public long? MaxX2
+        {
+            get => _maxX2;
+            set => SetValue(ref _maxX2, value);
+        }
+
         public IChartLegend Legend { get; set; }
+
+        private bool _hasSecondaryAxis;
+        public bool HasSecondaryAxis
+        {
+            get => _hasSecondaryAxis;
+            set => SetValue(ref _hasSecondaryAxis, value);
+        }
 
         private readonly ISeriesFactory _seriesFactory;
         private readonly DataFileReader _dataFileReader = new DataFileReader();
@@ -98,6 +119,15 @@ namespace DataVisualization.Core.ViewModels
             MinX = (long)horizontalAxis.Values[0];
             MaxX = (long)horizontalAxis.Values[horizontalAxis.Values.Count - 1];
 
+            var hasSecondary = _data.Any(d => d.Axis == Axes.X2 || d.Axis == Axes.Y2);
+            if (hasSecondary)
+            {
+                HasSecondaryAxis = true;
+                var secondaryHorizontalAxis = _data.FirstOrDefault(d => d.Axis == Axes.X2) ?? _data.First(d => d.Axis == Axes.X1);
+                MinX2 = (long)secondaryHorizontalAxis.Values[0];
+                MaxX2 = (long)secondaryHorizontalAxis.Values[secondaryHorizontalAxis.Values.Count - 1];
+            }
+
             RecreateSeries();
 
             base.OnActivate();
@@ -105,24 +135,44 @@ namespace DataVisualization.Core.ViewModels
 
         private void RecreateSeries()
         {
-            var horizontalAxisSeries = _data.First(d => d.Axis == Axes.X1);
-            var allSeries = _data.Where(s => s.Axis == Axes.Y1).ToList();
-            for (var index = 0; index < allSeries.Count; index++)
-            {
-                var series = allSeries[index];
-                var points = _seriesFactory.CreateSeriesPoints(horizontalAxisSeries, series, MinX, MaxX).ToList();
+            var allSeriesCount = _data.Count(d => d.Axis == Axes.Y1 || d.Axis == Axes.Y2);
 
-                if (SeriesCollection.Count == allSeries.Count)
+            {
+                var horizontalAxisSeries = _data.First(d => d.Axis == Axes.X1);
+                var allPrimarySeries = _data.Where(s => s.Axis == Axes.Y1).ToList();
+                foreach (var series in allPrimarySeries)
                 {
-                    var gearedValues = new GearedValues<DateModel> { Quality = Quality.Low };
-                    gearedValues.AddRange(points);
-                    SeriesCollection[index].Values = gearedValues;
+                    var points = _seriesFactory.CreateSeriesPoints(horizontalAxisSeries, series, MinX, MaxX).ToList();
+
+                    AddSeriesToCollection(allSeriesCount, points, series);
                 }
-                else
+            }
+
+            if (HasSecondaryAxis)
+            {
+                var secondaryXseries = _data.FirstOrDefault(d => d.Axis == Axes.X2) ?? _data.First(d => d.Axis == Axes.X1);
+                var allSecondarySeries = _data.Where(s => s.Axis == Axes.Y2).ToList();
+                foreach (var series in allSecondarySeries)
                 {
-                    var lineSeries = _seriesFactory.CreateLineSeries(points, series);
-                    SeriesCollection.Add(lineSeries);
+                    var points = _seriesFactory.CreateSeriesPoints(secondaryXseries, series, MinX2, MaxX2).ToList();
+
+                    AddSeriesToCollection(allSeriesCount, points, series);
                 }
+            }
+        }
+
+        private void AddSeriesToCollection(int allSeriesCount, IEnumerable<DateModel> points, Series series)
+        {
+            if (SeriesCollection.Count == allSeriesCount)
+            {
+                var gearedValues = new GearedValues<DateModel> { Quality = Quality.Low };
+                gearedValues.AddRange(points);
+                SeriesCollection.First(s => s.Title == series.Name).Values = gearedValues;
+            }
+            else
+            {
+                var lineSeries = _seriesFactory.CreateLineSeries(points, series);
+                SeriesCollection.Add(lineSeries);
             }
         }
 
