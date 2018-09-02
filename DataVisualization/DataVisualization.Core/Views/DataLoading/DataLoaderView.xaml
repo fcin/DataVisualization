@@ -10,6 +10,8 @@
         Title="DataLoaderView" Height="650" Width="600">
     <Window.Resources>
         <convs:ColumnNameConverter x:Key="ColumnNameConverter"></convs:ColumnNameConverter>
+        <convs:ColumnTypesConverter x:Key="ColumnTypesConverter"></convs:ColumnTypesConverter>
+        <convs:SelectedComboboxItemConverter x:Key="SelectedComboboxItemConverter"></convs:SelectedComboboxItemConverter>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -44,7 +46,7 @@
             </Grid>
         </StackPanel>
 
-        <DataGrid Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="True">
+        <DataGrid Name="PreviewDataGrid" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="True">
             <DataGrid.Resources>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="ContentTemplate">
@@ -61,8 +63,21 @@
                                             </MultiBinding>
                                         </TextBox.Text>
                                     </TextBox>
-                                    <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnColumnTypeChanged($eventArgs, $dataContext, $source)]" 
-                                              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.MyColumnTypes}">
+                                    <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnColumnTypeChanged($eventArgs, $dataContext, $source)]">
+                                        <ComboBox.ItemsSource>
+                                            <MultiBinding Converter="{StaticResource ColumnTypesConverter}">
+                                                <Binding Path="DisplayIndex" Mode="OneWay" 
+                                                         RelativeSource="{RelativeSource AncestorType={x:Type DataGridColumnHeader}}"/>
+                                                <Binding ElementName="PreviewDataGrid" Path="DataContext.AllSelectableTypes"/>
+                                            </MultiBinding>
+                                        </ComboBox.ItemsSource>
+                                        <ComboBox.SelectedItem>
+                                            <MultiBinding Converter="{StaticResource SelectedComboboxItemConverter}">
+                                                <Binding Path="DisplayIndex" Mode="OneWay" 
+                                                         RelativeSource="{RelativeSource AncestorType={x:Type DataGridColumnHeader}}"/>
+                                                <Binding Mode="OneTime" ElementName="PreviewDataGrid" Path="DataContext.AllSelectableTypes"/>
+                                            </MultiBinding>
+                                        </ComboBox.SelectedItem>
                                     </ComboBox>
                                     <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnAxisTypeChanged($eventArgs, $dataContext, $source)]" 
                                               ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.MyAxisTypes}">

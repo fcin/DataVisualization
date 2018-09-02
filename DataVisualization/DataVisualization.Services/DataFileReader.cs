@@ -43,11 +43,11 @@ namespace DataVisualization.Services
                         var configColumn = config.Columns[index];
                         var fileColumnIndex = configColumn.Index;
                         var value = reader.Context.Record[fileColumnIndex];
-                        var convertedValue = parser.Parse(value, configColumn.ColumnType);
-                        if(convertedValue is DateTime dtValue)
+                        var convertedValue = parser.TryParse(value, configColumn.ColumnType);
+                        if(convertedValue.ParsedObject is DateTime dtValue)
                             data[index].Add(dtValue.Ticks);
                         else
-                            data[index].Add((double)convertedValue);
+                            data[index].Add((double)convertedValue.ParsedObject);
                     }
                 }
 

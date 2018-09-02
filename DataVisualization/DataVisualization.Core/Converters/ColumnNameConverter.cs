@@ -1,9 +1,8 @@
-﻿using System;
+﻿using DataVisualization.Models;
+using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Data;
-using DataVisualization.Models;
 
 namespace DataVisualization.Core.Converters
 {
@@ -22,7 +21,6 @@ namespace DataVisualization.Core.Converters
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            Debug.WriteLine("Test");
             return new []{ value };
         }
     }
