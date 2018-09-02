@@ -17,48 +17,17 @@ using DataColumn = System.Data.DataColumn;
 
 namespace DataVisualization.Core.ViewModels.DataLoading
 {
-    public class AxisTypes : BindableCollection<Axes>
-    {
-        private readonly List<Axes> _myColumnTypes = new List<Axes>
-        {
-            Axes.None, Axes.X1, Axes.X2, Axes.Y1, Axes.Y2
-        };
-
-        public AxisTypes()
-        {
-            if (base.Count == 0)
-                base.AddRange(_myColumnTypes);
-        }
-    }
-
-    public class CustomColumnTypes : BindableCollection<Type>
-    {
-        private readonly List<Type> _myColumnTypes = new List<Type>
-        {
-            typeof(string), typeof(double), typeof(DateTime)
-        };
-
-        public CustomColumnTypes()
-        {
-            if (base.Count == 0)
-                base.AddRange(_myColumnTypes);
-        }
-    }
-
-    /// <summary>
-    /// Temporary solution for loading data. It will be replaced soon.
-    /// </summary>
     public class DataLoaderViewModel : Screen
     {
-        private AxisTypes _myAxisTypes = new AxisTypes();
-        public AxisTypes MyAxisTypes
+        private List<Axes> _myAxisTypes = new List<Axes> { Axes.None, Axes.X1, Axes.X2, Axes.Y1, Axes.Y2 };
+        public List<Axes> MyAxisTypes
         {
             get => _myAxisTypes;
             set => SetValue(ref _myAxisTypes, value);
         }
 
-        private CustomColumnTypes _myColumnTypes = new CustomColumnTypes();
-        public CustomColumnTypes MyColumnTypes
+        private List<Type> _myColumnTypes = new List<Type> { typeof(string), typeof(double), typeof(DateTime) };
+        public List<Type> MyColumnTypes
         {
             get => _myColumnTypes;
             set => SetValue(ref _myColumnTypes, value);
