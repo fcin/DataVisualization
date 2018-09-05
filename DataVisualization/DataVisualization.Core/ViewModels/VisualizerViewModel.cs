@@ -18,30 +18,18 @@ namespace DataVisualization.Core.ViewModels
     {
         public SeriesCollection SeriesCollection { get; set; } = new SeriesCollection();
 
-        private Func<double, string> _formatterX = null;
         public Func<double, string> FormatterX
         {
             get
             {
-                if (_formatterX == null)
-                {
-                    var xLineType = _data?.First(d => d.Axis == Axes.X1).InternalType;
-                    if (xLineType == null)
-                        return val => val.ToString(CultureInfo.CurrentCulture);
-                    switch (xLineType)
-                    {
-                        case "System.Double":
-                            _formatterX = val => val.ToString(CultureInfo.CurrentCulture);
-                            break;
-                        case "System.DateTime":
-                            _formatterX = val => new DateTime((long)val).ToString("MM/dd/yyyy");
-                            break;
-                        default:
-                            throw new ArgumentException("Unsupported type");
-                    }
-                }
+                var xLineType = _data?.First(d => d.Axis == Axes.X1).InternalType;
 
-                return _formatterX;
+                if (xLineType == null || xLineType == ColumnTypeDef.Number)
+                    return val => val.ToString(CultureInfo.CurrentCulture);
+                else if (xLineType == ColumnTypeDef.Datetime)
+                    return val => new DateTime((long)val).ToString("MM/dd/yyyy");
+                else
+                    throw new ArgumentException("Unsupported type");
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataVisualization.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -20,28 +21,29 @@ namespace DataVisualization.Services.Transform
             };
         }
 
-        public (bool IsParsed, object ParsedObject) TryParse(string value, string valueType)
+        public (bool IsParsed, object ParsedObject) TryParse(string value, ColumnTypeDef valueType)
         {
-            switch (valueType)
+            if (valueType == ColumnTypeDef.Number)
             {
-                case "System.Double":
-                    {
-                        var parsed = double.TryParse(value, NumberStyles.Any, _numberFormat, out var result);
-                        return (parsed, result);
-                    }
-                case "System.DateTime":
-                    {
-                        var parsed = DateTime.TryParse(value, out var result);
-                        return (parsed, result);
-                    }
-                case "System.String":
-                    return (true, value);
-                default:
-                    throw new ArgumentException("Unknown type");
+                var parsed = double.TryParse(value, NumberStyles.Any, _numberFormat, out var result);
+                return (parsed, result);
+            }
+            else if (valueType == ColumnTypeDef.Datetime)
+            {
+                var parsed = DateTime.TryParse(value, out var result);
+                return (parsed, result);
+            }
+            else if (valueType == ColumnTypeDef.Unknown)
+            {
+                return (true, value);
+            }
+            else
+            {
+                throw new ArgumentException("Unknown type");
             }
         }
 
-        public (bool Parsed, List<object> ParsedValues) TryParseAll(IEnumerable<string> values, string type)
+        public (bool Parsed, List<object> ParsedValues) TryParseAll(IEnumerable<string> values, ColumnTypeDef type)
         {
             var parsedValues = new List<object>();
             foreach (var value in values)

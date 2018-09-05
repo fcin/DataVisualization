@@ -10,7 +10,7 @@ namespace DataVisualization.Models
         public Guid Id { get; set; }
         public IList<double> Values { get; set; }
         public Color SeriesColor { get; set; }
-        public string InternalType { get; set; }
+        public ColumnTypeDef InternalType { get; set; }
         public string Name { get; set; }
         public Axes Axis { get; set; }
     }

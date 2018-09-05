@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Axes.cs" />
+    <Compile Include="ColumnTypes.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DataColumn.cs" />
     <Compile Include="DataConfiguration.cs" />

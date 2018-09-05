@@ -7,11 +7,11 @@ namespace DataVisualization.Models
     public class GridColumn
     {
         public string Name { get; set; }
-        public string ColumnType { get; set; }
+        public ColumnTypeDef ColumnType { get; set; }
         public bool IsIgnored { get; set; }
         public Axes Axis { get; set; }
 
-        public GridColumn(string name, string columnType, bool isIgnored, Axes axis)
+        public GridColumn(string name, ColumnTypeDef columnType, bool isIgnored, Axes axis)
         {
             Name = name;
             ColumnType = columnType;
