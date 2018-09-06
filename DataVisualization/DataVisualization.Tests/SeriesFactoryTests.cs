@@ -83,7 +83,7 @@ namespace DataVisualization.Tests
         }
 
         [Test]
-        public void CreateSeriesPoints_SortedHorizontalAxis_MinAndMaxRangeSpecified_ShouldReturnPointsWithingRange()
+        public void CreateSeriesPoints_SortedHorizontalAxis_MinAndMaxRangeSpecified_ShouldReturnPointsWithinRangeInclusive()
         {
             const long min = 2;
             const long max = 4;
@@ -96,15 +96,17 @@ namespace DataVisualization.Tests
 
             var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries, min, max).ToList();
 
-            Assert.AreEqual(2, points.Count);
+            Assert.AreEqual(3, points.Count);
             Assert.AreEqual(horizontalSeries.Values[1], points[0].HorizontalAxis);
             Assert.AreEqual(horizontalSeries.Values[2], points[1].HorizontalAxis);
+            Assert.AreEqual(horizontalSeries.Values[3], points[2].HorizontalAxis);
             Assert.AreEqual(dataSeries.Values[1], points[0].Value);
             Assert.AreEqual(dataSeries.Values[2], points[1].Value);
+            Assert.AreEqual(dataSeries.Values[3], points[2].Value);
         }
 
         [Test]
-        public void CreateSeriesPoints_UnsortedHorizontalAxis_MinAndMaxRangeSpecified_ShouldReturnPointsWithingRange()
+        public void CreateSeriesPoints_UnsortedHorizontalAxis_MinAndMaxRangeSpecified_ShouldReturnPointsWithinRangeInclusive()
         {
             const long min = 2;
             const long max = 7;
@@ -117,11 +119,13 @@ namespace DataVisualization.Tests
 
             var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries, min, max).ToList();
 
-            Assert.AreEqual(2, points.Count);
+            Assert.AreEqual(3, points.Count);
             Assert.AreEqual(horizontalSeries.Values[2], points[0].HorizontalAxis);
             Assert.AreEqual(horizontalSeries.Values[3], points[1].HorizontalAxis);
+            Assert.AreEqual(horizontalSeries.Values[4], points[2].HorizontalAxis);
             Assert.AreEqual(dataSeries.Values[2], points[0].Value);
             Assert.AreEqual(dataSeries.Values[3], points[1].Value);
+            Assert.AreEqual(dataSeries.Values[4], points[2].Value);
         }
     }
 }

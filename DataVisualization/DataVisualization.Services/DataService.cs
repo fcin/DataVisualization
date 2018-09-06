@@ -1,5 +1,6 @@
 ﻿using DataVisualization.Models;
 using LiteDB;
+using System;
 
 namespace DataVisualization.Services
 {
@@ -46,6 +47,17 @@ namespace DataVisualization.Services
             {
                 var collection = db.GetCollection<Data>("Data");
                 return collection.FindOne(Query.EQ(nameof(Data.Name), name));
+            }
+        }
+
+        public void UpdateData(Data data)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection<Data>("Data");
+                var existsInCollection = collection.Update(data);
+                if(!existsInCollection)
+                    throw new ArgumentException(nameof(data.Name));
             }
         }
     }

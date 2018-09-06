@@ -13,13 +13,12 @@ namespace DataVisualization.Services
 {
     public class DataFileReader : IDataFileReader
     {
-        public int ColumnsCount { get; set; }
-
         public async Task<Data> ReadDataAsync(DataConfiguration config)
         {
             var path = config.FilePath;
+            var linesRead = 0;
 
-            using (TextReader file = File.OpenText(path))
+            using (var file = File.OpenText(path))
             using (var reader = new CsvReader(file))
             {
                 reader.Configuration.Delimiter = ";";
@@ -27,7 +26,6 @@ namespace DataVisualization.Services
 
                 await reader.ReadAsync();
 
-                ColumnsCount = reader.Context.Record.Length;
                 var data = new List<List<double>>(config.Columns.Count);
                 for (var index = config.Columns.Count - 1; index >= 0; index--)
                 {
@@ -36,26 +34,29 @@ namespace DataVisualization.Services
 
                 var parser = new ValueParser(config.ThousandsSeparator, config.DecimalSeparator);
 
-                while (await reader.ReadAsync())
+                do
                 {
+                    linesRead++;
                     for (var index = 0; index < config.Columns.Count; index++)
                     {
                         var configColumn = config.Columns[index];
                         var fileColumnIndex = configColumn.Index;
                         var value = reader.Context.Record[fileColumnIndex];
                         var convertedValue = parser.TryParse(value, configColumn.ColumnType);
-                        if(convertedValue.ParsedObject is DateTime dtValue)
+                        if (convertedValue.ParsedObject is DateTime dtValue)
                             data[index].Add(dtValue.Ticks);
                         else
                             data[index].Add((double)convertedValue.ParsedObject);
                     }
                 }
+                while (await reader.ReadAsync());
 
                 var rand = new Random();
-
+                
                 return new Data
                 {
                     Name = config.DataName,
+                    FileLinesRead = linesRead,
                     Series = data.Select((d, index) => new Series
                     {
                         Values = d.ToList(),
@@ -73,7 +74,7 @@ namespace DataVisualization.Services
         {
             var data = new DataTable();
 
-            using (TextReader file = File.OpenText(filePath))
+            using (var file = File.OpenText(filePath))
             {
                 var reader = new CsvReader(file);
                 reader.Configuration.Delimiter = ";";
@@ -82,7 +83,9 @@ namespace DataVisualization.Services
                 var index = 0;
                 do
                 {
-                    await reader.ReadAsync();
+                    var canReadNext = await reader.ReadAsync();
+                    if (!canReadNext)
+                        break;
 
                     if (data.Columns.Count == 0)
                     {
@@ -106,6 +109,56 @@ namespace DataVisualization.Services
             }
 
             return data;
+        }
+
+        public async Task<(List<Series> latest, int readLines)> ReadLatest(DataConfiguration config, int startFromLine)
+        {
+            var path = config.FilePath;
+            var countLines = 0;
+
+            using (var file = File.OpenText(path))
+            using (var reader = new CsvReader(file))
+            {
+                reader.Configuration.Delimiter = ";";
+                reader.Configuration.HasHeaderRecord = false;
+
+                await reader.ReadAsync();
+                countLines++; 
+
+                var columnsCount = reader.Context.Record.Length;
+                var data = new List<List<double>>(config.Columns.Count);
+                for (var index = config.Columns.Count - 1; index >= 0; index--)
+                {
+                    data.Add(new List<double>());
+                }
+
+                var parser = new ValueParser(config.ThousandsSeparator, config.DecimalSeparator);
+
+                // Skip what we already have.
+                for (var index = 0; index < startFromLine - 1; index++)
+                    await reader.ReadAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    for (var index = 0; index < config.Columns.Count; index++)
+                    {
+                        var configColumn = config.Columns[index];
+                        var fileColumnIndex = configColumn.Index;
+                        var value = reader.Context.Record[fileColumnIndex];
+                        var convertedValue = parser.TryParse(value, configColumn.ColumnType);
+                        if (convertedValue.ParsedObject is DateTime dtValue)
+                            data[index].Add(dtValue.Ticks);
+                        else
+                            data[index].Add((double)convertedValue.ParsedObject);
+                    }
+                }
+
+                return (data.Select((d, index) => new Series
+                {
+                    Values = d.ToList(),
+                    Name = config.Columns[index].Name
+                }).ToList(), countLines);
+            }
         }
     }
 }
