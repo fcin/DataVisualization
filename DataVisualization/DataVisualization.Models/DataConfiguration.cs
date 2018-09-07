@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DataVisualization.Models
 {
@@ -9,6 +10,7 @@ namespace DataVisualization.Models
         public List<DataColumn> Columns { get; set; }
         public string ThousandsSeparator { get; set; }
         public string DecimalSeparator { get; set; }
+        public TimeSpan RefreshRate { get; set; }
 
         public DataConfiguration()
         {

@@ -73,6 +73,24 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             set => SetValue(ref _dataGridCollection, value);
         }
 
+        private DataGridColumnsModel _dataGridColumnsModel = new DataGridColumnsModel();
+        public DataGridColumnsModel DataGridColumnsModel
+        {
+            get => _dataGridColumnsModel;
+            set => SetValue(ref _dataGridColumnsModel, value);
+        }
+
+        public List<KeyValuePair<string, int>> RefreshTimes { get; } = new List<KeyValuePair<string, int>> {
+            new KeyValuePair<string, int>("Don't watch", 0),
+            new KeyValuePair<string, int>("10 seconds", 10),
+            new KeyValuePair<string, int>("1 minute", 1 * 60),
+            new KeyValuePair<string, int>("5 minutes", 5 * 60),
+            new KeyValuePair<string, int>("30 minutes", 30 * 60),
+            new KeyValuePair<string, int>("60 minutes", 60 * 60)
+        };
+
+        public KeyValuePair<string, int> SelectedRefreshTime { get; set; }
+
         private readonly DataFileReader _dataFileReader;
         private readonly DataConfigurationService _dataConfigurationService;
         private DataTable _sampleData;
@@ -82,13 +100,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             DataGridCollection = new BindableCollection<object>();
             _dataFileReader = new DataFileReader();
             _dataConfigurationService = new DataConfigurationService();
-        }
-
-        private DataGridColumnsModel _dataGridColumnsModel = new DataGridColumnsModel();
-        public DataGridColumnsModel DataGridColumnsModel
-        {
-            get => _dataGridColumnsModel;
-            set => SetValue(ref _dataGridColumnsModel, value);
+            SelectedRefreshTime = RefreshTimes[0];
         }
 
         public void OnColumnTypeChanged(SelectionChangedEventArgs args, string columnName, ComboBox comboBox)
@@ -270,6 +282,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
                 FilePath = FilePath,
                 ThousandsSeparator = ThousandsSeparator,
                 DecimalSeparator = DecimalSeparator,
+                RefreshRate = TimeSpan.FromSeconds(SelectedRefreshTime.Value),
                 Columns = DataGridColumnsModel.Columns.Select((col, index) => new
                 {
                     Column = new Models.DataColumn

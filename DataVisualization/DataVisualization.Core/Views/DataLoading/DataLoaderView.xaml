@@ -38,11 +38,15 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Label Grid.Column="0" Grid.Row="0" Content="Thousands separator"></Label>
                 <TextBox Text="{Binding ThousandsSeparator, FallbackValue='.'}" MaxLength="1" Grid.Column="1" Grid.Row="0" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBox>
                 <Label Grid.Column="0" Grid.Row="1" Content="Decimal separator"></Label>
                 <TextBox Text="{Binding DecimalSeparator, FallbackValue=','}"  MaxLength="1" Grid.Column="1" Grid.Row="1" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBox>
+                <Label Grid.Column="0" Grid.Row="2" Content="Watch for changes"></Label>
+                <ComboBox ItemsSource="{Binding RefreshTimes}" SelectedValuePath="Value" DisplayMemberPath="Key" SelectedItem="{Binding SelectedRefreshTime}" 
+                          Grid.Column="1" Grid.Row="2" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" />
             </Grid>
         </StackPanel>
 

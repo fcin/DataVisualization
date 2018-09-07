@@ -19,7 +19,7 @@ namespace DataVisualization.Core
         /// <param name="dataSeries">Data for Y values</param>
         /// <param name="min">Inclusive start of range</param>
         /// <param name="max">Exclusive start of range</param>
-        IEnumerable<DateModel> CreateSeriesPoints(Series horizontalSeries, Series dataSeries, long? min = null, long? max = null);
+        IEnumerable<DateModel> CreateSeriesPoints(Series horizontalSeries, Series dataSeries, double? min = null, double? max = null);
     }
 
     public class SeriesFactory : ISeriesFactory
@@ -48,7 +48,7 @@ namespace DataVisualization.Core
             };
         }
 
-        public IEnumerable<DateModel> CreateSeriesPoints(Series horizontalSeries, Series dataSeries, long? min = null, long? max = null)
+        public IEnumerable<DateModel> CreateSeriesPoints(Series horizontalSeries, Series dataSeries, double? min = null, double? max = null)
         {
             if(min >= max)
                 throw new ArgumentException($"{nameof(min)} is bigger of equal to {nameof(max)}");

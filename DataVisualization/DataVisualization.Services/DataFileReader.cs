@@ -123,7 +123,6 @@ namespace DataVisualization.Services
                 reader.Configuration.HasHeaderRecord = false;
 
                 await reader.ReadAsync();
-                countLines++; 
 
                 var columnsCount = reader.Context.Record.Length;
                 var data = new List<List<double>>(config.Columns.Count);
@@ -136,10 +135,15 @@ namespace DataVisualization.Services
 
                 // Skip what we already have.
                 for (var index = 0; index < startFromLine - 1; index++)
-                    await reader.ReadAsync();
+                {
+                    var hasNextLine = await reader.ReadAsync();
+                    if (!hasNextLine)
+                        return (new List<Series>(), -(startFromLine - index));
+                }
 
                 while (await reader.ReadAsync())
                 {
+                    countLines++;
                     for (var index = 0; index < config.Columns.Count; index++)
                     {
                         var configColumn = config.Columns[index];

@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows;
 using Series = DataVisualization.Models.Series;
 
 namespace DataVisualization.Core.ViewModels
@@ -34,29 +35,29 @@ namespace DataVisualization.Core.ViewModels
             }
         }
 
-        private long? _minX = null;
-        public long? MinX
+        private double? _minX = null;
+        public double? MinX
         {
             get => _minX;
             set => SetValue(ref _minX, value);
         }
 
-        private long? _maxX = null;
-        public long? MaxX
+        private double? _maxX = null;
+        public double? MaxX
         {
             get => _maxX;
             set => SetValue(ref _maxX, value);
         }
 
-        private long? _minX2 = null;
-        public long? MinX2
+        private double? _minX2 = null;
+        public double? MinX2
         {
             get => _minX2;
             set => SetValue(ref _minX2, value);
         }
 
-        private long? _maxX2 = null;
-        public long? MaxX2
+        private double? _maxX2 = null;
+        public double? MaxX2
         {
             get => _maxX2;
             set => SetValue(ref _maxX2, value);
@@ -91,7 +92,7 @@ namespace DataVisualization.Core.ViewModels
 
         protected override async void OnActivate()
         {
-            _config = _dataConfigurationService.GetByName("KeepUpdating");
+            _config = _dataConfigurationService.GetByName("CsvData");
 
             if (_config == null)
                 return;
@@ -107,16 +108,16 @@ namespace DataVisualization.Core.ViewModels
 
             var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
 
-            MinX = (long)horizontalAxis.Values[0];
-            MaxX = (long)horizontalAxis.Values[horizontalAxis.Values.Count - 1];
+            MinX = horizontalAxis.Values[0];
+            MaxX = horizontalAxis.Values[horizontalAxis.Values.Count - 1];
 
             var hasSecondary = _data.Series.Any(d => d.Axis == Axes.X2 || d.Axis == Axes.Y2);
             if (hasSecondary)
             {
                 HasSecondaryAxis = true;
                 var secondaryHorizontalAxis = _data.Series.FirstOrDefault(d => d.Axis == Axes.X2) ?? _data.Series.First(d => d.Axis == Axes.X1);
-                MinX2 = (long)secondaryHorizontalAxis.Values[0];
-                MaxX2 = (long)secondaryHorizontalAxis.Values[secondaryHorizontalAxis.Values.Count - 1];
+                MinX2 = secondaryHorizontalAxis.Values[0];
+                MaxX2 = secondaryHorizontalAxis.Values[secondaryHorizontalAxis.Values.Count - 1];
             }
 
             RecreateSeries();
@@ -126,13 +127,36 @@ namespace DataVisualization.Core.ViewModels
 
         private async Task KeepPulling()
         {
+            if (_config.RefreshRate == TimeSpan.Zero)
+                return;
+
             while (true)
             {
-                await Task.Delay(3000);
+                await Task.Delay(_config.RefreshRate);
+
                 (List<Series> series, int readLines) = await _dataFileReader.ReadLatest(_config, _data.FileLinesRead);
+
+                if (readLines < 0)
+                {
+                    var result = MessageBox.Show("Number of rows decreased since last run. Do you want to reload it?", "Data changed", MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        var loadedData = await _dataFileReader.ReadDataAsync(_config);
+                        _data.Series = loadedData.Series;
+                        _data.FileLinesRead = loadedData.FileLinesRead;
+                        _dataService.UpdateData(_data);
+
+                        var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
+
+                        MinX = horizontalAxis.Values[0];
+                        MaxX = horizontalAxis.Values[horizontalAxis.Values.Count - 1];
+                        RecreateSeries();
+                        continue;
+                    }
+                }
+
                 if (series.Any() && series.Any(s => s.Values.Any()))
                 {
-                    _data.FileLinesRead += readLines;
                     foreach (var serie in series)
                     {
                         var index = _data.Series.Select((s, i) => new { item = s, index = i })
@@ -141,13 +165,15 @@ namespace DataVisualization.Core.ViewModels
                             _data.Series[index].Values.Add(row);
                     }
 
+                    _data.FileLinesRead += readLines;
+                    _dataService.UpdateData(_data);
+
                     var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
                     MaxX = (long)horizontalAxis.Values[horizontalAxis.Values.Count - 1];
 
                     RecreateSeries();
                 }
             }
-
         }
 
         private void RecreateSeries()
