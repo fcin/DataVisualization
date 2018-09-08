@@ -111,7 +111,7 @@ namespace DataVisualization.Services
             return data;
         }
 
-        public async Task<(List<Series> latest, int readLines)> ReadLatest(DataConfiguration config, int startFromLine)
+        public async Task<(List<Series> latest, int readLines)> ReadLatestAsync(DataConfiguration config, int startFromLine)
         {
             var path = config.FilePath;
             var countLines = 0;

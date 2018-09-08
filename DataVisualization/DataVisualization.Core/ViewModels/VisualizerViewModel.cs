@@ -134,7 +134,7 @@ namespace DataVisualization.Core.ViewModels
             {
                 await Task.Delay(_config.RefreshRate);
 
-                (List<Series> series, int readLines) = await _dataFileReader.ReadLatest(_config, _data.FileLinesRead);
+                (List<Series> series, int readLines) = await _dataFileReader.ReadLatestAsync(_config, _data.FileLinesRead);
 
                 if (readLines < 0)
                 {
