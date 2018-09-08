@@ -92,7 +92,7 @@ namespace DataVisualization.Core.ViewModels
 
         protected override async void OnActivate()
         {
-            _config = _dataConfigurationService.GetByName("CsvData");
+            _config = _dataConfigurationService.GetByName("SmallSample");
 
             if (_config == null)
                 return;

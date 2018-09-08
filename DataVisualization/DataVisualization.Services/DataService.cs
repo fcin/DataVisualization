@@ -17,15 +17,19 @@ namespace DataVisualization.Services
         {
             using (var db = new LiteDatabase(_dbPath))
             {
-                var collection = db.GetCollection("Data");
+                var collection = db.GetCollection<Data>("Data");
                 if (Exists(data.Name))
                     return;
 
-                var document = BsonMapper.Global.ToDocument(data);
-                document.Add(nameof(Data.Name), data.Name);
+                var seriesColl = db.GetCollection<Series>("Series");
+
+                foreach (var series in data.Series)
+                {
+                    series.SeriesId = seriesColl.Insert(series);
+                }
 
                 collection.EnsureIndex(nameof(Data.Name));
-                collection.Insert(document);
+                collection.Insert(data);
             }
         }
 
@@ -46,7 +50,7 @@ namespace DataVisualization.Services
             using (var db = new LiteDatabase(_dbPath))
             {
                 var collection = db.GetCollection<Data>("Data");
-                return collection.FindOne(Query.EQ(nameof(Data.Name), name));
+                return collection.Include(d => d.Series).FindOne(Query.EQ(nameof(Data.Name), name));
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using LiteDB;
 using System.Collections.Generic;
 using System.Windows.Media;
 
@@ -7,7 +7,8 @@ namespace DataVisualization.Models
 {
     public class Series
     {
-        public Guid Id { get; set; }
+        [BsonId]
+        public int SeriesId { get; set; }
         public IList<double> Values { get; set; }
         public Color SeriesColor { get; set; }
         public ColumnTypeDef InternalType { get; set; }

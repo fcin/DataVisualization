@@ -34,9 +34,8 @@
     <Reference Include="CsvHelper, Version=6.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.6.1.1\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="LiteDB, Version=5.0.0.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>libs\LiteDB.dll</HintPath>
+    <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -65,11 +64,6 @@
       <Project>{e7cc1e7e-4342-4431-bbb3-25403c096d83}</Project>
       <Name>DataVisualization.Models</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="libs\LiteDB.dll" />
-    <Content Include="libs\LiteDB.pdb" />
-    <Content Include="libs\LiteDB.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
