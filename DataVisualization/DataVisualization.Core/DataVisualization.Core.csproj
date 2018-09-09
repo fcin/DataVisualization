@@ -160,5 +160,15 @@
       <Name>DataVisualization.Services</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Action_16xLG.png" />
+    <Resource Include="Icons\arrow_Next_16xLG.png" />
+    <Resource Include="Icons\arrow_previous_16xLG.png" />
+    <Resource Include="Icons\Bidirectional_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\ZoomIn_32x.png" />
+    <Resource Include="Icons\ZoomOut_32x.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

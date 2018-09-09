@@ -233,5 +233,75 @@ namespace DataVisualization.Core.ViewModels
             oldValue = newValue;
             NotifyOfPropertyChange(propertyName);
         }
+
+        public void OnZoomIn()
+        {
+            if (MinX == null || MaxX == null)
+                return;
+
+            var diff = (MaxX.Value - MinX.Value) * 0.25;
+
+            if (diff <= 0)
+                return;
+
+            MinX += diff;
+            MaxX -= diff;
+            RecreateSeries();
+        }
+
+        public void OnZoomOut()
+        {
+            if (MinX == null || MaxX == null)
+                return;
+
+            var diff = (MaxX.Value - MinX.Value) * 0.25;
+
+            MinX -= diff;
+            MaxX += diff;
+            RecreateSeries();
+        }
+
+        public void OnMoveLeft()
+        {
+            if (MinX == null || MaxX == null)
+                return;
+
+            var diff = (MaxX.Value - MinX.Value) * 0.1;
+
+            MinX -= diff;
+            MaxX -= diff;
+            RecreateSeries();
+        }
+
+        public void OnMoveRight()
+        {
+            if (MinX == null || MaxX == null)
+                return;
+
+            var diff = (MaxX.Value - MinX.Value) * 0.1;
+
+            MinX += diff;
+            MaxX += diff;
+            RecreateSeries();
+        }
+
+        public void OnCenterScreen()
+        {
+            var xAxisValues = _data.Series.First(s => s.Axis == Axes.X1).Values;
+            MinX = xAxisValues.First(val => val != double.NaN);
+            MaxX = xAxisValues.Last(val => val != double.NaN);
+            RecreateSeries();
+        }
+
+        public void OnGoToNewest()
+        {
+            if (MinX == null || MaxX == null)
+                return;
+
+            var xAxisValues = _data.Series.First(s => s.Axis == Axes.X1).Values;
+            MinX = xAxisValues.Skip(xAxisValues.Count - 10000).First(val => val != double.NaN);
+            MaxX = xAxisValues.Last(val => val != double.NaN);
+            RecreateSeries();
+        }
     }
 }

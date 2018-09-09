@@ -8,7 +8,27 @@
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <Button Width="25" Height="25" Margin="2" ToolTip="Zoom in" cal:Message.Attach="[Event Click] = [Action OnZoomIn]">
+                <Image Source="/Icons/ZoomIn_32x.png"></Image>
+            </Button>
+            <Button Width="25" Height="25" Margin="2" ToolTip="Zoom out" cal:Message.Attach="[Event Click] = [Action OnZoomOut]">
+                <Image Source="/Icons/ZoomOut_32x.png"></Image>
+            </Button>
+            <Button Width="25" Height="25" Margin="2" ToolTip="Move left" cal:Message.Attach="[Event Click] = [Action OnMoveLeft]">
+                <Image Source="/Icons/arrow_previous_16xLG.png"></Image>
+            </Button>
+            <Button Width="25" Height="25" Margin="2" ToolTip="Move right" cal:Message.Attach="[Event Click] = [Action OnMoveRight]">
+                <Image Source="/Icons/arrow_Next_16xLG.png"></Image>
+            </Button>
+            <Button Width="25" Height="25" Margin="2" ToolTip="Center screen" cal:Message.Attach="[Event Click] = [Action OnCenterScreen]">
+                <Image Source="/Icons/Bidirectional_16xLG.png"></Image>
+            </Button>
+            <Button Width="25" Height="25" Margin="2" ToolTip="Go to newest" cal:Message.Attach="[Event Click] = [Action OnGoToNewest]">
+                <Image Source="/Icons/Action_16xLG.png"></Image>
+            </Button>
+        </StackPanel>
         <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="X" Pan="X" 
                             ChartLegend="{Binding Legend}" LegendLocation="Bottom"
                             Hoverable="False" ToolTip="{x:Null}" DisableAnimations="True">
@@ -30,5 +50,5 @@
                 </lvc:Axis>
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
-    </Grid>
+    </DockPanel>
 </UserControl>
