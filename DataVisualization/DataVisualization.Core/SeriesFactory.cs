@@ -61,7 +61,8 @@ namespace DataVisualization.Core
 
             var dateRow = horizontalSeries;
             var row = dataSeries;
-            
+
+            var a = new DateTime((long)min);
             var minIndex = min == null ? 0 : dateRow.Values.IndexOf(min.Value);
             var maxIndex = max == null ? dateRow.Values.Count : dateRow.Values.IndexOf(max.Value) + 1; // inclusive
             var increment = Math.Max((maxIndex - minIndex) / PointsCount, 1);

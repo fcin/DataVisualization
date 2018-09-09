@@ -2,6 +2,7 @@
 using DataVisualization.Core.Views;
 using DataVisualization.Models;
 using DataVisualization.Services;
+using DataVisualization.Services.Extensions;
 using LiveCharts;
 using LiveCharts.Geared;
 using LiveCharts.Wpf;
@@ -92,7 +93,7 @@ namespace DataVisualization.Core.ViewModels
 
         protected override async void OnActivate()
         {
-            _config = _dataConfigurationService.GetByName("SmallSample");
+            _config = _dataConfigurationService.GetByName("CsvData");
 
             if (_config == null)
                 return;
@@ -116,8 +117,8 @@ namespace DataVisualization.Core.ViewModels
             {
                 HasSecondaryAxis = true;
                 var secondaryHorizontalAxis = _data.Series.FirstOrDefault(d => d.Axis == Axes.X2) ?? _data.Series.First(d => d.Axis == Axes.X1);
-                MinX2 = secondaryHorizontalAxis.Values[0];
-                MaxX2 = secondaryHorizontalAxis.Values[secondaryHorizontalAxis.Values.Count - 1];
+                MinX2 = secondaryHorizontalAxis.Values.First(val => val != double.NaN);
+                MaxX2 = secondaryHorizontalAxis.Values.Last(val => val != double.NaN);
             }
 
             RecreateSeries();
@@ -150,6 +151,7 @@ namespace DataVisualization.Core.ViewModels
 
                         MinX = horizontalAxis.Values[0];
                         MaxX = horizontalAxis.Values[horizontalAxis.Values.Count - 1];
+
                         RecreateSeries();
                         continue;
                     }
@@ -161,15 +163,19 @@ namespace DataVisualization.Core.ViewModels
                     {
                         var index = _data.Series.Select((s, i) => new { item = s, index = i })
                                                 .First(s => s.item.Name.Equals(serie.Name)).index;
-                        foreach (var row in serie.Values)
-                            _data.Series[index].Values.Add(row);
+
+                        foreach (var chunk in serie.Chunks)
+                        {
+                            _data.Series[index].AddToChunks(chunk.Chunk);
+                        }
                     }
 
                     _data.FileLinesRead += readLines;
                     _dataService.UpdateData(_data);
 
                     var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
-                    MaxX = (long)horizontalAxis.Values[horizontalAxis.Values.Count - 1];
+                    
+                    MaxX = horizontalAxis.Values[horizontalAxis.Values.Count - 1];
 
                     RecreateSeries();
                 }
@@ -179,7 +185,7 @@ namespace DataVisualization.Core.ViewModels
         private void RecreateSeries()
         {
             var allSeriesCount = _data.Series.Count(d => d.Axis == Axes.Y1 || d.Axis == Axes.Y2);
-
+            
             {
                 var horizontalAxisSeries = _data.Series.First(d => d.Axis == Axes.X1);
                 var allPrimarySeries = _data.Series.Where(s => s.Axis == Axes.Y1).ToList();

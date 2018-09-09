@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using DataVisualization.Services.Extensions;
 
 namespace DataVisualization.Services
 {
@@ -33,7 +34,7 @@ namespace DataVisualization.Services
                 }
 
                 var parser = new ValueParser(config.ThousandsSeparator, config.DecimalSeparator);
-
+                
                 do
                 {
                     linesRead++;
@@ -43,10 +44,17 @@ namespace DataVisualization.Services
                         var fileColumnIndex = configColumn.Index;
                         var value = reader.Context.Record[fileColumnIndex];
                         var convertedValue = parser.TryParse(value, configColumn.ColumnType);
-                        if (convertedValue.ParsedObject is DateTime dtValue)
-                            data[index].Add(dtValue.Ticks);
+                        if (convertedValue.IsParsed)
+                        {
+                            if (convertedValue.ParsedObject is DateTime dtValue)
+                                data[index].Add(dtValue.Ticks);
+                            else
+                                data[index].Add((double)convertedValue.ParsedObject);
+                        }
                         else
-                            data[index].Add((double)convertedValue.ParsedObject);
+                        {
+                            data[index].Add(double.NaN);
+                        }
                     }
                 }
                 while (await reader.ReadAsync());
@@ -59,7 +67,7 @@ namespace DataVisualization.Services
                     FileLinesRead = linesRead,
                     Series = data.Select((d, index) => new Series
                     {
-                        Values = d.ToList(),
+                        Chunks = d.ToChunks(),
                         SeriesColor = Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)),
                         InternalType = config.Columns[index].ColumnType,
                         Name = config.Columns[index].Name,
@@ -149,16 +157,23 @@ namespace DataVisualization.Services
                         var fileColumnIndex = configColumn.Index;
                         var value = reader.Context.Record[fileColumnIndex];
                         var convertedValue = parser.TryParse(value, configColumn.ColumnType);
-                        if (convertedValue.ParsedObject is DateTime dtValue)
-                            data[index].Add(dtValue.Ticks);
+                        if (convertedValue.IsParsed)
+                        {
+                            if (convertedValue.ParsedObject is DateTime dtValue)
+                                data[index].Add(dtValue.Ticks);
+                            else
+                                data[index].Add((double)convertedValue.ParsedObject);
+                        }
                         else
-                            data[index].Add((double)convertedValue.ParsedObject);
+                        {
+                            data[index].Add(double.NaN);
+                        }
                     }
                 }
 
                 return (data.Select((d, index) => new Series
                 {
-                    Values = d.ToList(),
+                    Chunks = d.ToChunks(),
                     Name = config.Columns[index].Name
                 }).ToList(), countLines);
             }

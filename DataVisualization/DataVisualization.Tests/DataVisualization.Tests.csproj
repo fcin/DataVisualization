@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SeriesExtensionsTests.cs" />
     <Compile Include="SeriesFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +65,10 @@
     <ProjectReference Include="..\DataVisualization.Models\DataVisualization.Models.csproj">
       <Project>{E7CC1E7E-4342-4431-BBB3-25403C096D83}</Project>
       <Name>DataVisualization.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataVisualization.Services\DataVisualization.Services.csproj">
+      <Project>{2577176B-5E41-4D91-AF20-747BDA3712AB}</Project>
+      <Name>DataVisualization.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
