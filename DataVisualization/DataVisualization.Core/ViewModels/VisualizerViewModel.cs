@@ -109,8 +109,8 @@ namespace DataVisualization.Core.ViewModels
 
             var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
 
-            MinX = horizontalAxis.Values[0];
-            MaxX = horizontalAxis.Values[horizontalAxis.Values.Count - 1];
+            MinX = horizontalAxis.Values.First(val => val != double.NaN);
+            MaxX = horizontalAxis.Values.Last(val => val != double.NaN);
 
             var hasSecondary = _data.Series.Any(d => d.Axis == Axes.X2 || d.Axis == Axes.Y2);
             if (hasSecondary)
@@ -149,8 +149,8 @@ namespace DataVisualization.Core.ViewModels
 
                         var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
 
-                        MinX = horizontalAxis.Values[0];
-                        MaxX = horizontalAxis.Values[horizontalAxis.Values.Count - 1];
+                        MinX = horizontalAxis.Values.First(val => val != double.NaN);
+                        MaxX = horizontalAxis.Values.Last(val => val != double.NaN);
 
                         RecreateSeries();
                         continue;
@@ -175,7 +175,7 @@ namespace DataVisualization.Core.ViewModels
 
                     var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
                     
-                    MaxX = horizontalAxis.Values[horizontalAxis.Values.Count - 1];
+                    MaxX = horizontalAxis.Values.Last(val => val != double.NaN);
 
                     RecreateSeries();
                 }
@@ -192,7 +192,7 @@ namespace DataVisualization.Core.ViewModels
                 foreach (var series in allPrimarySeries)
                 {
                     var points = _seriesFactory.CreateSeriesPoints(horizontalAxisSeries, series, MinX, MaxX).ToList();
-
+                    
                     AddSeriesToCollection(allSeriesCount, points, series);
                 }
             }

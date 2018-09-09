@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media;
 using DataVisualization.Models;
 using LiveCharts.Configurations;
@@ -62,9 +63,22 @@ namespace DataVisualization.Core
             var dateRow = horizontalSeries;
             var row = dataSeries;
 
-            var a = new DateTime((long)min);
-            var minIndex = min == null ? 0 : dateRow.Values.IndexOf(min.Value);
-            var maxIndex = max == null ? dateRow.Values.Count : dateRow.Values.IndexOf(max.Value) + 1; // inclusive
+            var minIndex = 0;
+            var maxIndex = 0;
+
+            if (min == null || max == null)
+            {
+                minIndex = 0;
+                maxIndex = dateRow.Values.Count;
+            }
+            else
+            {
+                var nearestMin = dateRow.Values.Aggregate((x, y) => Math.Abs(x - min.Value) < Math.Abs(y - min.Value) ? x : y);
+                var nearestMax = dateRow.Values.Aggregate((x, y) => Math.Abs(x - max.Value) < Math.Abs(y - max.Value) ? x : y);
+                minIndex = dateRow.Values.IndexOf(nearestMin);
+                maxIndex = dateRow.Values.IndexOf(nearestMax) + 1; // inclusive
+            }
+
             var increment = Math.Max((maxIndex - minIndex) / PointsCount, 1);
 
             var seriesPoints = new List<DateModel>();

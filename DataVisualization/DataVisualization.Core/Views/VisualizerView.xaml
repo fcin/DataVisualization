@@ -14,7 +14,7 @@
                             Hoverable="False" ToolTip="{x:Null}" DisableAnimations="True">
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis DisableAnimations="True" PreviewRangeChanged="Axis_OnPreviewRangeChanged" 
-                          MinValue="{Binding MinX, FallbackValue=0}" MaxValue="{Binding MaxX, FallbackValue=100}" 
+                          MinValue="{Binding MinX, Mode=TwoWay}" MaxValue="{Binding MaxX, Mode=TwoWay}" 
                           LabelFormatter="{Binding FormatterX}"></lvc:Axis>
                 <lvc:Axis DisableAnimations="True" Position="RightTop" ShowLabels="{Binding HasSecondaryAxis}">
                 </lvc:Axis>
