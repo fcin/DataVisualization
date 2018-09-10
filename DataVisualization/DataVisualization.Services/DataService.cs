@@ -100,5 +100,32 @@ namespace DataVisualization.Services
                 }
             }
         }
+
+        public Series GetSeriesByName(string seriesName)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection<Series>(nameof(Series));
+                return collection.FindOne(Query.EQ(nameof(Series.Name), seriesName));
+            }
+        }
+
+        public void UpdateSeries(Series series)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection<Series>(nameof(Series));
+                collection.Update(series);
+            }
+        }
+
+        public bool SeriesWithNameExists(string seriesName)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection<Series>(nameof(Series));
+                return collection.Exists(Query.EQ(nameof(Series.Name), seriesName));
+            }
+        }
     }
 }

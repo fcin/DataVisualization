@@ -12,7 +12,7 @@ namespace DataVisualization.Core.ViewModels
         {
             _windowManager = windowManager;
 
-            VisualizerVm = new VisualizerViewModel(seriesFactory);
+            VisualizerVm = new VisualizerViewModel(seriesFactory, windowManager);
             ActivateItem(VisualizerVm);
         }
 

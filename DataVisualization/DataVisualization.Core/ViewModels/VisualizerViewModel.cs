@@ -80,10 +80,14 @@ namespace DataVisualization.Core.ViewModels
         private DataConfiguration _config;
         private Data _data;
 
-        public VisualizerViewModel(ISeriesFactory seriesFactory)
+        public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager)
         {
             _seriesFactory = seriesFactory;
-            Legend = new BasicChartLegendView();
+            Legend = new BasicChartLegendView(windowManager, currentSeries => {
+                _data = _dataService.GetData(_config.DataName);
+                SeriesCollection.Clear();
+                RecreateSeries();
+            });
         }
 
         public void OnRangeChanged(long newMin, long newMax)

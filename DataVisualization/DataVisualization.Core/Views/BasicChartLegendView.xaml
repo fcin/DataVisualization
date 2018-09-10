@@ -19,15 +19,17 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <DataTemplate DataType="{x:Type lvc:SeriesViewModel}">
-                <Grid Margin="2, 5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="Title"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" BorderBrush="{Binding Stroke}" Background="{Binding Stroke}"
+                <Border Tag="{Binding Path=Title}" MouseLeftButtonDown="OnSeriesClicked">
+                    <Grid Margin="2, 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Title"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" BorderBrush="{Binding Stroke}" Background="{Binding Stroke}"
                             Width="15" Height="15" CornerRadius="1, 1, 1, 1" />
-                    <TextBlock Grid.Column="1" Margin="4 0" Text="{Binding Title}" Foreground="Black" VerticalAlignment="Center" />
-                </Grid>
+                        <TextBlock Grid.Column="1" Margin="4 0" Text="{Binding Title}" Foreground="Black" VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>

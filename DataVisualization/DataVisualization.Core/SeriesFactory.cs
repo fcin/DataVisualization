@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using DataVisualization.Models;
 using LiveCharts.Configurations;
@@ -43,7 +44,8 @@ namespace DataVisualization.Core
                 PointGeometry = null,
                 LineSmoothness = 0,
                 DataLabels = false,
-                Stroke = new SolidColorBrush(series.SeriesColor),
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(series.ColorHex)),
+                StrokeThickness = series.Thickness,
                 Title = series.Name,
                 ScalesYAt = series.Axis == Axes.Y1 ? 0 : 1
             };

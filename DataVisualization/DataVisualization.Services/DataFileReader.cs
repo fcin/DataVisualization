@@ -68,7 +68,8 @@ namespace DataVisualization.Services
                     Series = data.Select((d, index) => new Series
                     {
                         Chunks = d.ToChunks(),
-                        SeriesColor = Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)),
+                        ColorHex = Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)).ToString(),
+                        Thickness = 2,
                         InternalType = config.Columns[index].ColumnType,
                         Name = config.Columns[index].Name,
                         Axis = config.Columns[index].Axis

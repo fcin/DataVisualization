@@ -1,7 +1,6 @@
 ﻿using LiteDB;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 
 
 namespace DataVisualization.Models
@@ -19,7 +18,9 @@ namespace DataVisualization.Models
         [BsonRef("Chunks")]
         public List<ValuesChunk> Chunks { get; set; }
 
-        public Color SeriesColor { get; set; }
+        public string ColorHex { get; set; }
+
+        public int Thickness { get; set; }
 
         public ColumnTypeDef InternalType { get; set; }
 
