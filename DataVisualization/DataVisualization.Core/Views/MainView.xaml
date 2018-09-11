@@ -10,6 +10,9 @@
     <Grid>
         <DockPanel>
             <Button DockPanel.Dock="Top" Content="Load data" Width="300" cal:Message.Attach="[Event Click] = [Action OnDataLoad]"></Button>
+            <Expander ExpandDirection="Right" IsExpanded="True" Margin="0, 0, 10, 0">
+                <ContentControl DockPanel.Dock="Left" x:Name="DataBrowserVm"></ContentControl>
+            </Expander>
             <ContentControl x:Name="VisualizerVm"></ContentControl>
         </DockPanel>
     </Grid>

@@ -1,6 +1,7 @@
 ﻿using DataVisualization.Models;
 using LiteDB;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DataVisualization.Services
@@ -33,6 +34,15 @@ namespace DataVisualization.Services
 
                 collection.Insert(document);
                 collection.EnsureIndex(nameof(DataConfiguration.DataName));
+            }
+        }
+
+        public IEnumerable<DataConfiguration> GetAll()
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection<DataConfiguration>("DataConfiguration");
+                return collection.FindAll();
             }
         }
 

@@ -6,13 +6,16 @@ namespace DataVisualization.Core.ViewModels
     {
         private readonly IWindowManager _windowManager;
         public VisualizerViewModel VisualizerVm { get; set; }
+        public DataBrowserViewModel DataBrowserVm { get; set; }
 
-        public MainViewModel(IWindowManager windowManager, ISeriesFactory seriesFactory)
+        public MainViewModel(IWindowManager windowManager, ISeriesFactory seriesFactory, IEventAggregator eventAggregator)
         {
             _windowManager = windowManager;
 
-            VisualizerVm = new VisualizerViewModel(seriesFactory, windowManager);
+            VisualizerVm = new VisualizerViewModel(seriesFactory, windowManager, eventAggregator);
+            DataBrowserVm = new DataBrowserViewModel(eventAggregator);
             ActivateItem(VisualizerVm);
+            ActivateItem(DataBrowserVm);
         }
 
         public void OnDataLoad()

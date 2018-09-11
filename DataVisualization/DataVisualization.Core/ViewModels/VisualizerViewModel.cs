@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using DataVisualization.Core.Events;
 using DataVisualization.Core.Views;
 using DataVisualization.Models;
 using DataVisualization.Services;
@@ -11,13 +12,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Series = DataVisualization.Models.Series;
 
 namespace DataVisualization.Core.ViewModels
 {
-    public class VisualizerViewModel : Screen
+    public class VisualizerViewModel : Screen, IHandle<DataConfigurationOpenedEventArgs>
     {
         public SeriesCollection SeriesCollection { get; set; } = new SeriesCollection();
 
@@ -73,16 +75,23 @@ namespace DataVisualization.Core.ViewModels
             set => SetValue(ref _hasSecondaryAxis, value);
         }
 
+        private readonly IEventAggregator _eventAggregator;
         private readonly ISeriesFactory _seriesFactory;
         private readonly DataFileReader _dataFileReader = new DataFileReader();
         private readonly DataService _dataService = new DataService();
         private readonly DataConfigurationService _dataConfigurationService = new DataConfigurationService();
         private DataConfiguration _config;
         private Data _data;
+        private CancellationTokenSource _cts;
 
-        public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager)
+        public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager, IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             _seriesFactory = seriesFactory;
+            _cts = new CancellationTokenSource();
+
+            _eventAggregator.Subscribe(this);
+
             Legend = new BasicChartLegendView(windowManager, currentSeries =>
             {
                 _data = _dataService.GetData(_config.DataName);
@@ -91,14 +100,19 @@ namespace DataVisualization.Core.ViewModels
             });
         }
 
-        public void OnRangeChanged(long newMin, long newMax)
+        public async void Handle(DataConfigurationOpenedEventArgs message)
         {
-            RecreateSeries();
-        }
+            if (_config != null && _config.DataName == message.Opened.DataName)
+                return;
 
-        protected override async void OnActivate()
-        {
-            _config = _dataConfigurationService.GetByName("CsvData");
+            if (_config != null)
+            {
+                SeriesCollection.Clear();
+                _cts.Cancel();
+                _cts = new CancellationTokenSource();
+            }
+
+            _config = _dataConfigurationService.GetByName(message.Opened.DataName);
 
             if (_config == null)
                 return;
@@ -110,7 +124,7 @@ namespace DataVisualization.Core.ViewModels
             }
 
             _data = _dataService.GetData(_config.DataName);
-            var keepPullingTask = KeepPulling();
+            var keepPullingTask = KeepPulling(_cts.Token);
 
             var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
 
@@ -131,12 +145,17 @@ namespace DataVisualization.Core.ViewModels
             await keepPullingTask;
         }
 
-        private async Task KeepPulling()
+        public void OnRangeChanged(long newMin, long newMax)
+        {
+            RecreateSeries();
+        }
+
+        private async Task KeepPulling(CancellationToken ct)
         {
             if (_config.RefreshRate == TimeSpan.Zero)
                 return;
 
-            while (true)
+            while (!ct.IsCancellationRequested)
             {
                 await Task.Delay(_config.RefreshRate);
 
