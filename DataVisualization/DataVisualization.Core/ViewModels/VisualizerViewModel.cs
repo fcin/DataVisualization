@@ -83,7 +83,8 @@ namespace DataVisualization.Core.ViewModels
         public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager)
         {
             _seriesFactory = seriesFactory;
-            Legend = new BasicChartLegendView(windowManager, currentSeries => {
+            Legend = new BasicChartLegendView(windowManager, currentSeries =>
+            {
                 _data = _dataService.GetData(_config.DataName);
                 SeriesCollection.Clear();
                 RecreateSeries();
@@ -178,7 +179,7 @@ namespace DataVisualization.Core.ViewModels
                     _dataService.UpdateData(_data);
 
                     var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
-                    
+
                     MaxX = horizontalAxis.Values.Last(val => val != double.NaN);
 
                     RecreateSeries();
@@ -189,14 +190,14 @@ namespace DataVisualization.Core.ViewModels
         private void RecreateSeries()
         {
             var allSeriesCount = _data.Series.Count(d => d.Axis == Axes.Y1 || d.Axis == Axes.Y2);
-            
+
             {
                 var horizontalAxisSeries = _data.Series.First(d => d.Axis == Axes.X1);
                 var allPrimarySeries = _data.Series.Where(s => s.Axis == Axes.Y1).ToList();
                 foreach (var series in allPrimarySeries)
                 {
                     var points = _seriesFactory.CreateSeriesPoints(horizontalAxisSeries, series, MinX, MaxX).ToList();
-                    
+
                     AddSeriesToCollection(allSeriesCount, points, series);
                 }
             }

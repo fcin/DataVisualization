@@ -8,25 +8,31 @@ namespace DataVisualization.Core.ViewModels
 {
     public class SeriesPropertiesViewModel : Screen
     {
-        public string SeriesName {
+        public string SeriesName
+        {
             get => _series.Name;
-            set {
+            set
+            {
                 _series.Name = value;
                 NotifyOfPropertyChange(() => SeriesName);
             }
         }
 
-        public Color SeriesColor {
+        public Color SeriesColor
+        {
             get => (Color)ColorConverter.ConvertFromString(_series.ColorHex);
-            set {
+            set
+            {
                 _series.ColorHex = value.ToString();
                 NotifyOfPropertyChange(() => SeriesColor);
             }
         }
 
-        public int Thickness {
+        public int Thickness
+        {
             get => _series.Thickness;
-            set {
+            set
+            {
                 _series.Thickness = value;
                 NotifyOfPropertyChange(() => Thickness);
             }

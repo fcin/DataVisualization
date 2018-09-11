@@ -1,5 +1,4 @@
 ﻿using Caliburn.Micro;
-using DataVisualization.Core.ViewModels.DataLoading;
 
 namespace DataVisualization.Core.ViewModels
 {

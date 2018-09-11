@@ -1,4 +1,4 @@
-﻿using DataVisualization.Core.ViewModels.DataLoading;
+﻿using DataVisualization.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,7 +13,7 @@ namespace DataVisualization.Core.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if(values == null)
+            if (values == null)
                 return null;
 
             var selectedIndex = (int)values[0];

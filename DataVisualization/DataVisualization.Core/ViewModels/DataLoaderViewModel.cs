@@ -15,7 +15,7 @@ using System.Windows;
 using System.Windows.Controls;
 using DataColumn = System.Data.DataColumn;
 
-namespace DataVisualization.Core.ViewModels.DataLoading
+namespace DataVisualization.Core.ViewModels
 {
     public class SelectableTypes : PropertyChangedBase
     {
@@ -58,7 +58,8 @@ namespace DataVisualization.Core.ViewModels.DataLoading
         }
 
         public List<bool> _isIgnoredList = new List<bool>();
-        public List<bool> IsIgnoredList {
+        public List<bool> IsIgnoredList
+        {
             get => _isIgnoredList;
             set => SetValue(ref _isIgnoredList, value);
         }

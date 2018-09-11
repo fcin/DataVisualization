@@ -1,4 +1,4 @@
-﻿using DataVisualization.Core.ViewModels.DataLoading;
+﻿using DataVisualization.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

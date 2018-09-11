@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace DataVisualization.Core.Views.DataLoading
+namespace DataVisualization.Core.Views
 {
     /// <summary>
     /// Interaction logic for DataLoaderView.xaml
