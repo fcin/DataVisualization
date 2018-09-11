@@ -12,6 +12,9 @@
         <convs:ColumnNameConverter x:Key="ColumnNameConverter"></convs:ColumnNameConverter>
         <convs:ColumnTypesConverter x:Key="ColumnTypesConverter"></convs:ColumnTypesConverter>
         <convs:SelectedComboboxItemConverter x:Key="SelectedComboboxItemConverter"></convs:SelectedComboboxItemConverter>
+        <convs:ColumnIgnoreConverter x:Key="ColumnIgnoreConverter"></convs:ColumnIgnoreConverter>
+        <convs:ColumnAxisConverter x:Key="ColumnAxisConverter"></convs:ColumnAxisConverter>
+        <convs:SelectedAxisConverter x:Key="SelectedAxisConverter"></convs:SelectedAxisConverter>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -83,10 +86,32 @@
                                             </MultiBinding>
                                         </ComboBox.SelectedItem>
                                     </ComboBox>
-                                    <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnAxisTypeChanged($eventArgs, $dataContext, $source)]" 
-                                              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.MyAxisTypes}">
+                                    <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnAxisTypeChanged($eventArgs, $dataContext, $source)]">
+                                        <ComboBox.ItemsSource>
+                                            <MultiBinding Converter="{StaticResource ColumnAxisConverter}">
+                                                <Binding Path="DisplayIndex" Mode="OneWay" 
+                                                         RelativeSource="{RelativeSource AncestorType={x:Type DataGridColumnHeader}}"/>
+                                                <Binding ElementName="PreviewDataGrid" Path="DataContext.AllSelectableAxes"/>
+                                            </MultiBinding>
+                                        </ComboBox.ItemsSource>
+                                        <ComboBox.SelectedItem>
+                                            <MultiBinding Converter="{StaticResource SelectedAxisConverter}">
+                                                <Binding Path="DisplayIndex" Mode="OneWay" 
+                                                         RelativeSource="{RelativeSource AncestorType={x:Type DataGridColumnHeader}}"/>
+                                                <Binding Mode="OneTime" ElementName="PreviewDataGrid" Path="DataContext.AllSelectableAxes"/>
+                                            </MultiBinding>
+                                        </ComboBox.SelectedItem>
                                     </ComboBox>
-                                    <CheckBox Content="Ignore" cal:Message.Attach="[Event Checked] = [Action OnIgnoreSelected($dataContext)];[Event Unchecked] = [Action OnIgnoreSelected($dataContext)]"></CheckBox>
+                                    <Separator Margin="0, 5"></Separator>
+                                    <CheckBox Content="Ignore" cal:Message.Attach="[Event Checked] = [Action OnIgnoreSelected($dataContext)];[Event Unchecked] = [Action OnIgnoreSelected($dataContext)]">
+                                        <CheckBox.IsChecked>
+                                            <MultiBinding Converter="{StaticResource ColumnIgnoreConverter}">
+                                                <Binding Path="DisplayIndex" Mode="OneWay" 
+                                                         RelativeSource="{RelativeSource AncestorType={x:Type DataGridColumnHeader}}"/>
+                                                <Binding ElementName="PreviewDataGrid" Path="DataContext.IsIgnoredList"/>
+                                            </MultiBinding>
+                                        </CheckBox.IsChecked>
+                                    </CheckBox>
                                 </StackPanel>
                             </DataTemplate>
                         </Setter.Value>

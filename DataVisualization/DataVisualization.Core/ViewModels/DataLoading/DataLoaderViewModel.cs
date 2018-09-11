@@ -29,20 +29,38 @@ namespace DataVisualization.Core.ViewModels.DataLoading
         }
     }
 
+    public class SelectableAxes : PropertyChangedBase
+    {
+        public List<Axes> MyAxisTypes => new List<Axes> { Axes.None, Axes.X1, Axes.X2, Axes.Y1, Axes.Y2 };
+
+        public Axes SelectedAxis { get; set; }
+
+        public SelectableAxes()
+        {
+            SelectedAxis = MyAxisTypes[0];
+        }
+    }
+
     public class DataLoaderViewModel : Screen
     {
-        private List<Axes> _myAxisTypes = new List<Axes> { Axes.None, Axes.X1, Axes.X2, Axes.Y1, Axes.Y2 };
-        public List<Axes> MyAxisTypes
-        {
-            get => _myAxisTypes;
-            set => SetValue(ref _myAxisTypes, value);
-        }
-
         private List<SelectableTypes> _allSelectableTypes = new List<SelectableTypes>();
         public List<SelectableTypes> AllSelectableTypes
         {
             get => _allSelectableTypes;
             set => SetValue(ref _allSelectableTypes, value);
+        }
+
+        private List<SelectableAxes> _allSelectableAxes = new List<SelectableAxes>();
+        public List<SelectableAxes> AllSelectableAxes
+        {
+            get => _allSelectableAxes;
+            set => SetValue(ref _allSelectableAxes, value);
+        }
+
+        public List<bool> _isIgnoredList = new List<bool>();
+        public List<bool> IsIgnoredList {
+            get => _isIgnoredList;
+            set => SetValue(ref _isIgnoredList, value);
         }
 
         private string _filePath;
@@ -149,7 +167,7 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             // Add columns.
             foreach (var property in properties)
             {
-                var column = new GridColumn(property.Item1, property.Item2, false, MyAxisTypes[0]);
+                var column = new GridColumn(property.Item1, property.Item2, false, Axes.None);
                 if (!DataGridColumnsModel.Columns.Contains(column))
                     DataGridColumnsModel.Columns.Add(column);
             }
@@ -173,9 +191,12 @@ namespace DataVisualization.Core.ViewModels.DataLoading
             for (var i = 0; i < columnsCount; i++)
             {
                 AllSelectableTypes.Add(new SelectableTypes());
+                AllSelectableAxes.Add(new SelectableAxes());
+                IsIgnoredList.Add(false);
             }
 
             GuessColumnTypes();
+            SetAxes();
 
             ValidateSubmit();
         }
@@ -192,7 +213,9 @@ namespace DataVisualization.Core.ViewModels.DataLoading
                     (bool isParsed, List<object> parsedValues) = parser.TryParseAll(valuesToParse, type);
 
                     if (!isParsed)
+                    {
                         continue;
+                    }
 
                     for (var propIndex = 0; propIndex < DataGridCollection.Count; propIndex++)
                     {
@@ -206,6 +229,30 @@ namespace DataVisualization.Core.ViewModels.DataLoading
 
                     break;
                 }
+
+                if (DataGridColumnsModel.Columns[index].ColumnType == ColumnTypeDef.Unknown)
+                {
+                    IsIgnoredList[index] = true;
+                    DataGridColumnsModel.Columns[index].IsIgnored = true;
+                }
+            }
+        }
+
+        private void SetAxes()
+        {
+            var column = DataGridColumnsModel.Columns.FirstOrDefault(d => !d.IsIgnored);
+            if (column == null)
+                return;
+            var columnIndex = DataGridColumnsModel.Columns.IndexOf(column);
+            DataGridColumnsModel.Columns[columnIndex].Axis = Axes.X1;
+            AllSelectableAxes[columnIndex].SelectedAxis = Axes.X1;
+            for (int index = columnIndex + 1; index < DataGridColumnsModel.Columns.Count; index++)
+            {
+                if (DataGridColumnsModel.Columns[index].IsIgnored)
+                    continue;
+
+                DataGridColumnsModel.Columns[index].Axis = Axes.Y1;
+                AllSelectableAxes[index].SelectedAxis = Axes.Y1;
             }
         }
 
