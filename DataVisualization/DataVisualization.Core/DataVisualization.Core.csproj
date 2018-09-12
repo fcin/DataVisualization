@@ -119,6 +119,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\SeriesPropertiesViewModel.cs" />
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
     <Compile Include="Views\BasicChartLegendView.xaml.cs">
@@ -129,6 +130,9 @@
     </Compile>
     <Compile Include="Views\DataLoaderView.xaml.cs">
       <DependentUpon>DataLoaderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MenuView.xaml.cs">
+      <DependentUpon>MenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SeriesPropertiesView.xaml.cs">
       <DependentUpon>SeriesPropertiesView.xaml</DependentUpon>
@@ -149,6 +153,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MenuView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
