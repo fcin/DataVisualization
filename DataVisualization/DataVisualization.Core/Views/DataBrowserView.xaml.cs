@@ -29,9 +29,15 @@ namespace DataVisualization.Core.Views
 
         private void OpenConfig(object sender, MouseButtonEventArgs e)
         {
-            var context = ((FrameworkElement)e.OriginalSource)?.DataContext;
-            if(context != null && context is DataConfiguration selectedConfig)
-                ((DataBrowserViewModel)DataContext).OpenConfiguration(selectedConfig);
+            var source = (FrameworkElement)e.OriginalSource;
+            while (source != null && !(source.DataContext is DataConfiguration))
+                source = (FrameworkElement)VisualTreeHelper.GetParent(source);
+
+            if (source == null)
+                throw new InvalidOperationException(nameof(source));
+
+            var selectedConfig = (DataConfiguration)source.DataContext;
+            ((DataBrowserViewModel)DataContext).OpenConfiguration(selectedConfig);
         }
     }
 }

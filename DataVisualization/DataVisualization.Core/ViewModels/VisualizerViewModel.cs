@@ -117,6 +117,8 @@ namespace DataVisualization.Core.ViewModels
             if (_config == null)
                 return;
 
+            NotifyOfPropertyChange(() => FormatterX);
+
             if (!_dataService.Exists(_config.DataName))
             {
                 var loadedData = await _dataFileReader.ReadDataAsync(_config);

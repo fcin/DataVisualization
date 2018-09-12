@@ -7,17 +7,17 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="200" MinWidth="100">
+             d:DesignHeight="450" d:DesignWidth="200" MinWidth="120">
     <Grid>
-        <StackPanel>
-            <Label Content="All configurations"></Label>
-            <ListView Name="DataConfigs" ItemsSource="{Binding AllDataConfigurations}" MouseDoubleClick="OpenConfig">
+        <DockPanel>
+            <Label Content="All configurations" DockPanel.Dock="Top"></Label>
+            <ListView Name="DataConfigs" DockPanel.Dock="Top" ItemsSource="{Binding AllDataConfigurations}" MouseDoubleClick="OpenConfig">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Label Content="{Binding DataName}"></Label>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-        </StackPanel>
+        </DockPanel>
     </Grid>
 </UserControl>
