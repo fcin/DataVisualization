@@ -39,5 +39,32 @@ namespace DataVisualization.Core.Views
             var selectedConfig = (DataConfiguration)source.DataContext;
             ((DataBrowserViewModel)DataContext).OpenConfiguration(selectedConfig);
         }
+
+        private void OnOpenConfiguration(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = GetClickedListViewItem(sender);
+            ((DataBrowserViewModel)DataContext).OpenConfiguration(selectedItem);
+        }
+
+        private void OnDeleteConfiguration(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = GetClickedListViewItem(sender);
+            ((DataBrowserViewModel)DataContext).DeleteConfiguration(selectedItem);
+        }
+
+        private DataConfiguration GetClickedListViewItem(object sender)
+        {
+            if (sender is MenuItem menuItem)
+            {
+                if (menuItem.CommandParameter is ContextMenu parentContextMenu)
+                {
+                    var listView = parentContextMenu.PlacementTarget as ListView;
+                    var selectedItem = (DataConfiguration)listView.SelectedItem;
+                    return selectedItem;
+                }
+            }
+
+            throw new InvalidOperationException();
+        }
     }
 }

@@ -17,6 +17,16 @@
                         <Label Content="{Binding DataName}"></Label>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open" 
+                            Click="OnOpenConfiguration"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" ></MenuItem>
+                        <MenuItem Header="Delete" 
+                            Click="OnDeleteConfiguration"
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" ></MenuItem>
+                    </ContextMenu>
+                </ListView.ContextMenu>
             </ListView>
         </DockPanel>
     </Grid>
