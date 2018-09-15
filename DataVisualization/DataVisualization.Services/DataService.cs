@@ -1,6 +1,7 @@
 ﻿using DataVisualization.Models;
 using LiteDB;
 using System;
+using System.Linq;
 
 namespace DataVisualization.Services
 {
@@ -71,7 +72,7 @@ namespace DataVisualization.Services
             }
         }
 
-        public void DeleteDataByName(string dataName)
+        public void DeleteDataByName(string dataName, IProgress<LoadingBarStatus> progress)
         {
             using (var db = new LiteDatabase(_dbPath))
             {
@@ -80,11 +81,15 @@ namespace DataVisualization.Services
                 var chunksColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
 
                 var data = collection.Include(d => d.Series).FindOne(Query.EQ(nameof(Data.Name), dataName));
+                var interval = 100d / data.Series.Sum(s => s.Chunks.Count);
+                var elapsed = 0d;
                 foreach (var series in data.Series)
                 {
                     foreach (var chunk in series.Chunks)
                     {
                         chunksColl.Delete(Query.EQ(nameof(ValuesChunk.ChunkId), chunk.ChunkId));
+                        elapsed += interval;
+                        progress.Report(new LoadingBarStatus { PercentFinished = (int)elapsed, Message = "Deleting data..." });
                     }
                     seriesColl.Delete(Query.EQ(nameof(Series.SeriesId), series.SeriesId));
                 }

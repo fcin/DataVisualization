@@ -7,7 +7,7 @@
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
         Title="MainView" Height="600" Width="800">
-    <Grid>
+    <Grid IsEnabled="{Binding IsMainWindowEnabled}">
         <DockPanel>
             <ContentControl x:Name="MenuVm" DockPanel.Dock="Top" Margin="0, 0, 0, 20"></ContentControl>
             <Expander ExpandDirection="Right" IsExpanded="True" Margin="0, 0, 10, 0">

@@ -46,10 +46,10 @@ namespace DataVisualization.Core.Views
             ((DataBrowserViewModel)DataContext).OpenConfiguration(selectedItem);
         }
 
-        private void OnDeleteConfiguration(object sender, RoutedEventArgs e)
+        private async void OnDeleteConfiguration(object sender, RoutedEventArgs e)
         {
             var selectedItem = GetClickedListViewItem(sender);
-            ((DataBrowserViewModel)DataContext).DeleteConfiguration(selectedItem);
+            await ((DataBrowserViewModel)DataContext).DeleteConfigurationAsync(selectedItem);
         }
 
         private DataConfiguration GetClickedListViewItem(object sender)

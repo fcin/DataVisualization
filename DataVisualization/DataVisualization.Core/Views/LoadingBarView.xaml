@@ -1,0 +1,17 @@
+﻿<Window x:Class="DataVisualization.Core.Views.LoadingBarView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DataVisualization.Core.Views"
+        mc:Ignorable="d"
+        Title="Loading" Height="95" Width="800" WindowStyle="None" Topmost="True" WindowStartupLocation="CenterScreen">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <Label DockPanel.Dock="Left" Content="{Binding Message, FallbackValue='Loading...'}" HorizontalAlignment="Left" VerticalAlignment="Bottom"></Label>
+            <Label DockPanel.Dock="Right" Content="{Binding PercentFinished, FallbackValue='0%'}" FontSize="18" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Bottom"></Label>
+        </DockPanel>
+        
+        <ProgressBar Minimum="0" Maximum="100" Value="{Binding PercentFinished, FallbackValue=50}" DockPanel.Dock="Bottom"></ProgressBar>
+    </DockPanel>
+</Window>

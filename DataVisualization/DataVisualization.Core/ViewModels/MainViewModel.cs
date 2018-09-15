@@ -1,24 +1,46 @@
 ﻿using Caliburn.Micro;
+using DataVisualization.Core.Events;
 
 namespace DataVisualization.Core.ViewModels
 {
-    public class MainViewModel : Conductor<object>
+    public class MainViewModel : Conductor<object>, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>
     {
         private readonly IWindowManager _windowManager;
         public VisualizerViewModel VisualizerVm { get; set; }
         public DataBrowserViewModel DataBrowserVm { get; set; }
         public MenuViewModel MenuVm { get; set; }
-
-        public MainViewModel(IWindowManager windowManager, ISeriesFactory seriesFactory, IEventAggregator eventAggregator)
+        private bool _isMainWindowEnabled;
+        public bool IsMainWindowEnabled
         {
+            get => _isMainWindowEnabled;
+            set => Set(ref _isMainWindowEnabled, value);
+        }
+
+        public MainViewModel(IWindowManager windowManager, ISeriesFactory seriesFactory, 
+            IEventAggregator eventAggregator, ProgressBarManager progressBarManager)
+        {
+            IsMainWindowEnabled = true;
             _windowManager = windowManager;
 
+            eventAggregator.Subscribe(this);
+
             VisualizerVm = new VisualizerViewModel(seriesFactory, windowManager, eventAggregator);
-            DataBrowserVm = new DataBrowserViewModel(eventAggregator);
+            DataBrowserVm = new DataBrowserViewModel(eventAggregator, progressBarManager);
             MenuVm = new MenuViewModel(windowManager);
+            
             ActivateItem(VisualizerVm);
             ActivateItem(DataBrowserVm);
             ActivateItem(MenuVm);
+        }
+
+        public void Handle(LoadingBarOpenedEventArgs message)
+        {
+            IsMainWindowEnabled = false;
+        }
+
+        public void Handle(LoadingBarClosedEventArgs message)
+        {
+            IsMainWindowEnabled = true;
         }
     }
 }

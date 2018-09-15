@@ -109,11 +109,15 @@
     <Compile Include="Converters\ColumnTypesConverter.cs" />
     <Compile Include="Events\BeforeDataConfigurationDeletedEventArgs.cs" />
     <Compile Include="Events\DataConfigurationOpenedEventArgs.cs" />
+    <Compile Include="Events\LoadingBarOpenedEventArgs.cs" />
+    <Compile Include="IProgressBarWindow.cs" />
     <Compile Include="ModelCreator.cs" />
+    <Compile Include="ProgressBarManager.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SeriesFactory.cs" />
     <Compile Include="ViewModels\DataBrowserViewModel.cs" />
     <Compile Include="ViewModels\DataLoaderViewModel.cs" />
+    <Compile Include="ViewModels\LoadingBarViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -131,6 +135,9 @@
     </Compile>
     <Compile Include="Views\DataLoaderView.xaml.cs">
       <DependentUpon>DataLoaderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LoadingBarView.xaml.cs">
+      <DependentUpon>LoadingBarView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MenuView.xaml.cs">
       <DependentUpon>MenuView.xaml</DependentUpon>
@@ -150,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DataLoaderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LoadingBarView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
