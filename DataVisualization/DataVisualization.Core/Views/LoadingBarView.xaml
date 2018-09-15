@@ -9,7 +9,7 @@
     <DockPanel>
         <DockPanel DockPanel.Dock="Top">
             <Label DockPanel.Dock="Left" Content="{Binding Message, FallbackValue='Loading...'}" HorizontalAlignment="Left" VerticalAlignment="Bottom"></Label>
-            <Label DockPanel.Dock="Right" Content="{Binding PercentFinished, FallbackValue='0%'}" FontSize="18" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Bottom"></Label>
+            <TextBlock DockPanel.Dock="Right" Text="{Binding PercentFinished, FallbackValue='0%', StringFormat={}{0}% }" FontSize="18" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Bottom"></TextBlock>
         </DockPanel>
         
         <ProgressBar Minimum="0" Maximum="100" Value="{Binding PercentFinished, FallbackValue=50}" DockPanel.Dock="Bottom"></ProgressBar>

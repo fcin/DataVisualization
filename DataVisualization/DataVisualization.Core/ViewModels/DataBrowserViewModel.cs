@@ -52,7 +52,8 @@ namespace DataVisualization.Core.ViewModels
 
                 await Task.Run(() => {
                     _dataConfigurationService.DeleteConfigurationByName(selectedItem.DataName);
-                    _dataService.DeleteDataByName(selectedItem.DataName, progress);
+                    if(_dataService.Exists(selectedItem.DataName))
+                        _dataService.DeleteDataByName(selectedItem.DataName, progress);
                 });
 
                 _progressBarManager.CloseProgressBar();
