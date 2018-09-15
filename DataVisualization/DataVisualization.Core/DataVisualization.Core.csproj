@@ -101,6 +101,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ColumnAxisConverter.cs" />
     <Compile Include="Converters\ColumnIgnoreConverter.cs" />
     <Compile Include="Converters\ColumnNameConverter.cs" />

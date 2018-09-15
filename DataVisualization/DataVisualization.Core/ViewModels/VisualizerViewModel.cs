@@ -21,6 +21,13 @@ namespace DataVisualization.Core.ViewModels
 {
     public class VisualizerViewModel : Screen, IHandle<DataConfigurationOpenedEventArgs>, IHandle<BeforeDataConfigurationDeletedEventArgs>
     {
+        private bool _isDisplayed;
+        public bool IsDisplayed
+        {
+            get => _isDisplayed;
+            set => SetValue(ref _isDisplayed, value);
+        }
+
         public SeriesCollection SeriesCollection { get; set; } = new SeriesCollection();
 
         public Func<double, string> FormatterX
@@ -117,6 +124,7 @@ namespace DataVisualization.Core.ViewModels
             if (_config == null)
                 return;
 
+            IsDisplayed = true;
             NotifyOfPropertyChange(() => FormatterX);
 
             _data = _dataService.GetData(_config.DataName);
@@ -146,6 +154,7 @@ namespace DataVisualization.Core.ViewModels
             SeriesCollection.Clear();
             _cts.Cancel();
             _cts = new CancellationTokenSource();
+            IsDisplayed = false;
             TryClose();
         }
 
