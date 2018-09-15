@@ -110,9 +110,9 @@
     <Compile Include="Events\BeforeDataConfigurationDeletedEventArgs.cs" />
     <Compile Include="Events\DataConfigurationOpenedEventArgs.cs" />
     <Compile Include="Events\LoadingBarOpenedEventArgs.cs" />
-    <Compile Include="IProgressBarWindow.cs" />
+    <Compile Include="ILoadingBarWindow.cs" />
     <Compile Include="ModelCreator.cs" />
-    <Compile Include="ProgressBarManager.cs" />
+    <Compile Include="LoadingBarManager.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="SeriesFactory.cs" />
     <Compile Include="ViewModels\DataBrowserViewModel.cs" />

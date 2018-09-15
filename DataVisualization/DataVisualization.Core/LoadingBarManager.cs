@@ -5,19 +5,19 @@ using System;
 
 namespace DataVisualization.Core
 {
-    public class ProgressBarManager
+    public class LoadingBarManager
     {
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;
         private LoadingBarViewModel _loadingBarVm;
 
-        public ProgressBarManager(IWindowManager windowManager, IEventAggregator eventAggregator)
+        public LoadingBarManager(IWindowManager windowManager, IEventAggregator eventAggregator)
         {
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
         }
 
-        public IProgressBarWindow ShowProgressBar()
+        public ILoadingBarWindow ShowLoadingBar()
         {
             if (_loadingBarVm != null)
                 throw new InvalidOperationException("Loading bar already opened");
@@ -28,7 +28,7 @@ namespace DataVisualization.Core
             return _loadingBarVm;
         }
 
-        public void CloseProgressBar()
+        public void CloseLoadingBar()
         {
             if (_loadingBarVm == null)
                 throw new InvalidOperationException("Loading bar is not opened");

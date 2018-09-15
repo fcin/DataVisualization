@@ -2,7 +2,7 @@
 
 namespace DataVisualization.Core.ViewModels
 {
-    public class LoadingBarViewModel : Screen, IProgressBarWindow
+    public class LoadingBarViewModel : Screen, ILoadingBarWindow
     {
         private int _percentFinished;
         public int PercentFinished

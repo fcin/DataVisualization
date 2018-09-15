@@ -12,20 +12,21 @@ namespace DataVisualization.Core.ViewModels
     public class DataBrowserViewModel : PropertyChangedBase
     {
         private List<DataConfiguration> _allDataConfigurations;
-        public List<DataConfiguration> AllDataConfigurations {
+        public List<DataConfiguration> AllDataConfigurations
+        {
             get => _allDataConfigurations;
             set => Set(ref _allDataConfigurations, value);
         }
 
         private readonly IEventAggregator _eventAggregator;
-        private readonly ProgressBarManager _progressBarManager;
+        private readonly LoadingBarManager _loadingBarManager;
         private readonly DataConfigurationService _dataConfigurationService;
         private readonly DataService _dataService;
 
-        public DataBrowserViewModel(IEventAggregator eventAggregator, ProgressBarManager progressBarManager)
+        public DataBrowserViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager)
         {
             _eventAggregator = eventAggregator;
-            _progressBarManager = progressBarManager;
+            _loadingBarManager = loadingBarManager;
             _dataConfigurationService = new DataConfigurationService();
             _dataService = new DataService();
 
@@ -44,19 +45,21 @@ namespace DataVisualization.Core.ViewModels
             if (result == MessageBoxResult.Yes)
             {
                 _eventAggregator.PublishOnUIThread(new BeforeDataConfigurationDeletedEventArgs { ConfigToDelete = selectedItem });
-                var loadingBar = _progressBarManager.ShowProgressBar();
-                var progress = new Progress<LoadingBarStatus>(progressResult => {
+                var loadingBar = _loadingBarManager.ShowLoadingBar();
+                var progress = new Progress<LoadingBarStatus>(progressResult =>
+                {
                     loadingBar.Message = progressResult.Message;
                     loadingBar.PercentFinished = progressResult.PercentFinished;
                 });
 
-                await Task.Run(() => {
+                await Task.Run(() =>
+                {
                     _dataConfigurationService.DeleteConfigurationByName(selectedItem.DataName);
-                    if(_dataService.Exists(selectedItem.DataName))
+                    if (_dataService.Exists(selectedItem.DataName))
                         _dataService.DeleteDataByName(selectedItem.DataName, progress);
                 });
 
-                _progressBarManager.CloseProgressBar();
+                _loadingBarManager.CloseLoadingBar();
 
                 var allConfigurations = _dataConfigurationService.GetAll();
                 AllDataConfigurations = new List<DataConfiguration>(allConfigurations);

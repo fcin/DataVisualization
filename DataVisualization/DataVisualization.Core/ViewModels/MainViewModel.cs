@@ -16,8 +16,8 @@ namespace DataVisualization.Core.ViewModels
             set => Set(ref _isMainWindowEnabled, value);
         }
 
-        public MainViewModel(IWindowManager windowManager, ISeriesFactory seriesFactory, 
-            IEventAggregator eventAggregator, ProgressBarManager progressBarManager)
+        public MainViewModel(IWindowManager windowManager, ISeriesFactory seriesFactory,
+            IEventAggregator eventAggregator, LoadingBarManager loadingBarManager)
         {
             IsMainWindowEnabled = true;
             _windowManager = windowManager;
@@ -25,9 +25,9 @@ namespace DataVisualization.Core.ViewModels
             eventAggregator.Subscribe(this);
 
             VisualizerVm = new VisualizerViewModel(seriesFactory, windowManager, eventAggregator);
-            DataBrowserVm = new DataBrowserViewModel(eventAggregator, progressBarManager);
+            DataBrowserVm = new DataBrowserViewModel(eventAggregator, loadingBarManager);
             MenuVm = new MenuViewModel(windowManager);
-            
+
             ActivateItem(VisualizerVm);
             ActivateItem(DataBrowserVm);
             ActivateItem(MenuVm);
