@@ -71,6 +71,28 @@ namespace DataVisualization.Services
             }
         }
 
+        public void DeleteDataByName(string dataName)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection<Data>(nameof(Data));
+                var seriesColl = db.GetCollection<Series>(nameof(Series));
+                var chunksColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
+
+                var data = collection.Include(d => d.Series).FindOne(Query.EQ(nameof(Data.Name), dataName));
+                foreach (var series in data.Series)
+                {
+                    foreach (var chunk in series.Chunks)
+                    {
+                        chunksColl.Delete(Query.EQ(nameof(ValuesChunk.ChunkId), chunk.ChunkId));
+                    }
+                    seriesColl.Delete(Query.EQ(nameof(Series.SeriesId), series.SeriesId));
+                }
+
+                collection.Delete(Query.EQ(nameof(Data.Name), dataName));
+            }
+        }
+
         public void UpdateData(Data data)
         {
             using (var db = new LiteDatabase(_dbPath))

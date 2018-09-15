@@ -107,6 +107,7 @@
     <Compile Include="Converters\SelectedAxisConverter.cs" />
     <Compile Include="Converters\SelectedComboboxItemConverter.cs" />
     <Compile Include="Converters\ColumnTypesConverter.cs" />
+    <Compile Include="Events\BeforeDataConfigurationDeletedEventArgs.cs" />
     <Compile Include="Events\DataConfigurationOpenedEventArgs.cs" />
     <Compile Include="ModelCreator.cs" />
     <Compile Include="Properties\Annotations.cs" />

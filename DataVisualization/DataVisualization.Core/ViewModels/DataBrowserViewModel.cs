@@ -8,9 +8,13 @@ using System.Windows;
 
 namespace DataVisualization.Core.ViewModels
 {
-    public class DataBrowserViewModel
+    public class DataBrowserViewModel : PropertyChangedBase
     {
-        public List<DataConfiguration> AllDataConfigurations { get; set; }
+        private List<DataConfiguration> _allDataConfigurations;
+        public List<DataConfiguration> AllDataConfigurations {
+            get => _allDataConfigurations;
+            set => Set(ref _allDataConfigurations, value);
+        }
 
         private readonly IEventAggregator _eventAggregator;
         private readonly DataConfigurationService _dataConfigurationService;
@@ -36,7 +40,13 @@ namespace DataVisualization.Core.ViewModels
             var result = MessageBox.Show($"Are you sure you want to delete \"{selectedItem.DataName}\"?", "Delete data", MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
-                // Todo: delete config, delete data, make sure Visualizer is closed before deleting.
+                _eventAggregator.PublishOnUIThread(new BeforeDataConfigurationDeletedEventArgs { ConfigToDelete = selectedItem });
+
+                _dataConfigurationService.DeleteConfigurationByName(selectedItem.DataName);
+                _dataService.DeleteDataByName(selectedItem.DataName);
+
+                var allConfigurations = _dataConfigurationService.GetAll();
+                AllDataConfigurations = new List<DataConfiguration>(allConfigurations);
             }
         }
     }

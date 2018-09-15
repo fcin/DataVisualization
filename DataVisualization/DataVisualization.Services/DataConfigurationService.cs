@@ -58,6 +58,18 @@ namespace DataVisualization.Services
             }
         }
 
+        public void DeleteConfigurationByName(string name)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                if (!db.CollectionExists("DataConfiguration"))
+                    throw new ArgumentException(nameof(name));
+
+                var collection = db.GetCollection("DataConfiguration");
+                collection.Delete(Query.EQ(nameof(DataConfiguration.DataName), name));
+            }
+        }
+
         public DataConfiguration GetByName(string name)
         {
             using (var db = new LiteDatabase(_dbPath))

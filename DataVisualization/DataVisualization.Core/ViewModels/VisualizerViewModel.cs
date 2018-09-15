@@ -19,7 +19,7 @@ using Series = DataVisualization.Models.Series;
 
 namespace DataVisualization.Core.ViewModels
 {
-    public class VisualizerViewModel : Screen, IHandle<DataConfigurationOpenedEventArgs>
+    public class VisualizerViewModel : Screen, IHandle<DataConfigurationOpenedEventArgs>, IHandle<BeforeDataConfigurationDeletedEventArgs>
     {
         public SeriesCollection SeriesCollection { get; set; } = new SeriesCollection();
 
@@ -145,6 +145,14 @@ namespace DataVisualization.Core.ViewModels
             RecreateSeries();
 
             await keepPullingTask;
+        }
+
+        public void Handle(BeforeDataConfigurationDeletedEventArgs message)
+        {
+            SeriesCollection.Clear();
+            _cts.Cancel();
+            _cts = new CancellationTokenSource();
+            TryClose();
         }
 
         public void OnRangeChanged(long newMin, long newMax)
