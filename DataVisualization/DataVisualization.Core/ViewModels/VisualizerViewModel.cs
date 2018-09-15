@@ -119,12 +119,6 @@ namespace DataVisualization.Core.ViewModels
 
             NotifyOfPropertyChange(() => FormatterX);
 
-            if (!_dataService.Exists(_config.DataName))
-            {
-                var loadedData = await _dataFileReader.ReadDataAsync(_config);
-                _dataService.AddData(loadedData);
-            }
-
             _data = _dataService.GetData(_config.DataName);
             var keepPullingTask = KeepPulling(_cts.Token);
 

@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using DataVisualization.Core.Events;
 using DataVisualization.Models;
 using DataVisualization.Services;
 using DataVisualization.Services.Transform;
@@ -41,8 +42,15 @@ namespace DataVisualization.Core.ViewModels
         }
     }
 
-    public class DataLoaderViewModel : Screen
+    public class DataLoaderViewModel : Screen, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>
     {
+        private bool _isLoaderWindowEnabled;
+        public bool IsLoaderWindowEnabled
+        {
+            get => _isLoaderWindowEnabled;
+            set => SetValue(ref _isLoaderWindowEnabled, value);
+        }
+
         private List<SelectableTypes> _allSelectableTypes = new List<SelectableTypes>();
         public List<SelectableTypes> AllSelectableTypes
         {
@@ -110,16 +118,27 @@ namespace DataVisualization.Core.ViewModels
 
         public KeyValuePair<string, int> SelectedRefreshTime { get; set; }
 
+        private readonly IEventAggregator _eventAggregator;
+        private readonly LoadingBarManager _loadingBarManager;
         private readonly DataFileReader _dataFileReader;
         private readonly DataConfigurationService _dataConfigurationService;
+        private readonly DataService _dataService;
         private DataTable _sampleData;
 
-        public DataLoaderViewModel()
+        public DataLoaderViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager)
         {
+            _eventAggregator = eventAggregator;
+            _loadingBarManager = loadingBarManager;
+            
             DataGridCollection = new BindableCollection<object>();
             _dataFileReader = new DataFileReader();
             _dataConfigurationService = new DataConfigurationService();
+            _dataService = new DataService();
+
+            eventAggregator.Subscribe(this);
+
             SelectedRefreshTime = RefreshTimes[0];
+            IsLoaderWindowEnabled = true;
         }
 
         public void OnColumnTypeChanged(SelectionChangedEventArgs args, string columnName, ComboBox comboBox)
@@ -322,7 +341,7 @@ namespace DataVisualization.Core.ViewModels
                                       DataGridColumnsModel.Columns.Any(col => col.Axis == Axes.Y1) &&
                                      !DataGridColumnsModel.Columns.Any(col => !col.IsIgnored && col.Axis == Axes.None);
 
-        public void OnDataLoad()
+        public async void OnDataLoad()
         {
             var config = new DataConfiguration
             {
@@ -347,6 +366,22 @@ namespace DataVisualization.Core.ViewModels
             try
             {
                 _dataConfigurationService.Add(config);
+
+                if (!_dataService.Exists(config.DataName))
+                {
+                    var loadingBarWindow = _loadingBarManager.ShowLoadingBar();
+                    var readDataProgress = new Progress<LoadingBarStatus>(result => {
+                        loadingBarWindow.PercentFinished = result.PercentFinished;
+                        loadingBarWindow.Message = result.Message;
+                    });
+
+                    var loadedData = await _dataFileReader.ReadDataAsync(config, readDataProgress);
+                    _dataService.AddData(loadedData);
+
+                    _loadingBarManager.CloseLoadingBar();
+                }
+
+                _eventAggregator.PublishOnUIThread(new NewDataAddedEventArgs());
                 TryClose();
             }
             catch (Exception ex)
@@ -367,6 +402,16 @@ namespace DataVisualization.Core.ViewModels
 
             oldValue = newValue;
             NotifyOfPropertyChange(propertyName);
+        }
+
+        public void Handle(LoadingBarOpenedEventArgs message)
+        {
+            IsLoaderWindowEnabled = false;
+        }
+
+        public void Handle(LoadingBarClosedEventArgs message)
+        {
+            IsLoaderWindowEnabled = true;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace DataVisualization.Core.ViewModels
 
             VisualizerVm = new VisualizerViewModel(seriesFactory, windowManager, eventAggregator);
             DataBrowserVm = new DataBrowserViewModel(eventAggregator, loadingBarManager);
-            MenuVm = new MenuViewModel(windowManager);
+            MenuVm = new MenuViewModel(windowManager, eventAggregator, loadingBarManager);
 
             ActivateItem(VisualizerVm);
             ActivateItem(DataBrowserVm);

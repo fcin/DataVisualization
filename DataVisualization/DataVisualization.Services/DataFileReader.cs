@@ -14,17 +14,18 @@ namespace DataVisualization.Services
 {
     public class DataFileReader : IDataFileReader
     {
-        public async Task<Data> ReadDataAsync(DataConfiguration config)
+        public async Task<Data> ReadDataAsync(DataConfiguration config, IProgress<LoadingBarStatus> progress = null)
         {
             var path = config.FilePath;
             var linesRead = 0;
+            var fileSizeInBytes = new FileInfo(path).Length;
 
             using (var file = File.OpenText(path))
             using (var reader = new CsvReader(file))
             {
                 reader.Configuration.Delimiter = ";";
                 reader.Configuration.HasHeaderRecord = false;
-
+                
                 await reader.ReadAsync();
 
                 var data = new List<List<double>>(config.Columns.Count);
@@ -55,6 +56,16 @@ namespace DataVisualization.Services
                         {
                             data[index].Add(double.NaN);
                         }
+                    }
+
+                    if (progress != null)
+                    {
+                        var readDataProgress = new LoadingBarStatus
+                        {
+                            Message = "Reading records from file...",
+                            PercentFinished = (int)(reader.Context.CharPosition / (double)fileSizeInBytes * 100d)
+                        };
+                        progress.Report(readDataProgress);
                     }
                 }
                 while (await reader.ReadAsync());

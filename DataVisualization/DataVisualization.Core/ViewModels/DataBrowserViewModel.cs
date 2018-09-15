@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace DataVisualization.Core.ViewModels
 {
-    public class DataBrowserViewModel : PropertyChangedBase
+    public class DataBrowserViewModel : PropertyChangedBase, IHandle<NewDataAddedEventArgs>
     {
         private List<DataConfiguration> _allDataConfigurations;
         public List<DataConfiguration> AllDataConfigurations
@@ -30,8 +30,9 @@ namespace DataVisualization.Core.ViewModels
             _dataConfigurationService = new DataConfigurationService();
             _dataService = new DataService();
 
-            var allConfigurations = _dataConfigurationService.GetAll();
-            AllDataConfigurations = new List<DataConfiguration>(allConfigurations);
+            RefreshDataConfigurations();
+
+            _eventAggregator.Subscribe(this);
         }
 
         internal void OpenConfiguration(DataConfiguration config)
@@ -61,9 +62,19 @@ namespace DataVisualization.Core.ViewModels
 
                 _loadingBarManager.CloseLoadingBar();
 
-                var allConfigurations = _dataConfigurationService.GetAll();
-                AllDataConfigurations = new List<DataConfiguration>(allConfigurations);
+                RefreshDataConfigurations();
             }
+        }
+
+        public void Handle(NewDataAddedEventArgs message)
+        {
+            RefreshDataConfigurations();
+        }
+
+        private void RefreshDataConfigurations()
+        {
+            var allConfigurations = _dataConfigurationService.GetAll();
+            AllDataConfigurations = new List<DataConfiguration>(allConfigurations);
         }
     }
 }

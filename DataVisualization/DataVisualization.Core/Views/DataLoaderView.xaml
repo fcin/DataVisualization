@@ -16,7 +16,7 @@
         <convs:ColumnAxisConverter x:Key="ColumnAxisConverter"></convs:ColumnAxisConverter>
         <convs:SelectedAxisConverter x:Key="SelectedAxisConverter"></convs:SelectedAxisConverter>
     </Window.Resources>
-    <Grid>
+    <Grid IsEnabled="{Binding IsLoaderWindowEnabled}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
