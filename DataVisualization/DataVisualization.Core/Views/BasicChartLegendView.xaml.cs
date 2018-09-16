@@ -1,13 +1,14 @@
 ﻿using Caliburn.Micro;
 using DataVisualization.Core.ViewModels;
+using DataVisualization.Models;
 using DataVisualization.Services;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Action = System.Action;
 using Series = DataVisualization.Models.Series;
 
 namespace DataVisualization.Core.Views
@@ -29,11 +30,13 @@ namespace DataVisualization.Core.Views
         }
 
         private readonly IWindowManager _windowManager;
+        private readonly Data _data;
         private Action<Series> _onSeriesChanged;
 
-        public BasicChartLegendView(IWindowManager windowManager, Action<Series> onSeriesChanged)
+        public BasicChartLegendView(IWindowManager windowManager, Data data, Action<Series> onSeriesChanged)
         {
             _windowManager = windowManager;
+            _data = data;
             _onSeriesChanged = onSeriesChanged;
 
             InitializeComponent();
@@ -54,7 +57,7 @@ namespace DataVisualization.Core.Views
                 return;
 
             var border = (Border)sender;
-            var series = new DataService().GetSeriesByName(border.Tag.ToString());
+            var series = _data.Series.First(d => d.Name == border.Tag.ToString());
 
             var result = _windowManager.ShowDialog(new SeriesPropertiesViewModel(series));
             if(result.HasValue && result.Value)

@@ -73,7 +73,12 @@ namespace DataVisualization.Core.ViewModels
             set => SetValue(ref _maxX2, value);
         }
 
-        public IChartLegend Legend { get; set; }
+        private IChartLegend _legend;
+        public IChartLegend Legend
+        {
+            get => _legend;
+            set => SetValue(ref _legend, value);
+        }
 
         private bool _hasSecondaryAxis;
         public bool HasSecondaryAxis
@@ -82,8 +87,9 @@ namespace DataVisualization.Core.ViewModels
             set => SetValue(ref _hasSecondaryAxis, value);
         }
 
-        private readonly IEventAggregator _eventAggregator;
         private readonly ISeriesFactory _seriesFactory;
+        private readonly IWindowManager _windowManager;
+        private readonly IEventAggregator _eventAggregator;        
         private readonly DataFileReader _dataFileReader = new DataFileReader();
         private readonly DataService _dataService = new DataService();
         private readonly DataConfigurationService _dataConfigurationService = new DataConfigurationService();
@@ -93,18 +99,12 @@ namespace DataVisualization.Core.ViewModels
 
         public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager, IEventAggregator eventAggregator)
         {
-            _eventAggregator = eventAggregator;
             _seriesFactory = seriesFactory;
+            _windowManager = windowManager;
+            _eventAggregator = eventAggregator;
             _cts = new CancellationTokenSource();
 
             _eventAggregator.Subscribe(this);
-
-            Legend = new BasicChartLegendView(windowManager, currentSeries =>
-            {
-                _data = _dataService.GetData(_config.DataName);
-                SeriesCollection.Clear();
-                RecreateSeries();
-            });
         }
 
         public async void Handle(DataConfigurationOpenedEventArgs message)
@@ -128,6 +128,14 @@ namespace DataVisualization.Core.ViewModels
             NotifyOfPropertyChange(() => FormatterX);
 
             _data = _dataService.GetData(_config.DataName);
+
+            Legend = new BasicChartLegendView(_windowManager, _data, currentSeries =>
+            {
+                _data = _dataService.GetData(_config.DataName);
+                SeriesCollection.Clear();
+                RecreateSeries();
+            });
+            
             var keepPullingTask = KeepPulling(_cts.Token);
 
             var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
