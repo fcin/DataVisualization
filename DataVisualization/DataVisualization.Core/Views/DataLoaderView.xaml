@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DataVisualization.Core.Views"
         xmlns:convs="clr-namespace:DataVisualization.Core.Converters"
         xmlns:cal="http://www.caliburnproject.org"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="DataLoaderView" Height="650" Width="600">
     <Window.Resources>
@@ -16,7 +17,7 @@
         <convs:ColumnAxisConverter x:Key="ColumnAxisConverter"></convs:ColumnAxisConverter>
         <convs:SelectedAxisConverter x:Key="SelectedAxisConverter"></convs:SelectedAxisConverter>
     </Window.Resources>
-    <Grid IsEnabled="{Binding IsLoaderWindowEnabled}">
+    <Grid Margin="15" IsEnabled="{Binding IsLoaderWindowEnabled}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -27,10 +28,12 @@
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="3*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBox Grid.Column="0" Grid.Row="1" Height="20" Text="{Binding FilePath}" HorizontalAlignment="Stretch" IsEnabled="False" Foreground="Gray"
-                 cal:Message.Attach="[Event TextChanged] = [Action RecreateGrid()]; [Event TextChanged] = [Action ValidateSubmit()]"></TextBox>
-        <Button Grid.Column="1" Grid.Row="1" Width="50" Height="20" Content="Select" cal:Message.Attach="[Event Click] = [Action OnFileSelectionClicked()]" HorizontalAlignment="Left"></Button>
-        <Button Content="Load" Grid.Column="1" Grid.Row="2" Width="50" Height="20" cal:Message.Attach="[Event Click] = [Action OnDataLoad()]"></Button>
+        <TextBox Grid.Column="0" Grid.Row="1" Text="{Binding FilePath}" HorizontalAlignment="Stretch" IsEnabled="False" Foreground="Gray"
+                 cal:Message.Attach="[Event TextChanged] = [Action RecreateGrid()]; [Event TextChanged] = [Action ValidateSubmit()]"
+                 materialDesign:HintAssist.Hint="File path" VerticalAlignment="Center" MinWidth="70"/>
+        <Button Grid.Column="1" Grid.Row="1" cal:Message.Attach="[Event Click] = [Action OnFileSelectionClicked()]" 
+                HorizontalAlignment="Left" Content="{materialDesign:PackIcon Kind=FileDocument}" Margin="15,0,0,0"></Button>
+        <Button Content="Submit" Grid.Column="1" Grid.Row="2" cal:Message.Attach="[Event Click] = [Action OnDataLoad()]"></Button>
 
         <StackPanel Grid.Row="2" Grid.Column="0">
             <Grid>

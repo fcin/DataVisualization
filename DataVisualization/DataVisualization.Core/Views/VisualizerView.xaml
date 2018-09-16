@@ -7,31 +7,20 @@
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:convs="clr-namespace:DataVisualization.Core.Converters"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <convs:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></convs:BoolToVisibilityConverter>
     </UserControl.Resources>
     <DockPanel Visibility="{Binding IsDisplayed, Converter={StaticResource BoolToVisibilityConverter}}">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <Button Width="25" Height="25" Margin="2" ToolTip="Zoom in" cal:Message.Attach="[Event Click] = [Action OnZoomIn]">
-                <Image Source="/Icons/ZoomIn_32x.png"></Image>
-            </Button>
-            <Button Width="25" Height="25" Margin="2" ToolTip="Zoom out" cal:Message.Attach="[Event Click] = [Action OnZoomOut]">
-                <Image Source="/Icons/ZoomOut_32x.png"></Image>
-            </Button>
-            <Button Width="25" Height="25" Margin="2" ToolTip="Move left" cal:Message.Attach="[Event Click] = [Action OnMoveLeft]">
-                <Image Source="/Icons/arrow_previous_16xLG.png"></Image>
-            </Button>
-            <Button Width="25" Height="25" Margin="2" ToolTip="Move right" cal:Message.Attach="[Event Click] = [Action OnMoveRight]">
-                <Image Source="/Icons/arrow_Next_16xLG.png"></Image>
-            </Button>
-            <Button Width="25" Height="25" Margin="2" ToolTip="Center screen" cal:Message.Attach="[Event Click] = [Action OnCenterScreen]">
-                <Image Source="/Icons/Bidirectional_16xLG.png"></Image>
-            </Button>
-            <Button Width="25" Height="25" Margin="2" ToolTip="Go to newest" cal:Message.Attach="[Event Click] = [Action OnGoToNewest]">
-                <Image Source="/Icons/Action_16xLG.png"></Image>
-            </Button>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,15">
+            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=MagnifyPlusOutline}" ToolTip="Zoom in" cal:Message.Attach="[Event Click] = [Action OnZoomIn]" />
+            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=MagnifyMinusOutline}" ToolTip="Zoom out" cal:Message.Attach="[Event Click] = [Action OnZoomOut]" />
+            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=ArrowLeft}" ToolTip="Move left" cal:Message.Attach="[Event Click] = [Action OnMoveLeft]"/>
+            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=ArrowRight}" ToolTip="Move right" cal:Message.Attach="[Event Click] = [Action OnMoveRight]"/>
+            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=ArrowExpandAll}" ToolTip="Center screen" cal:Message.Attach="[Event Click] = [Action OnCenterScreen]"/>
+            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=RayStartArrow}" ToolTip="Go to newest" cal:Message.Attach="[Event Click] = [Action OnGoToNewest]"/>
         </StackPanel>
         <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="X" Pan="X" 
                             ChartLegend="{Binding Legend}" LegendLocation="Bottom"

@@ -56,6 +56,12 @@
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.1.1.2\lib\net45\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.4.1.1101, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.2.4.1.1101\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -219,16 +225,6 @@
       <Project>{2577176b-5e41-4d91-af20-747bda3712ab}</Project>
       <Name>DataVisualization.Services</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\Action_16xLG.png" />
-    <Resource Include="Icons\arrow_Next_16xLG.png" />
-    <Resource Include="Icons\arrow_previous_16xLG.png" />
-    <Resource Include="Icons\Bidirectional_16xLG.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\ZoomIn_32x.png" />
-    <Resource Include="Icons\ZoomOut_32x.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
