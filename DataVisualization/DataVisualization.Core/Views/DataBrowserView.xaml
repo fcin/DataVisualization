@@ -6,15 +6,19 @@
              xmlns:local="clr-namespace:DataVisualization.Core.Views"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="200" MinWidth="120">
     <Grid>
         <DockPanel>
-            <Label Content="All configurations" DockPanel.Dock="Top"></Label>
+            <Label Content="All data" DockPanel.Dock="Top"></Label>
             <ListView Name="DataConfigs" DockPanel.Dock="Top" ItemsSource="{Binding AllDataConfigurations}" MouseDoubleClick="OpenConfig">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Label Content="{Binding DataName}"></Label>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{materialDesign:PackIcon Kind=Database}"></Label>
+                            <Label Content="{Binding DataName, FallbackValue='Lorem ipsum'}"></Label>
+                        </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.ContextMenu>

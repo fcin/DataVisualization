@@ -8,7 +8,7 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="DataLoaderView" Height="650" Width="600">
+        Title="New Data" MinHeight="650" MinWidth="600">
     <Window.Resources>
         <convs:ColumnNameConverter x:Key="ColumnNameConverter"></convs:ColumnNameConverter>
         <convs:ColumnTypesConverter x:Key="ColumnTypesConverter"></convs:ColumnTypesConverter>
@@ -17,53 +17,46 @@
         <convs:ColumnAxisConverter x:Key="ColumnAxisConverter"></convs:ColumnAxisConverter>
         <convs:SelectedAxisConverter x:Key="SelectedAxisConverter"></convs:SelectedAxisConverter>
     </Window.Resources>
-    <Grid Margin="15" IsEnabled="{Binding IsLoaderWindowEnabled}">
+    <Grid Margin="15,30,15,15" IsEnabled="{Binding IsLoaderWindowEnabled}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="0*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
-            <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="4*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBox Grid.Column="0" Grid.Row="1" Text="{Binding FilePath}" HorizontalAlignment="Stretch" IsEnabled="False" Foreground="Gray"
                  cal:Message.Attach="[Event TextChanged] = [Action RecreateGrid()]; [Event TextChanged] = [Action ValidateSubmit()]"
                  materialDesign:HintAssist.Hint="File path" VerticalAlignment="Center" MinWidth="70"/>
         <Button Grid.Column="1" Grid.Row="1" cal:Message.Attach="[Event Click] = [Action OnFileSelectionClicked()]" 
                 HorizontalAlignment="Left" Content="{materialDesign:PackIcon Kind=FileDocument}" Margin="15,0,0,0"></Button>
-        <Button Content="Submit" Grid.Column="1" Grid.Row="2" cal:Message.Attach="[Event Click] = [Action OnDataLoad()]"></Button>
+        <Button Content="Submit" Grid.Column="1" Grid.Row="2" cal:Message.Attach="[Event Click] = [Action OnDataLoad()]"
+                VerticalAlignment="Bottom" Margin="10"></Button>
 
         <StackPanel Grid.Row="2" Grid.Column="0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="2*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Label Grid.Column="0" Grid.Row="0" Content="Thousands separator"></Label>
-                <TextBox Text="{Binding ThousandsSeparator, FallbackValue='.'}" MaxLength="1" Grid.Column="1" Grid.Row="0" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBox>
-                <Label Grid.Column="0" Grid.Row="1" Content="Decimal separator"></Label>
-                <TextBox Text="{Binding DecimalSeparator, FallbackValue=','}"  MaxLength="1" Grid.Column="1" Grid.Row="1" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBox>
-                <Label Grid.Column="0" Grid.Row="2" Content="Watch for changes"></Label>
-                <ComboBox ItemsSource="{Binding RefreshTimes}" SelectedValuePath="Value" DisplayMemberPath="Key" SelectedItem="{Binding SelectedRefreshTime}" 
-                          Grid.Column="1" Grid.Row="2" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" />
-            </Grid>
+            <ComboBox Margin="5" ItemsSource="{Binding AllThousandsSeparators}" SelectedItem="{Binding SelectedThousandsSeparator}"
+                materialDesign:HintAssist.Hint="Thousands separator" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                HorizontalAlignment="Left" materialDesign:ComboBoxAssist.ShowSelectedItem="True" FontSize="16"></ComboBox>
+            <ComboBox Margin="5" ItemsSource="{Binding AllDecimalSeparators}" SelectedItem="{Binding SelectedDecimalSeparator}"
+                materialDesign:HintAssist.Hint="Decimal separator" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                HorizontalAlignment="Left" materialDesign:ComboBoxAssist.ShowSelectedItem="True" FontSize="16"></ComboBox>
+            <ComboBox Margin="5" ItemsSource="{Binding RefreshTimes}" SelectedValuePath="Value" DisplayMemberPath="Key" SelectedItem="{Binding SelectedRefreshTime}" 
+                materialDesign:HintAssist.Hint="Watch for changes" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                materialDesign:ComboBoxAssist.ShowSelectedItem="True" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" FontSize="16"/>
         </StackPanel>
-
-        <DataGrid Name="PreviewDataGrid" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="True">
+        <DataGrid IsReadOnly="True" CanUserSortColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                  Name="PreviewDataGrid" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="True">
             <DataGrid.Resources>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="ContentTemplate">
                         <Setter.Value>
                             <DataTemplate>
                                 <StackPanel>
-                                    <TextBox cal:Message.Attach="[Event LostFocus] = [Action OnColumnNameChanged($dataContext, $this, $source)]">
+                                    <TextBox cal:Message.Attach="[Event LostFocus] = [Action OnColumnNameChanged($dataContext, $this, $source)]"
+                                        materialDesign:HintAssist.Hint="Column Name" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <TextBox.Text>
                                             <MultiBinding Converter="{StaticResource ColumnNameConverter}">
                                                 <Binding RelativeSource="{RelativeSource AncestorType={x:Type DataGrid}}" 
@@ -73,7 +66,8 @@
                                             </MultiBinding>
                                         </TextBox.Text>
                                     </TextBox>
-                                    <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnColumnTypeChanged($eventArgs, $dataContext, $source)]">
+                                    <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnColumnTypeChanged($eventArgs, $dataContext, $source)]"
+                                        materialDesign:HintAssist.Hint="Data Type" Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                                         <ComboBox.ItemsSource>
                                             <MultiBinding Converter="{StaticResource ColumnTypesConverter}">
                                                 <Binding Path="DisplayIndex" Mode="OneWay" 
@@ -89,7 +83,8 @@
                                             </MultiBinding>
                                         </ComboBox.SelectedItem>
                                     </ComboBox>
-                                    <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnAxisTypeChanged($eventArgs, $dataContext, $source)]">
+                                    <ComboBox AllowDrop="True" cal:Message.Attach="[Event SelectionChanged] = [Action OnAxisTypeChanged($eventArgs, $dataContext, $source)]"
+                                        materialDesign:HintAssist.Hint="Axis" Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                                         <ComboBox.ItemsSource>
                                             <MultiBinding Converter="{StaticResource ColumnAxisConverter}">
                                                 <Binding Path="DisplayIndex" Mode="OneWay" 

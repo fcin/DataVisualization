@@ -9,20 +9,30 @@
              xmlns:convs="clr-namespace:DataVisualization.Core.Converters"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="450">
     <UserControl.Resources>
         <convs:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></convs:BoolToVisibilityConverter>
+        <convs:ValueConverterGroup x:Key="ValueConverterGroup">
+            <convs:LogicalNotConverter></convs:LogicalNotConverter>
+            <convs:BoolToVisibilityConverter></convs:BoolToVisibilityConverter>
+        </convs:ValueConverterGroup>
     </UserControl.Resources>
-    <DockPanel Visibility="{Binding IsDisplayed, Converter={StaticResource BoolToVisibilityConverter}}">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,15">
-            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=MagnifyPlusOutline}" ToolTip="Zoom in" cal:Message.Attach="[Event Click] = [Action OnZoomIn]" />
-            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=MagnifyMinusOutline}" ToolTip="Zoom out" cal:Message.Attach="[Event Click] = [Action OnZoomOut]" />
-            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=ArrowLeft}" ToolTip="Move left" cal:Message.Attach="[Event Click] = [Action OnMoveLeft]"/>
-            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=ArrowRight}" ToolTip="Move right" cal:Message.Attach="[Event Click] = [Action OnMoveRight]"/>
-            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=ArrowExpandAll}" ToolTip="Center screen" cal:Message.Attach="[Event Click] = [Action OnCenterScreen]"/>
-            <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=RayStartArrow}" ToolTip="Go to newest" cal:Message.Attach="[Event Click] = [Action OnGoToNewest]"/>
-        </StackPanel>
-        <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="X" Pan="X" 
+    <Grid>
+        <Grid Visibility="{Binding IsDisplayed, Converter={StaticResource ValueConverterGroup}}">
+            <materialDesign:Card HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15">
+                <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="No data loaded"></Label>
+            </materialDesign:Card>
+        </Grid>
+        <DockPanel Visibility="{Binding IsDisplayed, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,15">
+                <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=MagnifyPlusOutline}" ToolTip="Zoom in" cal:Message.Attach="[Event Click] = [Action OnZoomIn]" />
+                <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=MagnifyMinusOutline}" ToolTip="Zoom out" cal:Message.Attach="[Event Click] = [Action OnZoomOut]" />
+                <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=ArrowLeft}" ToolTip="Move left" cal:Message.Attach="[Event Click] = [Action OnMoveLeft]"/>
+                <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=ArrowRight}" ToolTip="Move right" cal:Message.Attach="[Event Click] = [Action OnMoveRight]"/>
+                <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=ArrowExpandAll}" ToolTip="Center screen" cal:Message.Attach="[Event Click] = [Action OnCenterScreen]"/>
+                <Button Margin="2, 0" Content="{materialDesign:PackIcon Kind=RayStartArrow}" ToolTip="Go to newest" cal:Message.Attach="[Event Click] = [Action OnGoToNewest]"/>
+            </StackPanel>
+            <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="X" Pan="X" 
                             ChartLegend="{Binding Legend}" LegendLocation="Bottom"
                             Hoverable="False" ToolTip="{x:Null}" DisableAnimations="True">
             <lvc:CartesianChart.AxisX>
@@ -43,5 +53,6 @@
                 </lvc:Axis>
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
-    </DockPanel>
+        </DockPanel>
+    </Grid>
 </UserControl>

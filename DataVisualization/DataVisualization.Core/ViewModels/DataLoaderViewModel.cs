@@ -79,18 +79,22 @@ namespace DataVisualization.Core.ViewModels
             set => SetValue(ref _filePath, value);
         }
 
-        private string _thousandsSeparator = ".";
-        public string ThousandsSeparator
+        public IEnumerable<char> AllThousandsSeparators => new List<char> { '.', ',' };
+
+        private char _selectedThousandsSeparator = '.';
+        public char SelectedThousandsSeparator
         {
-            get => _thousandsSeparator;
-            set => SetValue(ref _thousandsSeparator, value);
+            get => _selectedThousandsSeparator;
+            set => SetValue(ref _selectedThousandsSeparator, value);
         }
 
-        private string _decimalSeparator = ",";
-        public string DecimalSeparator
+        public IEnumerable<char> AllDecimalSeparators => new List<char> { ',', '.' };
+
+        private char _selectedDecimalSeparator = ',';
+        public char SelectedDecimalSeparator
         {
-            get => _decimalSeparator;
-            set => SetValue(ref _decimalSeparator, value);
+            get => _selectedDecimalSeparator;
+            set => SetValue(ref _selectedDecimalSeparator, value);
         }
 
         private BindableCollection<object> _dataGridCollection;
@@ -146,7 +150,7 @@ namespace DataVisualization.Core.ViewModels
             var newType = ColumnTypeDef.AllTypes.First(t => t.PrettyType == (ColumnTypes)args.AddedItems[0]);
             var index = DataGridColumnsModel.GetColumnIndex(columnName);
 
-            var parser = new ValueParser(ThousandsSeparator, DecimalSeparator);
+            var parser = new ValueParser(SelectedThousandsSeparator.ToString(), SelectedDecimalSeparator.ToString());
             var valuesToParse = _sampleData.AsEnumerable().Select(s => s.Field<string>(index));
             (bool isParsed, List<object> parsedValues) = parser.TryParseAll(valuesToParse, newType);
 
@@ -228,7 +232,7 @@ namespace DataVisualization.Core.ViewModels
                 var column = DataGridColumnsModel.Columns[index];
                 foreach (var type in ColumnTypeDef.AllTypes.Where(t => t != ColumnTypeDef.Unknown))
                 {
-                    var parser = new ValueParser(ThousandsSeparator, DecimalSeparator);
+                    var parser = new ValueParser(SelectedThousandsSeparator.ToString(), SelectedDecimalSeparator.ToString());
                     var valuesToParse = _sampleData.AsEnumerable().Select(s => s.Field<string>(index));
                     (bool isParsed, List<object> parsedValues) = parser.TryParseAll(valuesToParse, type);
 
@@ -347,8 +351,8 @@ namespace DataVisualization.Core.ViewModels
             {
                 DataName = Path.GetFileNameWithoutExtension(FilePath),
                 FilePath = FilePath,
-                ThousandsSeparator = ThousandsSeparator,
-                DecimalSeparator = DecimalSeparator,
+                ThousandsSeparator = SelectedThousandsSeparator.ToString(),
+                DecimalSeparator = SelectedDecimalSeparator.ToString(),
                 RefreshRate = TimeSpan.FromSeconds(SelectedRefreshTime.Value),
                 Columns = DataGridColumnsModel.Columns.Select((col, index) => new
                 {
