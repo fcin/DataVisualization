@@ -7,25 +7,27 @@
         xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
         mc:Ignorable="d"
-        Title="Series Properties" MinHeight="400" Height="400" MinWidth="350" Width="350" 
+        Title="{x:Static trans:Translation.SeriesProperties}" MinHeight="400" Height="400" MinWidth="350" Width="350" 
         WindowStartupLocation="CenterOwner">
     <Grid Margin="15" HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel HorizontalAlignment="Center">
             <TextBox Text="{Binding SeriesName}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                     materialDesign:HintAssist.Hint="Series name"></TextBox>
-            <Label Content="Color"></Label>
+                     materialDesign:HintAssist.Hint="{x:Static trans:Translation.SeriesName}"></TextBox>
+            <Label Content="{x:Static trans:Translation.Color}"></Label>
             <xctk:ColorPicker Height="25" SelectedColor="{Binding SeriesColor}" 
                               DisplayColorAndName="False" UsingAlphaChannel="False"
                               HorizontalAlignment="Stretch"/>
-            <Label Content="Thickness"></Label>
-            <Slider Minimum="0" Maximum="5" Value="{Binding Thickness}" Style="{StaticResource MaterialDesignDiscreteSlider}" ToolTip="Thickness"/>
+            <Label Content="{x:Static trans:Translation.Thickness}"></Label>
+            <Slider Minimum="0" Maximum="5" Value="{Binding Thickness}" Style="{StaticResource MaterialDesignDiscreteSlider}" 
+                    ToolTip="{x:Static trans:Translation.Thickness}"/>
 
             <Separator Margin="0,20"></Separator>
             
             <StackPanel Orientation="Horizontal">
-                <Button Content="Save" Margin="5" cal:Message.Attach="[Event Click] = [Action OnSave]"></Button>
-                <Button Content="Cancel" Margin="5"  cal:Message.Attach="[Event Click] = [Action OnCancel]"></Button>
+                <Button Content="{x:Static trans:Translation.Save}" Margin="5" cal:Message.Attach="[Event Click] = [Action OnSave]"></Button>
+                <Button Content="{x:Static trans:Translation.Cancel}" Margin="5"  cal:Message.Attach="[Event Click] = [Action OnCancel]"></Button>
             </StackPanel>
         </StackPanel>
     </Grid>

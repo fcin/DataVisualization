@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DataVisualization.Core.Views"
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -21,7 +22,7 @@
             <ContentControl x:Name="MenuVm" DockPanel.Dock="Top" Margin="0, 0, 0, 20"></ContentControl>
             <Expander ExpandDirection="Right" IsExpanded="True" Margin="0, 0, 10, 0">
                 <Expander.Header>
-                    <TextBlock Text="Data list" RenderTransformOrigin=".5,.5">
+                    <TextBlock Text="{x:Static trans:Translation.DataList}" RenderTransformOrigin=".5,.5">
                         <TextBlock.LayoutTransform>
                             <RotateTransform Angle="90" />
                         </TextBlock.LayoutTransform>

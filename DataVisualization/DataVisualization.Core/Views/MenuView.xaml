@@ -5,12 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DataVisualization.Core.Views"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="800">
     <Grid>
         <Menu>
-            <MenuItem Header="File">
-                <MenuItem Header="_New Data" cal:Message.Attach="[Event Click] = [Action NewData()]"></MenuItem>
+            <MenuItem Header="{x:Static trans:Translation.File}">
+                <MenuItem Header="{x:Static trans:Translation.NewData}" cal:Message.Attach="[Event Click] = [Action NewData()]"></MenuItem>
+                <MenuItem Header="{x:Static trans:Translation.Settings}" cal:Message.Attach="[Event Click] = [Action OpenSettings()]"></MenuItem>
             </MenuItem>
         </Menu>
     </Grid>

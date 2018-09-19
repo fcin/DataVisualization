@@ -7,11 +7,12 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="200" MinWidth="120">
     <Grid>
         <DockPanel>
-            <Label Content="All data" DockPanel.Dock="Top"></Label>
+            <Label Content="{x:Static trans:Translation.AllData}" DockPanel.Dock="Top"></Label>
             <ListView Name="DataConfigs" DockPanel.Dock="Top" ItemsSource="{Binding AllDataConfigurations}" MouseDoubleClick="OpenConfig">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -23,10 +24,10 @@
                 </ListView.ItemTemplate>
                 <ListView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Open" 
+                        <MenuItem Header="{x:Static trans:Translation.Open}" 
                             Click="OnOpenConfiguration"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" ></MenuItem>
-                        <MenuItem Header="Delete" 
+                        <MenuItem Header="{x:Static trans:Translation.Delete}" 
                             Click="OnDeleteConfiguration"
                             CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" ></MenuItem>
                     </ContextMenu>

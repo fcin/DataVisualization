@@ -20,5 +20,10 @@ namespace DataVisualization.Core.ViewModels
             var dataLoaderVm = new DataLoaderViewModel(_eventAggregator, _loadingBarManager);
             _windowManager.ShowDialog(dataLoaderVm);
         }
+
+        public void OpenSettings()
+        {
+
+        }
     }
 }
