@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using DataVisualization.Core.ViewModels.SettingsWindow;
 
 namespace DataVisualization.Core.ViewModels
 {
@@ -23,7 +24,7 @@ namespace DataVisualization.Core.ViewModels
 
         public void OpenSettings()
         {
-
+            _windowManager.ShowDialog(new GlobalSettingsViewModel());
         }
     }
 }

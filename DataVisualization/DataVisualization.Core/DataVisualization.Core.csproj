@@ -141,6 +141,10 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\SeriesPropertiesViewModel.cs" />
+    <Compile Include="ViewModels\SettingsWindow\AdvancedGlobalSettingsViewModel.cs" />
+    <Compile Include="ViewModels\SettingsWindow\GeneralGlobalSettingsViewModel.cs" />
+    <Compile Include="ViewModels\SettingsWindow\GlobalSettingsViewModel.cs" />
+    <Compile Include="ViewModels\SettingsWindow\GlobalSettingsViewModelBase.cs" />
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
     <Compile Include="Views\BasicChartLegendView.xaml.cs">
       <DependentUpon>BasicChartLegendView.xaml</DependentUpon>
@@ -159,6 +163,15 @@
     </Compile>
     <Compile Include="Views\SeriesPropertiesView.xaml.cs">
       <DependentUpon>SeriesPropertiesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsWindow\AdvancedGlobalSettingsView.xaml.cs">
+      <DependentUpon>AdvancedGlobalSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsWindow\GeneralGlobalSettingsView.xaml.cs">
+      <DependentUpon>GeneralGlobalSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsWindow\GlobalSettingsView.xaml.cs">
+      <DependentUpon>GlobalSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VisualizerView.xaml.cs">
       <DependentUpon>VisualizerView.xaml</DependentUpon>
@@ -188,6 +201,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SeriesPropertiesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsWindow\AdvancedGlobalSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsWindow\GeneralGlobalSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsWindow\GlobalSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
