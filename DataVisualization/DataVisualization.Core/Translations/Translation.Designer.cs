@@ -205,6 +205,15 @@ namespace DataVisualization.Core.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Move left.
         /// </summary>
         public static string MoveLeft {

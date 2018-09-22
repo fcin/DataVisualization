@@ -165,6 +165,9 @@
   <data name="Ignore" xml:space="preserve">
     <value>Ignore</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
   <data name="MoveLeft" xml:space="preserve">
     <value>Move left</value>
   </data>

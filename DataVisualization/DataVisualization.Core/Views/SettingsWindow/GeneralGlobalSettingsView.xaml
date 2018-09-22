@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
-        <Label Content="Language"></Label>
+        <Label Content="{x:Static trans:Translation.Language}"></Label>
         <ComboBox ItemsSource="{Binding AllLanguages}" SelectedItem="{Binding SelectedLanguage}"></ComboBox>
         <Button cal:Message.Attach="[Event Click] = [Action Save()]" HorizontalAlignment="Right" Margin="20" 
                 Content="{x:Static trans:Translation.Save}"></Button>
