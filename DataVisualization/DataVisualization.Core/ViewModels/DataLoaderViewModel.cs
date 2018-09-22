@@ -129,15 +129,16 @@ namespace DataVisualization.Core.ViewModels
         private readonly DataService _dataService;
         private DataTable _sampleData;
 
-        public DataLoaderViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager)
+        public DataLoaderViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager, 
+            DataConfigurationService dataConfigurationService, DataService dataService)
         {
             _eventAggregator = eventAggregator;
             _loadingBarManager = loadingBarManager;
             
             DataGridCollection = new BindableCollection<object>();
             _dataFileReader = new DataFileReader();
-            _dataConfigurationService = new DataConfigurationService();
-            _dataService = new DataService();
+            _dataConfigurationService = dataConfigurationService;
+            _dataService = dataService;
 
             eventAggregator.Subscribe(this);
 

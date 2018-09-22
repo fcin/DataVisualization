@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using DataVisualization.Services;
 using System;
 using System.Collections.Generic;
 
@@ -8,8 +9,12 @@ namespace DataVisualization.Core.ViewModels.SettingsWindow
     {
         public IEnumerable<TreeNode> Nodes { get; set; }
 
-        public GlobalSettingsViewModel()
+        private readonly GlobalSettings _globalSettings;
+
+        public GlobalSettingsViewModel(GlobalSettings globalSettings)
         {
+            _globalSettings = globalSettings;
+
             Nodes = new List<TreeNode> {
                 new TreeNode
                 {
@@ -21,7 +26,7 @@ namespace DataVisualization.Core.ViewModels.SettingsWindow
                         {
                             Name = "General",
                             Openable = true,
-                            NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new GeneralGlobalSettingsViewModel()) },
+                            NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new GeneralGlobalSettingsViewModel(_globalSettings)) },
                         new TreeNode
                         {
                             Name = "Advanced",

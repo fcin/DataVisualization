@@ -1,30 +1,30 @@
 ﻿using Caliburn.Micro;
 using DataVisualization.Core.ViewModels.SettingsWindow;
+using DataVisualization.Services;
 
 namespace DataVisualization.Core.ViewModels
 {
     public class MenuViewModel : PropertyChangedBase
     {
         private readonly IWindowManager _windowManager;
-        private readonly IEventAggregator _eventAggregator;
-        private readonly LoadingBarManager _loadingBarManager;
+        private readonly GlobalSettings _globalSettings;
+        private DataLoaderViewModel _dataLoaderVm;
 
-        public MenuViewModel(IWindowManager windowManager, IEventAggregator eventAggregator, LoadingBarManager loadingBarManager)
+        public MenuViewModel(IWindowManager windowManager, GlobalSettings globalSettings, DataLoaderViewModel dataLoaderVm)
         {
             _windowManager = windowManager;
-            _eventAggregator = eventAggregator;
-            _loadingBarManager = loadingBarManager;
+            _globalSettings = globalSettings;
+            _dataLoaderVm = dataLoaderVm;
         }
 
         public void NewData()
         {
-            var dataLoaderVm = new DataLoaderViewModel(_eventAggregator, _loadingBarManager);
-            _windowManager.ShowDialog(dataLoaderVm);
+            _windowManager.ShowDialog(_dataLoaderVm);
         }
 
         public void OpenSettings()
         {
-            _windowManager.ShowDialog(new GlobalSettingsViewModel());
+            _windowManager.ShowDialog(new GlobalSettingsViewModel(_globalSettings));
         }
     }
 }

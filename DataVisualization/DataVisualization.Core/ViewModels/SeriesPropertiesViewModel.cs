@@ -40,11 +40,12 @@ namespace DataVisualization.Core.ViewModels
 
         private readonly string _oldName;
         private readonly Series _series;
-        private readonly DataService _dataService = new DataService();
+        private readonly DataService _dataService;
 
-        public SeriesPropertiesViewModel(Series series)
+        public SeriesPropertiesViewModel(Series series, DataService dataService)
         {
             _series = series;
+            _dataService = dataService;
             _oldName = series.Name;
         }
 

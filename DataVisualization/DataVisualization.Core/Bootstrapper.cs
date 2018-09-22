@@ -28,6 +28,13 @@ namespace DataVisualization.Core
             _container.Singleton<IEventAggregator, EventAggregator>();
             _container.Singleton<ISeriesFactory, SeriesFactory>();
             _container.Singleton<LoadingBarManager, LoadingBarManager>();
+            _container.Singleton<GlobalSettings, GlobalSettings>();
+            _container.PerRequest<DataService, DataService>();
+            _container.PerRequest<DataConfigurationService, DataConfigurationService>();
+            _container.PerRequest<DataLoaderViewModel, DataLoaderViewModel>();
+            _container.PerRequest<VisualizerViewModel, VisualizerViewModel>();
+            _container.PerRequest<DataBrowserViewModel, DataBrowserViewModel>();
+            _container.PerRequest<MenuViewModel, MenuViewModel>();
 
             base.Configure();
         }

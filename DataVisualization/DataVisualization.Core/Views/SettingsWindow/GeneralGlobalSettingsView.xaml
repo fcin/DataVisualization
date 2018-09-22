@@ -7,8 +7,9 @@
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="Test"></TextBlock>
-        <Button cal:Message.Attach="[Event Click] = [Action OnClicked()]"></Button>
-    </Grid>
+    <StackPanel>
+        <Label Content="Language"></Label>
+        <ComboBox ItemsSource="{Binding AllLanguages}" SelectedItem="{Binding SelectedLanguage}"></ComboBox>
+        <Button cal:Message.Attach="[Event Click] = [Action Save()]" HorizontalAlignment="Right" Margin="20">Save</Button>
+    </StackPanel>
 </UserControl>

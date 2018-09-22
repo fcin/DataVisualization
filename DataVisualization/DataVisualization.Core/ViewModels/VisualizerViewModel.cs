@@ -91,17 +91,20 @@ namespace DataVisualization.Core.ViewModels
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;        
         private readonly DataFileReader _dataFileReader = new DataFileReader();
-        private readonly DataService _dataService = new DataService();
-        private readonly DataConfigurationService _dataConfigurationService = new DataConfigurationService();
+        private readonly DataService _dataService;
+        private readonly DataConfigurationService _dataConfigurationService;
         private DataConfiguration _config;
         private Data _data;
         private CancellationTokenSource _cts;
 
-        public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager, IEventAggregator eventAggregator)
+        public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager, IEventAggregator eventAggregator, 
+            DataService dataService, DataConfigurationService dataConfigurationService)
         {
             _seriesFactory = seriesFactory;
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
+            _dataService = dataService;
+            _dataConfigurationService = dataConfigurationService;
             _cts = new CancellationTokenSource();
 
             _eventAggregator.Subscribe(this);
@@ -129,7 +132,7 @@ namespace DataVisualization.Core.ViewModels
 
             _data = _dataService.GetData(_config.DataName);
 
-            Legend = new BasicChartLegendView(_windowManager, _data, currentSeries =>
+            Legend = new BasicChartLegendView(_windowManager, _dataService, _data, currentSeries =>
             {
                 _data = _dataService.GetData(_config.DataName);
                 SeriesCollection.Clear();

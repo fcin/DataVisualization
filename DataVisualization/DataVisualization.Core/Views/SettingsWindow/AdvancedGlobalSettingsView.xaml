@@ -8,6 +8,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Button cal:Message.Attach="[Event Click] = [Action OnClick()]"></Button>
+        
     </Grid>
 </UserControl>

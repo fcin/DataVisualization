@@ -23,12 +23,13 @@ namespace DataVisualization.Core.ViewModels
         private readonly DataConfigurationService _dataConfigurationService;
         private readonly DataService _dataService;
 
-        public DataBrowserViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager)
+        public DataBrowserViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager, 
+            DataConfigurationService dataConfigurationService, DataService dataService)
         {
             _eventAggregator = eventAggregator;
             _loadingBarManager = loadingBarManager;
-            _dataConfigurationService = new DataConfigurationService();
-            _dataService = new DataService();
+            _dataConfigurationService = dataConfigurationService;
+            _dataService = dataService;
 
             RefreshDataConfigurations();
 
