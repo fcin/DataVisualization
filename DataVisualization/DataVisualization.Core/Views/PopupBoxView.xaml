@@ -21,13 +21,34 @@
                        Text="{Binding Message, FallbackValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi elementum nunc vitae ipsum finibus.'}"
                        VerticalAlignment="Center"/>
         </StackPanel>
-        <Button Visibility="{Binding IsOkVisible, Converter={StaticResource BoolToVisibilityConverter}}" 
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Visibility="{Binding IsOkButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" 
                 IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}"
-                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
-            <Button.CommandParameter>
-                <vms:PopupBoxResult>Ok</vms:PopupBoxResult>
-            </Button.CommandParameter>
-            Ok
-        </Button>
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                    Margin="10">
+                <Button.CommandParameter>
+                    <vms:PopupBoxResult>Ok</vms:PopupBoxResult>
+                </Button.CommandParameter>
+                Ok
+            </Button>
+            <Button Visibility="{Binding IsYesButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" 
+                IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                    Margin="10">
+                <Button.CommandParameter>
+                    <vms:PopupBoxResult>Yes</vms:PopupBoxResult>
+                </Button.CommandParameter>
+                Yes
+            </Button>
+            <Button Visibility="{Binding IsNoButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" 
+                IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                    Margin="10">
+                <Button.CommandParameter>
+                    <vms:PopupBoxResult>No</vms:PopupBoxResult>
+                </Button.CommandParameter>
+                No
+            </Button>
+        </StackPanel>
     </StackPanel>
 </UserControl>

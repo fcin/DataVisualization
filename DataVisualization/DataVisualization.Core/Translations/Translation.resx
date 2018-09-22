@@ -156,6 +156,9 @@
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="DeleteItemConfirmation" xml:space="preserve">
+    <value>Are you sure you want to delete</value>
+  </data>
   <data name="File" xml:space="preserve">
     <value>File</value>
   </data>

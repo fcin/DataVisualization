@@ -178,6 +178,15 @@ namespace DataVisualization.Core.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete.
+        /// </summary>
+        public static string DeleteItemConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteItemConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
         public static string File {

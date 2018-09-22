@@ -11,7 +11,7 @@ namespace DataVisualization.Core.Converters
         {
             if (value is bool isVisible)
             {
-                return isVisible ? Visibility.Visible : Visibility.Hidden;
+                return isVisible ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Visible;
         }

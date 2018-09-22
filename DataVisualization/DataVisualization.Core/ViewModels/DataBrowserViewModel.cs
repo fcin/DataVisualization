@@ -1,7 +1,10 @@
 ﻿using Caliburn.Micro;
 using DataVisualization.Core.Events;
+using DataVisualization.Core.Translations;
+using DataVisualization.Core.Views;
 using DataVisualization.Models;
 using DataVisualization.Services;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -43,8 +46,12 @@ namespace DataVisualization.Core.ViewModels
 
         internal async Task DeleteConfigurationAsync(DataConfiguration selectedItem)
         {
-            var result = MessageBox.Show($"Are you sure you want to delete \"{selectedItem.DataName}\"?", "Delete data", MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
+            var popup = new PopupBoxView
+            {
+                DataContext = new PopupBoxViewModel(PopupBoxType.YesNo, $"{Translation.DeleteItemConfirmation} {selectedItem.DataName}?")
+            };
+            var result = (PopupBoxResult)(await DialogHost.Show(popup, "RootHost"));
+            if (result == PopupBoxResult.Yes)
             {
                 _eventAggregator.PublishOnUIThread(new BeforeDataConfigurationDeletedEventArgs { ConfigToDelete = selectedItem });
                 var loadingBar = _loadingBarManager.ShowLoadingBar();

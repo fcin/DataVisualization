@@ -169,7 +169,7 @@ namespace DataVisualization.Core.ViewModels
                 {
                     DataContext = new PopupBoxViewModel(PopupBoxType.Ok, Translation.ConvertToTypeFailErrorMessage, true)
                 };
-                await DialogHost.Show(popup);
+                await DialogHost.Show(popup, "DataLoaderHost");
 
                 return;
             }
@@ -309,7 +309,7 @@ namespace DataVisualization.Core.ViewModels
                 {
                     DataContext = new PopupBoxViewModel(PopupBoxType.Ok, message, true)
                 };
-                await DialogHost.Show(popup);
+                await DialogHost.Show(popup, "DataLoaderHost");
             }
             else
             {
@@ -410,7 +410,7 @@ namespace DataVisualization.Core.ViewModels
                 {
                     DataContext = new PopupBoxViewModel(PopupBoxType.Ok, message, true)
                 };
-                await DialogHost.Show(popup);
+                await DialogHost.Show(popup, "DataLoaderHost");
             }
         }
 

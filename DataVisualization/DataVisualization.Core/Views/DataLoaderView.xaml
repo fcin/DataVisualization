@@ -18,7 +18,7 @@
         <convs:ColumnAxisConverter x:Key="ColumnAxisConverter"></convs:ColumnAxisConverter>
         <convs:SelectedAxisConverter x:Key="SelectedAxisConverter"></convs:SelectedAxisConverter>
     </Window.Resources>
-    <materialDesign:DialogHost CloseOnClickAway="False">
+    <materialDesign:DialogHost CloseOnClickAway="False" Identifier="DataLoaderHost">
         <Grid Margin="15,30,15,15" IsEnabled="{Binding IsLoaderWindowEnabled}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"></ColumnDefinition>

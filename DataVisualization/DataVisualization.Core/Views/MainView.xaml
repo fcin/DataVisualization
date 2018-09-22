@@ -17,20 +17,22 @@
         mc:Ignorable="d"
         Title="MainView" Height="600" Width="800" 
         WindowStartupLocation="CenterScreen">
-    <Grid IsEnabled="{Binding IsMainWindowEnabled}">
-        <DockPanel>
-            <ContentControl x:Name="MenuVm" DockPanel.Dock="Top" Margin="0, 0, 0, 20"></ContentControl>
-            <Expander ExpandDirection="Right" IsExpanded="True" Margin="0, 0, 10, 0">
-                <Expander.Header>
-                    <TextBlock Text="{x:Static trans:Translation.DataList}" RenderTransformOrigin=".5,.5">
-                        <TextBlock.LayoutTransform>
-                            <RotateTransform Angle="90" />
-                        </TextBlock.LayoutTransform>
-                    </TextBlock>
-                </Expander.Header>
-                <ContentControl DockPanel.Dock="Left" x:Name="DataBrowserVm"></ContentControl>
-            </Expander>
-            <ContentControl x:Name="VisualizerVm"></ContentControl>
-        </DockPanel>
-    </Grid>
+    <materialDesign:DialogHost Identifier="RootHost">
+        <Grid IsEnabled="{Binding IsMainWindowEnabled}">
+            <DockPanel>
+                <ContentControl x:Name="MenuVm" DockPanel.Dock="Top" Margin="0, 0, 0, 20"></ContentControl>
+                <Expander ExpandDirection="Right" IsExpanded="True" Margin="0, 0, 10, 0">
+                    <Expander.Header>
+                        <TextBlock Text="{x:Static trans:Translation.DataList}" RenderTransformOrigin=".5,.5">
+                            <TextBlock.LayoutTransform>
+                                <RotateTransform Angle="90" />
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                    </Expander.Header>
+                    <ContentControl DockPanel.Dock="Left" x:Name="DataBrowserVm"></ContentControl>
+                </Expander>
+                <ContentControl x:Name="VisualizerVm"></ContentControl>
+            </DockPanel>
+        </Grid>
+    </materialDesign:DialogHost>
 </Window>
