@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Advanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
   <data name="AllData" xml:space="preserve">
     <value>All data</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="FilePath" xml:space="preserve">
     <value>File path</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
   </data>
   <data name="GoToNewest" xml:space="preserve">
     <value>Go to newest</value>

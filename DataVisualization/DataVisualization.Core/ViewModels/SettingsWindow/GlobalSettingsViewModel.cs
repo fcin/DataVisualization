@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using DataVisualization.Core.Translations;
 using DataVisualization.Services;
 using System;
 using System.Collections.Generic;
@@ -11,25 +12,25 @@ namespace DataVisualization.Core.ViewModels.SettingsWindow
 
         private readonly GlobalSettings _globalSettings;
 
-        public GlobalSettingsViewModel(GlobalSettings globalSettings)
+        public GlobalSettingsViewModel(GlobalSettings globalSettings, IEventAggregator eventAggregator)
         {
             _globalSettings = globalSettings;
 
             Nodes = new List<TreeNode> {
                 new TreeNode
                 {
-                    Name = "Settings",
+                    Name = Translation.Settings,
                     Openable = false,
                     Children = new List<TreeNode>
                     {
                         new TreeNode
                         {
-                            Name = "General",
+                            Name = Translation.General,
                             Openable = true,
-                            NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new GeneralGlobalSettingsViewModel(_globalSettings)) },
+                            NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new GeneralGlobalSettingsViewModel(_globalSettings, eventAggregator)) },
                         new TreeNode
                         {
-                            Name = "Advanced",
+                            Name = Translation.Advanced,
                             Openable = true,
                             NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new AdvancedGlobalSettingsViewModel())
                         }

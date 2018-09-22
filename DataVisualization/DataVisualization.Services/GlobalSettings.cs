@@ -44,8 +44,12 @@ namespace DataVisualization.Services
                     var collection = db.GetCollection<GlobalSettingsStorage>(nameof(GlobalSettingsStorage));
                     if (collection.Count() != 0)
                     {
-                        var id = collection.FindOne(Query.All()).Id;
-                        settings.Id = id;
+                        var document = collection.FindOne(Query.All());
+                        settings.Id = document.Id;
+
+                        if (document.Equals(settings))
+                            return;
+
                         collection.Update(settings);
                     }
                     else
@@ -81,7 +85,7 @@ namespace DataVisualization.Services
         }
     }
 
-    internal class GlobalSettingsStorage
+    internal class GlobalSettingsStorage : IEquatable<GlobalSettingsStorage>
     {
         [BsonId]
         public int Id { get; set; }
@@ -90,6 +94,26 @@ namespace DataVisualization.Services
         public GlobalSettingsStorage()
         {
             CurrentLanguageShortName = "en-US";
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as GlobalSettingsStorage);
+        }
+
+        public bool Equals(GlobalSettingsStorage other)
+        {
+            return other != null &&
+                   Id == other.Id &&
+                   CurrentLanguageShortName.Equals(other.CurrentLanguageShortName);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1608065743;
+            hashCode = hashCode * -1521134295 + Id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CurrentLanguageShortName);
+            return hashCode;
         }
     }
 }

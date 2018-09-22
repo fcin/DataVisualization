@@ -1,8 +1,10 @@
 ﻿using Caliburn.Micro;
 using DataVisualization.Core.ViewModels;
+using DataVisualization.Core.ViewModels.SettingsWindow;
 using DataVisualization.Services;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 
 namespace DataVisualization.Core
@@ -18,6 +20,10 @@ namespace DataVisualization.Core
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
+            var globalSettings = new GlobalSettings();
+            Thread.CurrentThread.CurrentCulture = globalSettings.CurrentLanguage;
+            Thread.CurrentThread.CurrentUICulture = globalSettings.CurrentLanguage;
+
             DisplayRootViewFor<MainViewModel>();
         }
 
@@ -35,6 +41,7 @@ namespace DataVisualization.Core
             _container.PerRequest<VisualizerViewModel, VisualizerViewModel>();
             _container.PerRequest<DataBrowserViewModel, DataBrowserViewModel>();
             _container.PerRequest<MenuViewModel, MenuViewModel>();
+            _container.PerRequest<GlobalSettingsViewModel, GlobalSettingsViewModel>();
 
             base.Configure();
         }

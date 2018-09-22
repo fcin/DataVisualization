@@ -8,13 +8,16 @@ namespace DataVisualization.Core.ViewModels
     {
         private readonly IWindowManager _windowManager;
         private readonly GlobalSettings _globalSettings;
-        private DataLoaderViewModel _dataLoaderVm;
+        private readonly DataLoaderViewModel _dataLoaderVm;
+        private readonly GlobalSettingsViewModel _globalSettingsVm;
 
-        public MenuViewModel(IWindowManager windowManager, GlobalSettings globalSettings, DataLoaderViewModel dataLoaderVm)
+        public MenuViewModel(IWindowManager windowManager, GlobalSettings globalSettings, DataLoaderViewModel dataLoaderVm, 
+            GlobalSettingsViewModel globalSettingsVm)
         {
             _windowManager = windowManager;
             _globalSettings = globalSettings;
             _dataLoaderVm = dataLoaderVm;
+            _globalSettingsVm = globalSettingsVm;
         }
 
         public void NewData()
@@ -24,7 +27,7 @@ namespace DataVisualization.Core.ViewModels
 
         public void OpenSettings()
         {
-            _windowManager.ShowDialog(new GlobalSettingsViewModel(_globalSettings));
+            _windowManager.ShowDialog(_globalSettingsVm);
         }
     }
 }

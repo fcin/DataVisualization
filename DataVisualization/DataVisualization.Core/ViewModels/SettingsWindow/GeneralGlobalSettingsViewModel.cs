@@ -1,4 +1,6 @@
-﻿using DataVisualization.Services;
+﻿using Caliburn.Micro;
+using DataVisualization.Core.Events;
+using DataVisualization.Services;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,10 +17,12 @@ namespace DataVisualization.Core.ViewModels.SettingsWindow
         }
 
         private readonly GlobalSettings _globalSettings;
+        private readonly IEventAggregator _eventAggregator;
 
-        public GeneralGlobalSettingsViewModel(GlobalSettings globalSettings)
+        public GeneralGlobalSettingsViewModel(GlobalSettings globalSettings, IEventAggregator eventAggregator)
         {
             _globalSettings = globalSettings;
+            _eventAggregator = eventAggregator;
             SelectedLanguage = _globalSettings.CurrentLanguage.DisplayName;
         }
 
@@ -26,6 +30,8 @@ namespace DataVisualization.Core.ViewModels.SettingsWindow
         {
             _globalSettings.CurrentLanguage = _globalSettings.AllLanguages.First(lang => lang.DisplayName == SelectedLanguage);
             _globalSettings.Persist();
+
+            _eventAggregator.PublishOnUIThread(new GlobalSettingsChangedEventArgs { NewGlobalSettings = _globalSettings });
         }
     }
 }

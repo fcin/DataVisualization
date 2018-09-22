@@ -118,6 +118,7 @@
     <Compile Include="Converters\ValueConverterGroup.cs" />
     <Compile Include="Events\BeforeDataConfigurationDeletedEventArgs.cs" />
     <Compile Include="Events\DataConfigurationOpenedEventArgs.cs" />
+    <Compile Include="Events\GlobalSettingsChangedEventArgs.cs" />
     <Compile Include="Events\LoadingBarOpenedEventArgs.cs" />
     <Compile Include="Events\NewDataAddedEventArgs.cs" />
     <Compile Include="ILoadingBarWindow.cs" />
