@@ -8,21 +8,22 @@ namespace DataVisualization.Core.ViewModels
     {
         private readonly IWindowManager _windowManager;
         private readonly GlobalSettings _globalSettings;
-        private readonly DataLoaderViewModel _dataLoaderVm;
+        private readonly DataLoaderViewModelFactory _dataLoaderVmFactory;
         private readonly GlobalSettingsViewModel _globalSettingsVm;
 
-        public MenuViewModel(IWindowManager windowManager, GlobalSettings globalSettings, DataLoaderViewModel dataLoaderVm, 
-            GlobalSettingsViewModel globalSettingsVm)
+        public MenuViewModel(IWindowManager windowManager, GlobalSettings globalSettings, 
+            DataLoaderViewModelFactory dataLoaderVmFactory, GlobalSettingsViewModel globalSettingsVm)
         {
             _windowManager = windowManager;
             _globalSettings = globalSettings;
-            _dataLoaderVm = dataLoaderVm;
+            _dataLoaderVmFactory = dataLoaderVmFactory;
             _globalSettingsVm = globalSettingsVm;
         }
 
         public void NewData()
         {
-            _windowManager.ShowDialog(_dataLoaderVm);
+            var dataLoaderVm = _dataLoaderVmFactory.Get();
+            _windowManager.ShowDialog(dataLoaderVm);
         }
 
         public void OpenSettings()

@@ -37,7 +37,7 @@ namespace DataVisualization.Core
             _container.Singleton<GlobalSettings, GlobalSettings>();
             _container.PerRequest<DataService, DataService>();
             _container.PerRequest<DataConfigurationService, DataConfigurationService>();
-            _container.PerRequest<DataLoaderViewModel, DataLoaderViewModel>();
+            _container.PerRequest<DataLoaderViewModelFactory, DataLoaderViewModelFactory>();
             _container.PerRequest<VisualizerViewModel, VisualizerViewModel>();
             _container.PerRequest<DataBrowserViewModel, DataBrowserViewModel>();
             _container.PerRequest<MenuViewModel, MenuViewModel>();

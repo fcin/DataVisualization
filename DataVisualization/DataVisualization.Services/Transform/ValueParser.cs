@@ -30,7 +30,9 @@ namespace DataVisualization.Services.Transform
             }
             else if (valueType == ColumnTypeDef.Datetime)
             {
-                var parsed = DateTime.TryParse(value, out var result);
+                var style = DateTimeStyles.AllowInnerWhite | DateTimeStyles.AllowLeadingWhite | 
+                    DateTimeStyles.AllowTrailingWhite | DateTimeStyles.AllowWhiteSpaces;
+                var parsed = DateTime.TryParse(value, CultureInfo.InvariantCulture, style, out var result);
                 return (parsed, result);
             }
             else if (valueType == ColumnTypeDef.Unknown)
