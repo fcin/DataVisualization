@@ -135,8 +135,14 @@
   <data name="Color" xml:space="preserve">
     <value>Color</value>
   </data>
+  <data name="ColumnAlreadyExistsOrillegalCharacter" xml:space="preserve">
+    <value>Column with name {newName} already exists or contains illegal character.</value>
+  </data>
   <data name="ColumnName" xml:space="preserve">
     <value>Column name</value>
+  </data>
+  <data name="ConvertToTypeFailErrorMessage" xml:space="preserve">
+    <value>Cannot convert data to this type. Selected type is not convertable to specified type. Please select a different type.</value>
   </data>
   <data name="DataList" xml:space="preserve">
     <value>Data list</value>
@@ -164,6 +170,9 @@
   </data>
   <data name="Ignore" xml:space="preserve">
     <value>Ignore</value>
+  </data>
+  <data name="InternalError" xml:space="preserve">
+    <value>Internal error</value>
   </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>

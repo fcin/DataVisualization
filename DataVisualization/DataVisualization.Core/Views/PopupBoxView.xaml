@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="DataVisualization.Core.Views.PopupBoxView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DataVisualization.Core.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:convs="clr-namespace:DataVisualization.Core.Converters"
+             xmlns:vms="clr-namespace:DataVisualization.Core.ViewModels"
+             xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <convs:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></convs:BoolToVisibilityConverter>
+    </UserControl.Resources>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="30">
+            <materialDesign:PackIcon Visibility="{Binding ShowWarning, Converter={StaticResource BoolToVisibilityConverter}}" 
+                                     Kind="AlertBox" Width="35" Height="35" Margin="0,0,10,0" />
+            <TextBlock TextWrapping="Wrap" TextAlignment="Center" MaxWidth="500" 
+                       Text="{Binding Message, FallbackValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi elementum nunc vitae ipsum finibus.'}"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+        <Button Visibility="{Binding IsOkVisible, Converter={StaticResource BoolToVisibilityConverter}}" 
+                IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+            <Button.CommandParameter>
+                <vms:PopupBoxResult>Ok</vms:PopupBoxResult>
+            </Button.CommandParameter>
+            Ok
+        </Button>
+    </StackPanel>
+</UserControl>

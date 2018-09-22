@@ -1,8 +1,11 @@
 ﻿using Caliburn.Micro;
 using DataVisualization.Core.Events;
+using DataVisualization.Core.Translations;
+using DataVisualization.Core.Views;
 using DataVisualization.Models;
 using DataVisualization.Services;
 using DataVisualization.Services.Transform;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -146,7 +149,7 @@ namespace DataVisualization.Core.ViewModels
             IsLoaderWindowEnabled = true;
         }
 
-        public void OnColumnTypeChanged(SelectionChangedEventArgs args, string columnName, ComboBox comboBox)
+        public async void OnColumnTypeChanged(SelectionChangedEventArgs args, string columnName, ComboBox comboBox)
         {
             var newType = ColumnTypeDef.AllTypes.First(t => t.PrettyType == (ColumnTypes)args.AddedItems[0]);
             var index = DataGridColumnsModel.GetColumnIndex(columnName);
@@ -161,7 +164,13 @@ namespace DataVisualization.Core.ViewModels
                 var safeValue = ColumnTypeDef.AllTypes.First(t => t.PrettyType == (ColumnTypes)comboBox.SelectedItem);
                 DataGridColumnsModel.Columns[index] = new GridColumn(columnName, safeValue, DataGridColumnsModel.Columns[index].IsIgnored, DataGridColumnsModel.Columns[index].Axis);
                 ValidateSubmit();
-                MessageBox.Show("Cannot convert data to this type. Please select a different one.");
+                
+                var popup = new PopupBoxView
+                {
+                    DataContext = new PopupBoxViewModel(PopupBoxType.Ok, Translation.ConvertToTypeFailErrorMessage, true)
+                };
+                await DialogHost.Show(popup);
+
                 return;
             }
 
@@ -281,7 +290,7 @@ namespace DataVisualization.Core.ViewModels
             }
         }
 
-        public void OnColumnNameChanged(string oldName, string newName, TextBox textBox)
+        public async void OnColumnNameChanged(string oldName, string newName, TextBox textBox)
         {
             if (oldName.Equals(newName))
                 return;
@@ -295,7 +304,12 @@ namespace DataVisualization.Core.ViewModels
             {
                 DataGridColumnsModel.Columns[index] = new GridColumn(oldName, type, DataGridColumnsModel.Columns[index].IsIgnored, DataGridColumnsModel.Columns[index].Axis);
                 textBox.Text = oldName;
-                MessageBox.Show($"Column with name {newName} already exists or contains illegal character.");
+                var message = Translation.ColumnAlreadyExistsOrillegalCharacter.Replace("{newName}", newName);
+                var popup = new PopupBoxView
+                {
+                    DataContext = new PopupBoxViewModel(PopupBoxType.Ok, message, true)
+                };
+                await DialogHost.Show(popup);
             }
             else
             {
@@ -391,7 +405,12 @@ namespace DataVisualization.Core.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                var message = $"{Translation.InternalError}: {ex.Message}";
+                var popup = new PopupBoxView
+                {
+                    DataContext = new PopupBoxViewModel(PopupBoxType.Ok, message, true)
+                };
+                await DialogHost.Show(popup);
             }
         }
 

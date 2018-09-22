@@ -115,11 +115,29 @@ namespace DataVisualization.Core.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Column with name {newName} already exists or contains illegal character..
+        /// </summary>
+        public static string ColumnAlreadyExistsOrillegalCharacter {
+            get {
+                return ResourceManager.GetString("ColumnAlreadyExistsOrillegalCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Column name.
         /// </summary>
         public static string ColumnName {
             get {
                 return ResourceManager.GetString("ColumnName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot convert data to this type. Selected type is not convertable to specified type. Please select a different type..
+        /// </summary>
+        public static string ConvertToTypeFailErrorMessage {
+            get {
+                return ResourceManager.GetString("ConvertToTypeFailErrorMessage", resourceCulture);
             }
         }
         
@@ -201,6 +219,15 @@ namespace DataVisualization.Core.Translations {
         public static string Ignore {
             get {
                 return ResourceManager.GetString("Ignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internal error.
+        /// </summary>
+        public static string InternalError {
+            get {
+                return ResourceManager.GetString("InternalError", resourceCulture);
             }
         }
         

@@ -143,6 +143,7 @@
     </Compile>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
+    <Compile Include="ViewModels\PopupBoxViewModel.cs" />
     <Compile Include="ViewModels\SeriesPropertiesViewModel.cs" />
     <Compile Include="ViewModels\SettingsWindow\AdvancedGlobalSettingsViewModel.cs" />
     <Compile Include="ViewModels\SettingsWindow\GeneralGlobalSettingsViewModel.cs" />
@@ -163,6 +164,9 @@
     </Compile>
     <Compile Include="Views\MenuView.xaml.cs">
       <DependentUpon>MenuView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PopupBoxView.xaml.cs">
+      <DependentUpon>PopupBoxView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SeriesPropertiesView.xaml.cs">
       <DependentUpon>SeriesPropertiesView.xaml</DependentUpon>
@@ -200,6 +204,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PopupBoxView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
