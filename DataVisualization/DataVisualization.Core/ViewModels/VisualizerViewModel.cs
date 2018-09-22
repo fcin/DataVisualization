@@ -9,7 +9,6 @@ using LiveCharts.Geared;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -30,18 +29,15 @@ namespace DataVisualization.Core.ViewModels
 
         public SeriesCollection SeriesCollection { get; set; } = new SeriesCollection();
 
+        private readonly Formatter _formatter = new Formatter();
         public Func<double, string> FormatterX
         {
             get
             {
-                var xLineType = _data?.Series?.First(d => d.Axis == Axes.X1).InternalType;
-
-                if (xLineType == null || xLineType == ColumnTypeDef.Number)
-                    return val => val.ToString(CultureInfo.CurrentCulture);
-                else if (xLineType == ColumnTypeDef.Datetime)
-                    return val => new DateTime((long)val).ToString("MM/dd/yyyy");
-                else
-                    throw new ArgumentException("Unsupported type");
+                var xLineType = _data.Series.First(d => d.Axis == Axes.X1).InternalType;
+                var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
+                var xValues = SeriesCollection.First().Values.OfType<DateModel>().Select(val => val.HorizontalAxis);
+                return _formatter.GetFormat(xLineType, xValues);
             }
         }
 
@@ -128,7 +124,6 @@ namespace DataVisualization.Core.ViewModels
                 return;
 
             IsDisplayed = true;
-            NotifyOfPropertyChange(() => FormatterX);
 
             _data = _dataService.GetData(_config.DataName);
 
@@ -256,6 +251,8 @@ namespace DataVisualization.Core.ViewModels
                     AddSeriesToCollection(allSeriesCount, points, series);
                 }
             }
+
+            NotifyOfPropertyChange(() => FormatterX);
         }
 
         private void AddSeriesToCollection(int allSeriesCount, IEnumerable<DateModel> points, Series series)
