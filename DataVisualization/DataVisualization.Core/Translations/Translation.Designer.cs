@@ -250,6 +250,69 @@ namespace DataVisualization.Core.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to At least 1 column has to be set to axis X1..
+        /// </summary>
+        public static string LoadError_ColumnWithAxisX1Missing {
+            get {
+                return ResourceManager.GetString("LoadError_ColumnWithAxisX1Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least 1 column has to be set to axis Y1..
+        /// </summary>
+        public static string LoadError_ColumnWithAxisY1Missing {
+            get {
+                return ResourceManager.GetString("LoadError_ColumnWithAxisY1Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Column &apos;{columnName}&apos; does not have axis assigned to it..
+        /// </summary>
+        public static string LoadError_ColumnWithoutAxis {
+            get {
+                return ResourceManager.GetString("LoadError_ColumnWithoutAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Column &apos;{columnName}&apos; does not have a type..
+        /// </summary>
+        public static string LoadError_ColumnWithoutType {
+            get {
+                return ResourceManager.GetString("LoadError_ColumnWithoutType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected file &apos;{fileName}&apos; is already loaded..
+        /// </summary>
+        public static string LoadError_FileAlreadyLoaded {
+            get {
+                return ResourceManager.GetString("LoadError_FileAlreadyLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There must be at least 2 not ignored columns..
+        /// </summary>
+        public static string LoadError_NotIgnoredColumnsMissing {
+            get {
+                return ResourceManager.GetString("LoadError_NotIgnoredColumnsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select file to load..
+        /// </summary>
+        public static string LoadError_SelectFile {
+            get {
+                return ResourceManager.GetString("LoadError_SelectFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Move left.
         /// </summary>
         public static string MoveLeft {

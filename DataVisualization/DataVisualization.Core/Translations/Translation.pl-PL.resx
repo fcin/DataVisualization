@@ -180,6 +180,27 @@
   <data name="Language" xml:space="preserve">
     <value>Język</value>
   </data>
+  <data name="LoadError_ColumnWithAxisX1Missing" xml:space="preserve">
+    <value>Przynajmniej jedna kolumna musi być na osi X1.</value>
+  </data>
+  <data name="LoadError_ColumnWithAxisY1Missing" xml:space="preserve">
+    <value>Przynajmniej jedna kolumna musi być na osi Y1.</value>
+  </data>
+  <data name="LoadError_ColumnWithoutAxis" xml:space="preserve">
+    <value>Wybierz oś dla kolumny '{columnName}'.</value>
+  </data>
+  <data name="LoadError_ColumnWithoutType" xml:space="preserve">
+    <value>Wybierz typ dla kolumny '{columnName}'.</value>
+  </data>
+  <data name="LoadError_FileAlreadyLoaded" xml:space="preserve">
+    <value>Wybrany plik '{fileName}' został już dodany.</value>
+  </data>
+  <data name="LoadError_NotIgnoredColumnsMissing" xml:space="preserve">
+    <value>Plik musi zawierać przynajmniej dwie nieignorowane kolumny.</value>
+  </data>
+  <data name="LoadError_SelectFile" xml:space="preserve">
+    <value>Wybierz plik do wczytania.</value>
+  </data>
   <data name="MoveLeft" xml:space="preserve">
     <value>W lewo</value>
   </data>

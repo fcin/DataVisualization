@@ -125,6 +125,13 @@ namespace DataVisualization.Core.ViewModels
 
         public KeyValuePair<string, int> SelectedRefreshTime { get; set; }
 
+        private IEnumerable<string> _errors;
+        public IEnumerable<string> Errors
+        {
+            get => _errors;
+            set => Set(ref _errors, value);
+        }
+
         private readonly IEventAggregator _eventAggregator;
         private readonly LoadingBarManager _loadingBarManager;
         private readonly DataFileReader _dataFileReader;
@@ -132,12 +139,12 @@ namespace DataVisualization.Core.ViewModels
         private readonly DataService _dataService;
         private DataTable _sampleData;
 
-        public DataLoaderViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager, 
+        public DataLoaderViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager,
             DataConfigurationService dataConfigurationService, DataService dataService)
         {
             _eventAggregator = eventAggregator;
             _loadingBarManager = loadingBarManager;
-            
+
             DataGridCollection = new BindableCollection<object>();
             _dataFileReader = new DataFileReader();
             _dataConfigurationService = dataConfigurationService;
@@ -164,7 +171,7 @@ namespace DataVisualization.Core.ViewModels
                 var safeValue = ColumnTypeDef.AllTypes.First(t => t.PrettyType == (ColumnTypes)comboBox.SelectedItem);
                 DataGridColumnsModel.Columns[index] = new GridColumn(columnName, safeValue, DataGridColumnsModel.Columns[index].IsIgnored, DataGridColumnsModel.Columns[index].Axis);
                 ValidateSubmit();
-                
+
                 var popup = new PopupBoxView
                 {
                     DataContext = new PopupBoxViewModel(PopupBoxType.Ok, Translation.ConvertToTypeFailErrorMessage, true)
@@ -352,13 +359,38 @@ namespace DataVisualization.Core.ViewModels
             }
         }
 
-        public bool CanOnDataLoad => !string.IsNullOrEmpty(FilePath) &&
-                                     !_dataConfigurationService.Exists(Path.GetFileNameWithoutExtension(FilePath)) &&
-                                     !DataGridColumnsModel.Columns.Any(col => col.ColumnType.Equals(ColumnTypeDef.Unknown) && !col.IsIgnored) &&
-                                      DataGridColumnsModel.Columns.Count(col => !col.IsIgnored) > 1 &&
-                                      DataGridColumnsModel.Columns.Any(col => col.Axis == Axes.X1) &&
-                                      DataGridColumnsModel.Columns.Any(col => col.Axis == Axes.Y1) &&
-                                     !DataGridColumnsModel.Columns.Any(col => !col.IsIgnored && col.Axis == Axes.None);
+        public bool CanOnDataLoad
+        {
+            get
+            {
+                UpdateAllErrors();
+                return !Errors.Any();
+            }
+        }
+
+        private void UpdateAllErrors()
+        {
+            var errors = new List<string>();
+
+            if (string.IsNullOrEmpty(FilePath))
+                errors.Add(Translation.LoadError_SelectFile);
+            if (_dataConfigurationService.Exists(Path.GetFileNameWithoutExtension(FilePath)))
+                errors.Add(Translation.LoadError_FileAlreadyLoaded.Replace("{fileName}", Path.GetFileName(FilePath)));
+            var columnsWithoutTypes = DataGridColumnsModel.Columns.Where(col => col.ColumnType.Equals(ColumnTypeDef.Unknown) && !col.IsIgnored);
+            foreach (var columnWithoutType in columnsWithoutTypes)
+                errors.Add(Translation.LoadError_ColumnWithoutType.Replace("{columnName}", columnWithoutType.Name));
+            if (DataGridColumnsModel.Columns.Count(col => !col.IsIgnored) < 2)
+                errors.Add(Translation.LoadError_NotIgnoredColumnsMissing);
+            if (!DataGridColumnsModel.Columns.Any(col => col.Axis == Axes.X1))
+                errors.Add(Translation.LoadError_ColumnWithAxisX1Missing);
+            if (!DataGridColumnsModel.Columns.Any(col => col.Axis == Axes.Y1))
+                errors.Add(Translation.LoadError_ColumnWithAxisY1Missing);
+            var columnsWithoutAxes = DataGridColumnsModel.Columns.Where(col => !col.IsIgnored && col.Axis == Axes.None);
+            foreach (var columnWithoutAxis in columnsWithoutAxes)
+                errors.Add(Translation.LoadError_ColumnWithoutAxis.Replace("{columnName}", columnWithoutAxis.Name));
+
+            Errors = errors;
+        }
 
         public async void OnDataLoad()
         {
@@ -389,7 +421,8 @@ namespace DataVisualization.Core.ViewModels
                 if (!_dataService.Exists(config.DataName))
                 {
                     var loadingBarWindow = _loadingBarManager.ShowLoadingBar();
-                    var readDataProgress = new Progress<LoadingBarStatus>(result => {
+                    var readDataProgress = new Progress<LoadingBarStatus>(result =>
+                    {
                         loadingBarWindow.PercentFinished = result.PercentFinished;
                         loadingBarWindow.Message = result.Message;
                     });

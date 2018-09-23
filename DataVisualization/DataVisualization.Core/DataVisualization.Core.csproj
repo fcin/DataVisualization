@@ -115,6 +115,7 @@
     <Compile Include="Converters\SelectedAxisConverter.cs" />
     <Compile Include="Converters\SelectedComboboxItemConverter.cs" />
     <Compile Include="Converters\ColumnTypesConverter.cs" />
+    <Compile Include="Converters\StringToBoolConverter.cs" />
     <Compile Include="Converters\ValueConverterGroup.cs" />
     <Compile Include="DataLoaderViewModelFactory.cs" />
     <Compile Include="Events\BeforeDataConfigurationDeletedEventArgs.cs" />

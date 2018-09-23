@@ -180,6 +180,27 @@
   <data name="Language" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="LoadError_ColumnWithAxisX1Missing" xml:space="preserve">
+    <value>At least 1 column has to be set to axis X1.</value>
+  </data>
+  <data name="LoadError_ColumnWithAxisY1Missing" xml:space="preserve">
+    <value>At least 1 column has to be set to axis Y1.</value>
+  </data>
+  <data name="LoadError_ColumnWithoutAxis" xml:space="preserve">
+    <value>Column '{columnName}' does not have axis assigned to it.</value>
+  </data>
+  <data name="LoadError_ColumnWithoutType" xml:space="preserve">
+    <value>Column '{columnName}' does not have a type.</value>
+  </data>
+  <data name="LoadError_FileAlreadyLoaded" xml:space="preserve">
+    <value>Selected file '{fileName}' is already loaded.</value>
+  </data>
+  <data name="LoadError_NotIgnoredColumnsMissing" xml:space="preserve">
+    <value>There must be at least 2 not ignored columns.</value>
+  </data>
+  <data name="LoadError_SelectFile" xml:space="preserve">
+    <value>Select file to load.</value>
+  </data>
   <data name="MoveLeft" xml:space="preserve">
     <value>Move left</value>
   </data>
