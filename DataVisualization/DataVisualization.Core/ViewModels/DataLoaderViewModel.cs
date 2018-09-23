@@ -84,7 +84,7 @@ namespace DataVisualization.Core.ViewModels
 
         public IEnumerable<char> AllThousandsSeparators => new List<char> { '.', ',' };
 
-        private char _selectedThousandsSeparator = '.';
+        private char _selectedThousandsSeparator;
         public char SelectedThousandsSeparator
         {
             get => _selectedThousandsSeparator;
@@ -93,7 +93,7 @@ namespace DataVisualization.Core.ViewModels
 
         public IEnumerable<char> AllDecimalSeparators => new List<char> { ',', '.' };
 
-        private char _selectedDecimalSeparator = ',';
+        private char _selectedDecimalSeparator;
         public char SelectedDecimalSeparator
         {
             get => _selectedDecimalSeparator;
@@ -144,20 +144,29 @@ namespace DataVisualization.Core.ViewModels
         {
             _eventAggregator = eventAggregator;
             _loadingBarManager = loadingBarManager;
-
-            DataGridCollection = new BindableCollection<object>();
-            _dataFileReader = new DataFileReader();
             _dataConfigurationService = dataConfigurationService;
             _dataService = dataService;
+            _dataFileReader = new DataFileReader();
 
             eventAggregator.Subscribe(this);
-
-            SelectedRefreshTime = RefreshTimes[0];
+            
             IsLoaderWindowEnabled = true;
+        }
+
+        private void ClearAll()
+        {
+            SelectedThousandsSeparator = '.';
+            SelectedDecimalSeparator = ',';
+            DataGridColumnsModel.Columns.Clear();
+            DataGridCollection = new BindableCollection<object>();
+            Errors = Enumerable.Empty<string>();
+            SelectedRefreshTime = RefreshTimes[0];
         }
 
         public async void OnColumnTypeChanged(SelectionChangedEventArgs args, string columnName, ComboBox comboBox)
         {
+            if (args.AddedItems.Count == 0)
+                return;
             var newType = ColumnTypeDef.AllTypes.First(t => t.PrettyType == (ColumnTypes)args.AddedItems[0]);
             var index = DataGridColumnsModel.GetColumnIndex(columnName);
 
@@ -198,7 +207,7 @@ namespace DataVisualization.Core.ViewModels
 
         public async Task RecreateGrid()
         {
-            DataGridCollection.Clear();
+            ClearAll();
 
             _sampleData = await _dataFileReader.ReadSampleAsync(FilePath, 30);
 
@@ -338,6 +347,9 @@ namespace DataVisualization.Core.ViewModels
 
         public void OnAxisTypeChanged(SelectionChangedEventArgs args, string columnName, ComboBox comboBox)
         {
+            if (args.AddedItems.Count == 0)
+                return;
+
             var index = DataGridColumnsModel.GetColumnIndex(columnName);
             DataGridColumnsModel.Columns[index].Axis = (Axes)args.AddedItems[0];
             ValidateSubmit();
