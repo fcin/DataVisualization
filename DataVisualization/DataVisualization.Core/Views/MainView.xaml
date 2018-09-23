@@ -15,7 +15,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="MainView" Height="600" Width="800" 
+        Title="DataVisualization" MinHeight="600" MinWidth="800" Height="768" Width="1366" 
         WindowStartupLocation="CenterScreen">
     <materialDesign:DialogHost Identifier="RootHost">
         <Grid IsEnabled="{Binding IsMainWindowEnabled}">

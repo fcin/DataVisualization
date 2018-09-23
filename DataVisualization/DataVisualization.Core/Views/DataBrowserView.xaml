@@ -26,10 +26,18 @@
                     <ContextMenu>
                         <MenuItem Header="{x:Static trans:Translation.Open}" 
                             Click="OnOpenConfiguration"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" ></MenuItem>
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" >
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="BookOpen" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="{x:Static trans:Translation.Delete}" 
                             Click="OnDeleteConfiguration"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" ></MenuItem>
+                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" >
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="Delete" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>

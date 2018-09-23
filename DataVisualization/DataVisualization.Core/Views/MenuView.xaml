@@ -6,13 +6,22 @@
              xmlns:local="clr-namespace:DataVisualization.Core.Views"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="800">
     <Grid>
         <Menu>
             <MenuItem Header="{x:Static trans:Translation.File}">
-                <MenuItem Header="{x:Static trans:Translation.NewData}" cal:Message.Attach="[Event Click] = [Action NewData()]"></MenuItem>
-                <MenuItem Header="{x:Static trans:Translation.Settings}" cal:Message.Attach="[Event Click] = [Action OpenSettings()]"></MenuItem>
+                <MenuItem Header="{x:Static trans:Translation.NewData}" cal:Message.Attach="[Event Click] = [Action NewData()]">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="File" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{x:Static trans:Translation.Settings}" cal:Message.Attach="[Event Click] = [Action OpenSettings()]">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="Settings" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
         </Menu>
     </Grid>
