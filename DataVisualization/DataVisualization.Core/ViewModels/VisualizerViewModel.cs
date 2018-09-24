@@ -5,8 +5,6 @@ using DataVisualization.Models;
 using DataVisualization.Services;
 using DataVisualization.Services.Extensions;
 using LiveCharts;
-using LiveCharts.Definitions.Series;
-using LiveCharts.Geared;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
@@ -86,7 +84,7 @@ namespace DataVisualization.Core.ViewModels
 
         private readonly ISeriesFactory _seriesFactory;
         private readonly IWindowManager _windowManager;
-        private readonly IEventAggregator _eventAggregator;        
+        private readonly IEventAggregator _eventAggregator;
         private readonly DataFileReader _dataFileReader = new DataFileReader();
         private readonly DataService _dataService;
         private readonly DataConfigurationService _dataConfigurationService;
@@ -94,7 +92,7 @@ namespace DataVisualization.Core.ViewModels
         private Data _data;
         private CancellationTokenSource _cts;
 
-        public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager, IEventAggregator eventAggregator, 
+        public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager, IEventAggregator eventAggregator,
             DataService dataService, DataConfigurationService dataConfigurationService)
         {
             _seriesFactory = seriesFactory;
@@ -134,7 +132,7 @@ namespace DataVisualization.Core.ViewModels
                 SeriesCollection.Clear();
                 RecreateSeries();
             });
-            
+
             var keepPullingTask = KeepPulling(_cts.Token);
 
             var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
@@ -228,57 +226,20 @@ namespace DataVisualization.Core.ViewModels
 
         private void RecreateSeries()
         {
-            var allSeriesCount = _data.Series.Count(d => d.Axis == Axes.Y1 || d.Axis == Axes.Y2);
-
             SeriesCollection.Clear();
 
-            {
-                var allSeries = new List<ISeriesView>();
+            var horizontalAxisSeries = _data.Series.First(d => d.Axis == Axes.X1);
+            var allPrimarySeries = _data.Series.Where(s => s.Axis == Axes.Y1).ToList();
 
-                var horizontalAxisSeries = _data.Series.First(d => d.Axis == Axes.X1);
-                var allPrimarySeries = _data.Series.Where(s => s.Axis == Axes.Y1).ToList();
-                foreach (var series in allPrimarySeries)
-                {
-                    var points = _seriesFactory.CreateSeriesPoints(horizontalAxisSeries, series, MinX, MaxX).ToList();
+            var secondaryXseries = _data.Series.FirstOrDefault(d => d.Axis == Axes.X2) ?? _data.Series.First(d => d.Axis == Axes.X1);
+            var allSecondarySeries = _data.Series.Where(s => s.Axis == Axes.Y2).ToList();
 
-                    var lineSeries = _seriesFactory.CreateLineSeries(points, series);
-                    allSeries.Add(lineSeries);
-                }
-                SeriesCollection.AddRange(allSeries);
-            }
+            var allPrimarySeriesViews = _seriesFactory.CreateSeriesViews(horizontalAxisSeries, allPrimarySeries, MinX, MaxX);
+            var allSecondarySeriesViews = _seriesFactory.CreateSeriesViews(secondaryXseries, allSecondarySeries, MinX, MaxX);
 
-            if (HasSecondaryAxis)
-            {
-                var allSeries = new List<ISeriesView>();
-
-                var secondaryXseries = _data.Series.FirstOrDefault(d => d.Axis == Axes.X2) ?? _data.Series.First(d => d.Axis == Axes.X1);
-                var allSecondarySeries = _data.Series.Where(s => s.Axis == Axes.Y2).ToList();
-                foreach (var series in allSecondarySeries)
-                {
-                    var points = _seriesFactory.CreateSeriesPoints(secondaryXseries, series, MinX2, MaxX2).ToList();
-                    var lineSeries = _seriesFactory.CreateLineSeries(points, series);
-                    allSeries.Add(lineSeries);
-                }
-
-                SeriesCollection.AddRange(allSeries);
-            }
+            SeriesCollection.AddRange(allPrimarySeriesViews.Concat(allSecondarySeriesViews));
 
             NotifyOfPropertyChange(() => FormatterX);
-        }
-
-        private void AddSeriesToCollection(int allSeriesCount, IEnumerable<DateModel> points, Series series)
-        {
-            if (SeriesCollection.Count == allSeriesCount)
-            {
-                var gearedValues = new GearedValues<DateModel> { Quality = Quality.Low };
-                gearedValues.AddRange(points);
-                SeriesCollection.First(s => s.Title == series.Name).Values = gearedValues;
-            }
-            else
-            {
-                var lineSeries = _seriesFactory.CreateLineSeries(points, series);
-                SeriesCollection.Add(lineSeries);
-            }
         }
 
         private void SetValue<T>(ref T oldValue, T newValue, [CallerMemberName] string propertyName = "")

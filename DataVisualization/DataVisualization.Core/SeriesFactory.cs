@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Media;
-using DataVisualization.Models;
+﻿using DataVisualization.Models;
 using LiveCharts.Configurations;
 using LiveCharts.Definitions.Series;
 using LiveCharts.Geared;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace DataVisualization.Core
 {
@@ -22,6 +23,16 @@ namespace DataVisualization.Core
         /// <param name="min">Inclusive start of range</param>
         /// <param name="max">Exclusive start of range</param>
         IEnumerable<DateModel> CreateSeriesPoints(Series horizontalSeries, Series dataSeries, double? min = null, double? max = null);
+
+        /// <summary>
+        /// Creates views for every serie for a specified axis (either primary or secondary).
+        /// </summary>
+        /// <param name="horizontalSeries">Horizontal axis. Can be either X1 or X2</param>
+        /// <param name="allVerticalSeries">All vertical series, all either Y1 or Y2.</param>
+        /// <param name="min">Starting point on horizontal axis from which to start adding points to seriesView.</param>
+        /// <param name="max">Ending point on horizontal axis on which to end adding points to seriesView.</param>
+        /// <returns></returns>
+        IEnumerable<ISeriesView> CreateSeriesViews(Series horizontalSeries, List<Series> allVerticalSeries, double? min, double? max);
     }
 
     public class SeriesFactory : ISeriesFactory
@@ -68,6 +79,7 @@ namespace DataVisualization.Core
             var minIndex = 0;
             var maxIndex = 0;
 
+
             if (min == null || max == null)
             {
                 minIndex = 0;
@@ -80,7 +92,7 @@ namespace DataVisualization.Core
                 minIndex = dateRow.Values.IndexOf(nearestMin);
                 maxIndex = dateRow.Values.IndexOf(nearestMax) + 1; // inclusive
             }
-
+            
             var increment = Math.Max((maxIndex - minIndex) / PointsCount, 1);
 
             var seriesPoints = new List<DateModel>();
@@ -93,8 +105,33 @@ namespace DataVisualization.Core
                     Value = row.Values[cellIndex]
                 });
             }
-
             return seriesPoints;
+        }
+
+        public IEnumerable<ISeriesView> CreateSeriesViews(Series horizontalSeries, List<Series> allVerticalSeries, double? min, double? max)
+        {
+            var allPoints = new ConcurrentBag<(List<DateModel> SeriesPoints, Series RelatedSeries)>();
+            Parallel.ForEach(allVerticalSeries, series =>
+            {
+                var points = this.CreateSeriesPoints(horizontalSeries, series, min, max).ToList();
+                allPoints.Add((points, series));
+            });
+
+            var allPointsSorted = allPoints
+                .OrderBy(p => allVerticalSeries
+                    .Select(a => a.Name)
+                    .ToList()
+                    .IndexOf(p.RelatedSeries.Name)
+                );
+
+            var allSeries = new List<ISeriesView>();
+            foreach (var (SeriesPoints, RelatedSeries) in allPointsSorted)
+            {
+                var lineSeries = this.CreateLineSeries(SeriesPoints, RelatedSeries);
+                allSeries.Add(lineSeries);
+            }
+
+            return allSeries;
         }
     }
 }
