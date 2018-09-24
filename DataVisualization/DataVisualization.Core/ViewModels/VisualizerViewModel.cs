@@ -5,6 +5,7 @@ using DataVisualization.Models;
 using DataVisualization.Services;
 using DataVisualization.Services.Extensions;
 using LiveCharts;
+using LiveCharts.Definitions.Series;
 using LiveCharts.Geared;
 using LiveCharts.Wpf;
 using System;
@@ -229,27 +230,37 @@ namespace DataVisualization.Core.ViewModels
         {
             var allSeriesCount = _data.Series.Count(d => d.Axis == Axes.Y1 || d.Axis == Axes.Y2);
 
+            SeriesCollection.Clear();
+
             {
+                var allSeries = new List<ISeriesView>();
+
                 var horizontalAxisSeries = _data.Series.First(d => d.Axis == Axes.X1);
                 var allPrimarySeries = _data.Series.Where(s => s.Axis == Axes.Y1).ToList();
                 foreach (var series in allPrimarySeries)
                 {
                     var points = _seriesFactory.CreateSeriesPoints(horizontalAxisSeries, series, MinX, MaxX).ToList();
 
-                    AddSeriesToCollection(allSeriesCount, points, series);
+                    var lineSeries = _seriesFactory.CreateLineSeries(points, series);
+                    allSeries.Add(lineSeries);
                 }
+                SeriesCollection.AddRange(allSeries);
             }
 
             if (HasSecondaryAxis)
             {
+                var allSeries = new List<ISeriesView>();
+
                 var secondaryXseries = _data.Series.FirstOrDefault(d => d.Axis == Axes.X2) ?? _data.Series.First(d => d.Axis == Axes.X1);
                 var allSecondarySeries = _data.Series.Where(s => s.Axis == Axes.Y2).ToList();
                 foreach (var series in allSecondarySeries)
                 {
                     var points = _seriesFactory.CreateSeriesPoints(secondaryXseries, series, MinX2, MaxX2).ToList();
-
-                    AddSeriesToCollection(allSeriesCount, points, series);
+                    var lineSeries = _seriesFactory.CreateLineSeries(points, series);
+                    allSeries.Add(lineSeries);
                 }
+
+                SeriesCollection.AddRange(allSeries);
             }
 
             NotifyOfPropertyChange(() => FormatterX);
