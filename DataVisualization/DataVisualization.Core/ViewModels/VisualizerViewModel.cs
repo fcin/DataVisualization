@@ -26,7 +26,12 @@ namespace DataVisualization.Core.ViewModels
             set => SetValue(ref _isDisplayed, value);
         }
 
-        public SeriesCollection SeriesCollection { get; set; } = new SeriesCollection();
+        private SeriesCollection _seriesCollection = new SeriesCollection();
+        public SeriesCollection SeriesCollection
+        {
+            get => _seriesCollection;
+            set => Set(ref _seriesCollection, value);
+        }
 
         private readonly Formatter _formatter = new Formatter();
         public Func<double, string> FormatterX
@@ -226,8 +231,6 @@ namespace DataVisualization.Core.ViewModels
 
         private void RecreateSeries()
         {
-            SeriesCollection.Clear();
-
             var horizontalAxisSeries = _data.Series.First(d => d.Axis == Axes.X1);
             var allPrimarySeries = _data.Series.Where(s => s.Axis == Axes.Y1).ToList();
 
@@ -237,6 +240,7 @@ namespace DataVisualization.Core.ViewModels
             var allPrimarySeriesViews = _seriesFactory.CreateSeriesViews(horizontalAxisSeries, allPrimarySeries, MinX, MaxX);
             var allSecondarySeriesViews = _seriesFactory.CreateSeriesViews(secondaryXseries, allSecondarySeries, MinX, MaxX);
 
+            SeriesCollection.Clear();
             SeriesCollection.AddRange(allPrimarySeriesViews.Concat(allSecondarySeriesViews));
 
             NotifyOfPropertyChange(() => FormatterX);
