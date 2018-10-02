@@ -42,6 +42,7 @@ namespace DataVisualization.Core
             _container.PerRequest<DataBrowserViewModel, DataBrowserViewModel>();
             _container.PerRequest<MenuViewModel, MenuViewModel>();
             _container.PerRequest<GlobalSettingsViewModel, GlobalSettingsViewModel>();
+            _container.PerRequest<DataFileReader, DataFileReader>();
 
             base.Configure();
         }

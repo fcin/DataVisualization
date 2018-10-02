@@ -14,6 +14,13 @@ namespace DataVisualization.Services
 {
     public class DataFileReader : IDataFileReader
     {
+        private readonly GlobalSettings _globalSettings;
+
+        public DataFileReader(GlobalSettings globalSettings)
+        {
+            _globalSettings = globalSettings;
+        }
+
         public async Task<Data> ReadDataAsync(DataConfiguration config, IProgress<LoadingBarStatus> progress = null)
         {
             var path = config.FilePath;
@@ -78,7 +85,7 @@ namespace DataVisualization.Services
                     FileLinesRead = linesRead,
                     Series = data.Select((d, index) => new Series
                     {
-                        Chunks = d.ToChunks(),
+                        Chunks = d.ToChunks(_globalSettings.PointsCount),
                         ColorHex = Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)).ToString(),
                         Thickness = 2,
                         InternalType = config.Columns[index].ColumnType,
@@ -185,7 +192,7 @@ namespace DataVisualization.Services
 
                 return (data.Select((d, index) => new Series
                 {
-                    Chunks = d.ToChunks(),
+                    Chunks = d.ToChunks(_globalSettings.PointsCount),
                     Name = config.Columns[index].Name
                 }).ToList(), countLines);
             }

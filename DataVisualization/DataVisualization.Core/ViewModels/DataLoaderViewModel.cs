@@ -140,13 +140,13 @@ namespace DataVisualization.Core.ViewModels
         private DataTable _sampleData;
 
         public DataLoaderViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager,
-            DataConfigurationService dataConfigurationService, DataService dataService)
+            DataConfigurationService dataConfigurationService, DataService dataService, DataFileReader dataFileReader)
         {
             _eventAggregator = eventAggregator;
             _loadingBarManager = loadingBarManager;
             _dataConfigurationService = dataConfigurationService;
             _dataService = dataService;
-            _dataFileReader = new DataFileReader();
+            _dataFileReader = dataFileReader;
 
             eventAggregator.Subscribe(this);
             

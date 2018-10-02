@@ -12,6 +12,7 @@ namespace DataVisualization.Tests
     public class SeriesFactoryTests
     {
         private ISeriesFactory _seriesFactory;
+        private const int ChunkSize = int.MaxValue;
 
         [SetUp]
         public void Setup()
@@ -45,10 +46,10 @@ namespace DataVisualization.Tests
             var horizontalSeries = new Series
             {
                 Axis = Axes.X1,
-                Chunks = new List<double> { 1, 2, 3 }.ToChunks()
+                Chunks = new List<double> { 1, 2, 3 }.ToChunks(ChunkSize)
             };
 
-            var dataSeries = new Series { Chunks = new List<double> { 5, 8, 2 }.ToChunks() };
+            var dataSeries = new Series { Chunks = new List<double> { 5, 8, 2 }.ToChunks(ChunkSize) };
 
             var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries).ToList();
 
@@ -68,10 +69,10 @@ namespace DataVisualization.Tests
             var horizontalSeries = new Series
             {
                 Axis = Axes.X1,
-                Chunks = new List<double> { 3, 1, 2 }.ToChunks()
+                Chunks = new List<double> { 3, 1, 2 }.ToChunks(ChunkSize)
             };
 
-            var dataSeries = new Series { Chunks = new List<double> { 5, 8, 2 }.ToChunks() };
+            var dataSeries = new Series { Chunks = new List<double> { 5, 8, 2 }.ToChunks(ChunkSize) };
 
             var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries).ToList();
 
@@ -91,9 +92,9 @@ namespace DataVisualization.Tests
             var horizontalSeries = new Series
             {
                 Axis = Axes.X1,
-                Chunks = new List<double> { 1, 2, 3, 4, 5 }.ToChunks()
+                Chunks = new List<double> { 1, 2, 3, 4, 5 }.ToChunks(ChunkSize)
             };
-            var dataSeries = new Series { Chunks = new List<double> { 1, 2, 3, 4, 5 }.ToChunks() };
+            var dataSeries = new Series { Chunks = new List<double> { 1, 2, 3, 4, 5 }.ToChunks(ChunkSize) };
 
             var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries, min, max).ToList();
 
@@ -114,9 +115,9 @@ namespace DataVisualization.Tests
             var horizontalSeries = new Series
             {
                 Axis = Axes.X1,
-                Chunks = new List<double> { 3, 1, 2, 5, 7, 6, 4 }.ToChunks()
+                Chunks = new List<double> { 3, 1, 2, 5, 7, 6, 4 }.ToChunks(ChunkSize)
             };
-            var dataSeries = new Series { Chunks = new List<double> { 1, 2, 3, 4, 5, 6, 7 }.ToChunks() };
+            var dataSeries = new Series { Chunks = new List<double> { 1, 2, 3, 4, 5, 6, 7 }.ToChunks(ChunkSize) };
 
             var points = _seriesFactory.CreateSeriesPoints(horizontalSeries, dataSeries, min, max).ToList();
 

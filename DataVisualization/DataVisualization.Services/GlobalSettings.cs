@@ -24,6 +24,13 @@ namespace DataVisualization.Services
 
         public string DbPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data.db");
 
+        private int _pointsCount;
+        public int PointsCount
+        {
+            get { lock (_sync) return GetValue(ref _pointsCount); }
+            set { lock (_sync) _pointsCount = value; }
+        }
+
         private bool _isInitialized = false;
         private static readonly object _sync = new object();
 
@@ -38,7 +45,8 @@ namespace DataVisualization.Services
                 {
                     var settings = new GlobalSettingsStorage
                     {
-                        CurrentLanguageShortName = CurrentLanguage.Name
+                        CurrentLanguageShortName = CurrentLanguage.Name,
+                        PointsCount = PointsCount
                     };
 
                     var collection = db.GetCollection<GlobalSettingsStorage>(nameof(GlobalSettingsStorage));
@@ -75,6 +83,7 @@ namespace DataVisualization.Services
                             var savedSettings = documents.Count == 0 ? new GlobalSettingsStorage() : documents[0];
 
                             _currentLanguage = new CultureInfo(savedSettings.CurrentLanguageShortName);
+                            _pointsCount = savedSettings.PointsCount;
                         }
                         _isInitialized = true;
                     }
@@ -90,10 +99,12 @@ namespace DataVisualization.Services
         [BsonId]
         public int Id { get; set; }
         public string CurrentLanguageShortName { get; set; }
+        public int PointsCount { get; set; }
 
         public GlobalSettingsStorage()
         {
             CurrentLanguageShortName = "en-US";
+            PointsCount = 1000;
         }
 
         public override bool Equals(object obj)
