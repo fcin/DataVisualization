@@ -358,6 +358,24 @@ namespace DataVisualization.Core.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Points count.
+        /// </summary>
+        public static string PointsCount {
+            get {
+                return ResourceManager.GetString("PointsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Defines number of points for each individual line series that can be displayed at one time.
+        /// </summary>
+        public static string PointsCountTooltip {
+            get {
+                return ResourceManager.GetString("PointsCountTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string Save {

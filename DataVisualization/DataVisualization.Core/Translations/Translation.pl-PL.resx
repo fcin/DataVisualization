@@ -216,6 +216,12 @@
   <data name="Open" xml:space="preserve">
     <value>Otwórz</value>
   </data>
+  <data name="PointsCount" xml:space="preserve">
+    <value>Liczba punktów</value>
+  </data>
+  <data name="PointsCountTooltip" xml:space="preserve">
+    <value>Liczba punktów które są wyświetlane w tym samym czasie dla pojedyńczej serii w wykresie liniowym</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Zapisz</value>
   </data>

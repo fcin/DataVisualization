@@ -27,6 +27,6 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-        <ContentControl Grid.Column="1" x:Name="ActiveItem"></ContentControl>
+        <ContentControl Grid.Column="1" x:Name="ActiveItem" Margin="20"></ContentControl>
     </Grid>
 </Window>

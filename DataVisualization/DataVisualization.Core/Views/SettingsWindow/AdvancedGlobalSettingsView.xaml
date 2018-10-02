@@ -5,9 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DataVisualization.Core.Views.SettingsWindow"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="{x:Static trans:Translation.PointsCount}"/>
+                <materialDesign:PackIcon Kind="Tooltip" VerticalAlignment="Center" 
+                                         ToolTip="{x:Static trans:Translation.PointsCountTooltip}"/>
+            </StackPanel>
+            <Slider Minimum="100" Maximum="10000" Interval="100" TickFrequency="100" Value="{Binding PointsCount}"
+                    Style="{StaticResource MaterialDesignDiscreteSlider}"
+                    Width="260" HorizontalAlignment="Left" ToolTip="{x:Static trans:Translation.PointsCountTooltip}" />
+            <Button Content="{x:Static trans:Translation.Save}" HorizontalAlignment="Right" Margin="0,20,0,0" 
+                    cal:Message.Attach="[Event Click] = [Action Save()]"></Button>
+        </StackPanel>
     </Grid>
 </UserControl>

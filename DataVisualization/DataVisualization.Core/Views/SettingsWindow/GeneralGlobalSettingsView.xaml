@@ -11,7 +11,7 @@
     <StackPanel>
         <Label Content="{x:Static trans:Translation.Language}"></Label>
         <ComboBox ItemsSource="{Binding AllLanguages}" SelectedItem="{Binding SelectedLanguage}"></ComboBox>
-        <Button cal:Message.Attach="[Event Click] = [Action Save()]" HorizontalAlignment="Right" Margin="20" 
+        <Button cal:Message.Attach="[Event Click] = [Action Save()]" HorizontalAlignment="Right" Margin="0,20,0,0"
                 Content="{x:Static trans:Translation.Save}"></Button>
     </StackPanel>
 </UserControl>

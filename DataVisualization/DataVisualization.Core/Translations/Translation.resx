@@ -216,6 +216,12 @@
   <data name="Open" xml:space="preserve">
     <value>Open</value>
   </data>
+  <data name="PointsCount" xml:space="preserve">
+    <value>Points count</value>
+  </data>
+  <data name="PointsCountTooltip" xml:space="preserve">
+    <value>Defines number of points for each individual line series that can be displayed at one time</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>

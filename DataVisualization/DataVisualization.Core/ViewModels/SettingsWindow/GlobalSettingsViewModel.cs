@@ -32,7 +32,7 @@ namespace DataVisualization.Core.ViewModels.SettingsWindow
                         {
                             Name = Translation.Advanced,
                             Openable = true,
-                            NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new AdvancedGlobalSettingsViewModel())
+                            NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new AdvancedGlobalSettingsViewModel(_globalSettings))
                         }
                     }
                 }
