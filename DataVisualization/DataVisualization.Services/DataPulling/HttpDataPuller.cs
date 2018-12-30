@@ -1,4 +1,5 @@
 ﻿using DataVisualization.Models;
+using DataVisualization.Services.Exceptions;
 using DataVisualization.Services.Extensions;
 using DataVisualization.Services.Transform;
 using Newtonsoft.Json;
@@ -76,16 +77,15 @@ namespace DataVisualization.Services.DataPulling
                     Name = config.Columns[index].Name
                 }).ToList(), data.Count);
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
                 // Todo: waits for implementation of in-app console.
-                return (new List<Series>(), 0);
+                throw new DataPullingException("Http Request failed", ex);
             }
-            catch (JsonSerializationException)
+            catch (JsonSerializationException ex)
             {
                 // Todo: waits for implementation of in-app console.
-
-                return (new List<Series>(), 0);
+                throw new DataParsingException("JSON Parsing failed", ex);
             }
         }
 

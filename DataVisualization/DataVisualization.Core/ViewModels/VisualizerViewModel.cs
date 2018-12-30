@@ -4,6 +4,7 @@ using DataVisualization.Core.Views;
 using DataVisualization.Models;
 using DataVisualization.Services;
 using DataVisualization.Services.DataPulling;
+using DataVisualization.Services.Exceptions;
 using DataVisualization.Services.Extensions;
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -190,8 +191,24 @@ namespace DataVisualization.Core.ViewModels
             while (!ct.IsCancellationRequested)
             {
                 await Task.Delay(_config.RefreshRate);
-                
-                (List<Series> series, int readLines) = await _puller.PullAsync(_config, _data.FileLinesRead);
+
+                List<Series> series = new List<Series>();
+                int readLines = 0;
+
+                try
+                {
+                    (series, readLines) = await _puller.PullAsync(_config, _data.FileLinesRead);
+                }
+                catch (DataPullingException ex)
+                {
+                    MessageBox.Show(ex?.InnerException?.ToString());
+                    continue;
+                }
+                catch (DataParsingException ex)
+                {
+                    MessageBox.Show(ex?.InnerException?.ToString());
+                    continue;
+                }
 
                 if (readLines < 0 && _config.PullingMethod.Method == PullingMethods.LocalFile)
                 {

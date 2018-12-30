@@ -61,6 +61,8 @@
     <Compile Include="DataPulling\IDataPuller.cs" />
     <Compile Include="DataPulling\LocalFileDataPuller.cs" />
     <Compile Include="DataService.cs" />
+    <Compile Include="Exceptions\DataParsingException.cs" />
+    <Compile Include="Exceptions\DataPullingException.cs" />
     <Compile Include="Extensions\SeriesExtensions.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="IDataFileReader.cs" />
