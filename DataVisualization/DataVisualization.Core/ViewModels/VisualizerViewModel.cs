@@ -3,6 +3,7 @@ using DataVisualization.Core.Events;
 using DataVisualization.Core.Views;
 using DataVisualization.Models;
 using DataVisualization.Services;
+using DataVisualization.Services.DataPulling;
 using DataVisualization.Services.Extensions;
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -91,15 +92,18 @@ namespace DataVisualization.Core.ViewModels
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;
         private readonly DataFileReader _dataFileReader;
+        private readonly DataPullerFactory _dataPullerFactory;
         private readonly DataService _dataService;
         private readonly DataConfigurationService _dataConfigurationService;
         private readonly GlobalSettings _globalSettings;
         private DataConfiguration _config;
+        private IDataPuller _puller;
         private Data _data;
         private CancellationTokenSource _cts;
 
         public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager, IEventAggregator eventAggregator,
-            DataService dataService, DataConfigurationService dataConfigurationService, GlobalSettings globalSettings, DataFileReader dataFileReader)
+            DataService dataService, DataConfigurationService dataConfigurationService, GlobalSettings globalSettings, 
+            DataFileReader dataFileReader, DataPullerFactory dataPullerFactory)
         {
             _seriesFactory = seriesFactory;
             _windowManager = windowManager;
@@ -109,6 +113,7 @@ namespace DataVisualization.Core.ViewModels
             _globalSettings = globalSettings;
             _cts = new CancellationTokenSource();
             _dataFileReader = dataFileReader;
+            _dataPullerFactory = dataPullerFactory;
 
             _eventAggregator.Subscribe(this);
         }
@@ -126,6 +131,7 @@ namespace DataVisualization.Core.ViewModels
             }
 
             _config = _dataConfigurationService.GetByName(message.Opened.DataName);
+            _puller = _dataPullerFactory.Create(_config.PullingMethod.Method);
 
             if (_config == null)
                 return;
@@ -145,16 +151,16 @@ namespace DataVisualization.Core.ViewModels
 
             var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
 
-            MinX = horizontalAxis.Values.First(val => val != double.NaN);
-            MaxX = horizontalAxis.Values.Last(val => val != double.NaN);
+            MinX = horizontalAxis.Values.First(val => !double.IsNaN(val));
+            MaxX = horizontalAxis.Values.Last(val => !double.IsNaN(val));
 
             var hasSecondary = _data.Series.Any(d => d.Axis == Axes.X2 || d.Axis == Axes.Y2);
             if (hasSecondary)
             {
                 HasSecondaryAxis = true;
                 var secondaryHorizontalAxis = _data.Series.FirstOrDefault(d => d.Axis == Axes.X2) ?? _data.Series.First(d => d.Axis == Axes.X1);
-                MinX2 = secondaryHorizontalAxis.Values.First(val => val != double.NaN);
-                MaxX2 = secondaryHorizontalAxis.Values.Last(val => val != double.NaN);
+                MinX2 = secondaryHorizontalAxis.Values.First(val => !double.IsNaN(val));
+                MaxX2 = secondaryHorizontalAxis.Values.Last(val => !double.IsNaN(val));
             }
 
             RecreateSeries();
@@ -184,10 +190,10 @@ namespace DataVisualization.Core.ViewModels
             while (!ct.IsCancellationRequested)
             {
                 await Task.Delay(_config.RefreshRate);
+                
+                (List<Series> series, int readLines) = await _puller.PullAsync(_config, _data.FileLinesRead);
 
-                (List<Series> series, int readLines) = await _dataFileReader.ReadLatestAsync(_config, _data.FileLinesRead);
-
-                if (readLines < 0)
+                if (readLines < 0 && _config.PullingMethod.Method == PullingMethods.LocalFile)
                 {
                     var result = MessageBox.Show("Number of rows decreased since last run. Do you want to reload it?", "Data changed", MessageBoxButton.YesNo);
                     if (result == MessageBoxResult.Yes)
@@ -199,8 +205,8 @@ namespace DataVisualization.Core.ViewModels
 
                         var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
 
-                        MinX = horizontalAxis.Values.First(val => val != double.NaN);
-                        MaxX = horizontalAxis.Values.Last(val => val != double.NaN);
+                        MinX = horizontalAxis.Values.First(val => !double.IsNaN(val));
+                        MaxX = horizontalAxis.Values.Last(val => !double.IsNaN(val));
 
                         RecreateSeries();
                         continue;
@@ -225,7 +231,7 @@ namespace DataVisualization.Core.ViewModels
 
                     var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
 
-                    MaxX = horizontalAxis.Values.Last(val => val != double.NaN);
+                    MaxX = horizontalAxis.Values.Last(val => !double.IsNaN(val));
 
                     RecreateSeries();
                 }
@@ -312,8 +318,8 @@ namespace DataVisualization.Core.ViewModels
         public void OnCenterScreen()
         {
             var xAxisValues = _data.Series.First(s => s.Axis == Axes.X1).Values;
-            MinX = xAxisValues.First(val => val != double.NaN);
-            MaxX = xAxisValues.Last(val => val != double.NaN);
+            MinX = xAxisValues.First(val => !double.IsNaN(val));
+            MaxX = xAxisValues.Last(val => !double.IsNaN(val));
             RecreateSeries();
         }
 
@@ -323,9 +329,15 @@ namespace DataVisualization.Core.ViewModels
                 return;
 
             var xAxisValues = _data.Series.First(s => s.Axis == Axes.X1).Values;
-            MinX = xAxisValues.Skip(xAxisValues.Count - _globalSettings.PointsCount).First(val => val != double.NaN);
-            MaxX = xAxisValues.Last(val => val != double.NaN);
+            MinX = xAxisValues.Skip(xAxisValues.Count - _globalSettings.PointsCount).First(val => !double.IsNaN(val));
+            MaxX = xAxisValues.Last(val => !double.IsNaN(val));
             RecreateSeries();
+        }
+
+        protected override void OnDeactivate(bool close)
+        {
+            _puller.Dispose();
+            base.OnDeactivate(close);
         }
     }
 }

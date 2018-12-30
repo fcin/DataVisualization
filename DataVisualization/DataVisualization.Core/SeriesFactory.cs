@@ -87,8 +87,8 @@ namespace DataVisualization.Core
             }
             else
             {
-                var nearestMin = dateRow.Values.Aggregate((x, y) => Math.Abs(x - min.Value) < Math.Abs(y - min.Value) ? x : y);
-                var nearestMax = dateRow.Values.Aggregate((x, y) => Math.Abs(x - max.Value) < Math.Abs(y - max.Value) ? x : y);
+                var nearestMin = dateRow.Values.Where(val => !double.IsNaN(val)).Aggregate((x, y) => Math.Abs(x - min.Value) < Math.Abs(y - min.Value) ? x : y);
+                var nearestMax = dateRow.Values.Where(val => !double.IsNaN(val)).Aggregate((x, y) => Math.Abs(x - max.Value) < Math.Abs(y - max.Value) ? x : y);
                 minIndex = dateRow.Values.IndexOf(nearestMin);
                 maxIndex = dateRow.Values.IndexOf(nearestMax) + 1; // inclusive
             }

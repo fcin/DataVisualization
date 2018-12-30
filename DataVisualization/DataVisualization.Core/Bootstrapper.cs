@@ -2,6 +2,7 @@
 using DataVisualization.Core.ViewModels;
 using DataVisualization.Core.ViewModels.SettingsWindow;
 using DataVisualization.Services;
+using DataVisualization.Services.DataPulling;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -43,6 +44,7 @@ namespace DataVisualization.Core
             _container.PerRequest<MenuViewModel, MenuViewModel>();
             _container.PerRequest<GlobalSettingsViewModel, GlobalSettingsViewModel>();
             _container.PerRequest<DataFileReader, DataFileReader>();
+            _container.PerRequest<DataPullerFactory, DataPullerFactory>();
 
             base.Configure();
         }

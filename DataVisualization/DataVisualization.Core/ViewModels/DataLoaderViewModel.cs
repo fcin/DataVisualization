@@ -408,6 +408,15 @@ namespace DataVisualization.Core.ViewModels
 
         public async void OnDataLoad()
         {
+            if (_pullingMethodProperties == null)
+            {
+                _pullingMethodProperties = new PullingMethodProperties
+                {
+                    Method = PullingMethods.LocalFile,
+                    EndpointUrl = FilePath
+                };
+            }
+
             var config = new DataConfiguration
             {
                 DataName = Path.GetFileNameWithoutExtension(FilePath),
