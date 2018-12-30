@@ -55,6 +55,7 @@
     <Compile Include="DataColumn.cs" />
     <Compile Include="DataConfiguration.cs" />
     <Compile Include="DataGridColumnsModel.cs" />
+    <Compile Include="PullingMethod.cs" />
     <Compile Include="DateModel.cs" />
     <Compile Include="LoadingBarStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

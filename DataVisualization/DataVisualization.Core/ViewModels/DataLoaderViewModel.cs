@@ -15,7 +15,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using DataColumn = System.Data.DataColumn;
 
@@ -134,16 +133,19 @@ namespace DataVisualization.Core.ViewModels
 
         private readonly IEventAggregator _eventAggregator;
         private readonly LoadingBarManager _loadingBarManager;
+        private readonly IWindowManager _windowManager;
         private readonly DataFileReader _dataFileReader;
         private readonly DataConfigurationService _dataConfigurationService;
         private readonly DataService _dataService;
         private DataTable _sampleData;
+        private PullingMethodProperties _pullingMethodProperties;
 
-        public DataLoaderViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager,
+        public DataLoaderViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager, IWindowManager windowManager,
             DataConfigurationService dataConfigurationService, DataService dataService, DataFileReader dataFileReader)
         {
             _eventAggregator = eventAggregator;
             _loadingBarManager = loadingBarManager;
+            _windowManager = windowManager;
             _dataConfigurationService = dataConfigurationService;
             _dataService = dataService;
             _dataFileReader = dataFileReader;
@@ -413,6 +415,7 @@ namespace DataVisualization.Core.ViewModels
                 ThousandsSeparator = SelectedThousandsSeparator.ToString(),
                 DecimalSeparator = SelectedDecimalSeparator.ToString(),
                 RefreshRate = TimeSpan.FromSeconds(SelectedRefreshTime.Value),
+                PullingMethod = _pullingMethodProperties,
                 Columns = DataGridColumnsModel.Columns.Select((col, index) => new
                 {
                     Column = new Models.DataColumn
@@ -457,6 +460,13 @@ namespace DataVisualization.Core.ViewModels
                 };
                 await DialogHost.Show(popup, "DataLoaderHost");
             }
+        }
+
+        public void ShowDataPullingSettings()
+        {
+            var vm = new DataPullingSettingsViewModel(FilePath);
+            vm.OnSubmit += (_, pullingMethod) => _pullingMethodProperties = pullingMethod;
+            _windowManager.ShowDialog(vm);
         }
 
         public void ValidateSubmit()

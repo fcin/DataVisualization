@@ -11,6 +11,7 @@ namespace DataVisualization.Models
         public string ThousandsSeparator { get; set; }
         public string DecimalSeparator { get; set; }
         public TimeSpan RefreshRate { get; set; }
+        public PullingMethodProperties PullingMethod { get; set; }
 
         public DataConfiguration()
         {

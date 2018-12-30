@@ -136,6 +136,7 @@
     </Compile>
     <Compile Include="ViewModels\DataBrowserViewModel.cs" />
     <Compile Include="ViewModels\DataLoaderViewModel.cs" />
+    <Compile Include="ViewModels\DataPullingSettingsViewModel.cs" />
     <Compile Include="ViewModels\LoadingBarViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="App.xaml.cs">
@@ -159,6 +160,9 @@
     </Compile>
     <Compile Include="Views\DataLoaderView.xaml.cs">
       <DependentUpon>DataLoaderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DataPullingSettingsView.xaml.cs">
+      <DependentUpon>DataPullingSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoadingBarView.xaml.cs">
       <DependentUpon>LoadingBarView.xaml</DependentUpon>
@@ -193,6 +197,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DataLoaderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DataPullingSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

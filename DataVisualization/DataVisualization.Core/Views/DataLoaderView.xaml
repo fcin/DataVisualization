@@ -74,18 +74,25 @@
                 VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="10"></Button>
                     </Grid>
 
-                    <StackPanel Grid.Row="2" Grid.Column="0">
+                    <WrapPanel Grid.Row="2" Grid.Column="0">
                         <ComboBox Margin="5" ItemsSource="{Binding AllThousandsSeparators}" SelectedItem="{Binding SelectedThousandsSeparator}"
                 materialDesign:HintAssist.Hint="{x:Static trans:Translation.ThousandsSeparator}" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                 HorizontalAlignment="Left" materialDesign:ComboBoxAssist.ShowSelectedItem="True" FontSize="16"></ComboBox>
                         <ComboBox Margin="5" ItemsSource="{Binding AllDecimalSeparators}" SelectedItem="{Binding SelectedDecimalSeparator}"
                 materialDesign:HintAssist.Hint="{x:Static trans:Translation.DecimalSeparator}" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                 HorizontalAlignment="Left" materialDesign:ComboBoxAssist.ShowSelectedItem="True" FontSize="16"></ComboBox>
-                        <ComboBox Margin="5" ItemsSource="{Binding RefreshTimes}" SelectedValuePath="Value" DisplayMemberPath="Key" SelectedItem="{Binding SelectedRefreshTime}" 
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2" >
+                            <ComboBox Margin="5" ItemsSource="{Binding RefreshTimes}" SelectedValuePath="Value" DisplayMemberPath="Key" SelectedItem="{Binding SelectedRefreshTime}" 
                 materialDesign:HintAssist.Hint="{x:Static trans:Translation.WatchForChanges}" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                materialDesign:ComboBoxAssist.ShowSelectedItem="True" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" FontSize="16"/>
-                    </StackPanel>
-                    <DataGrid IsReadOnly="True" CanUserSortColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                materialDesign:ComboBoxAssist.ShowSelectedItem="True" HorizontalAlignment="Left" FontSize="16"/>
+                            <Button cal:Message.Attach="[Event Click] = [Action ShowDataPullingSettings()]" Style="{StaticResource MaterialDesignRaisedLightButton}">
+                                <materialDesign:PackIcon Kind="Settings" />
+                            </Button>
+                        </StackPanel>
+                        
+
+                    </WrapPanel>
+                    <DataGrid Margin="0,15,0,0" IsReadOnly="True" CanUserSortColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                   Name="PreviewDataGrid" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding DataGridCollection}" AutoGenerateColumns="True">
                         <DataGrid.Resources>
                             <Style TargetType="{x:Type DataGridColumnHeader}">
