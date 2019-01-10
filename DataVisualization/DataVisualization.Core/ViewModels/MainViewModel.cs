@@ -8,6 +8,7 @@ namespace DataVisualization.Core.ViewModels
         public VisualizerViewModel VisualizerVm { get; set; }
         public DataBrowserViewModel DataBrowserVm { get; set; }
         public MenuViewModel MenuVm { get; set; }
+        public AppConsoleViewModel AppConsoleVm { get; set; }
 
         private bool _isMainWindowEnabled;
         public bool IsMainWindowEnabled
@@ -17,7 +18,7 @@ namespace DataVisualization.Core.ViewModels
         }
 
         public MainViewModel(IEventAggregator eventAggregator, VisualizerViewModel visualizerVm, 
-            DataBrowserViewModel dataBrowserVm, MenuViewModel menuVm)
+            DataBrowserViewModel dataBrowserVm, MenuViewModel menuVm, AppConsoleViewModel appConsoleVm)
         {
             IsMainWindowEnabled = true;
 
@@ -26,10 +27,12 @@ namespace DataVisualization.Core.ViewModels
             VisualizerVm = visualizerVm;
             DataBrowserVm = dataBrowserVm;
             MenuVm = menuVm;
+            AppConsoleVm = appConsoleVm;
 
             ActivateItem(VisualizerVm);
             ActivateItem(DataBrowserVm);
             ActivateItem(MenuVm);
+            ActivateItem(AppConsoleVm);
         }
 
         public void Handle(LoadingBarOpenedEventArgs message)

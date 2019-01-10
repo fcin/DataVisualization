@@ -129,6 +129,7 @@
     <Compile Include="Converters\StringToBoolConverter.cs" />
     <Compile Include="Converters\ValueConverterGroup.cs" />
     <Compile Include="DataLoaderViewModelFactory.cs" />
+    <Compile Include="Events\AppConsoleLogEventArgs.cs" />
     <Compile Include="Events\BeforeDataConfigurationDeletedEventArgs.cs" />
     <Compile Include="Events\DataConfigurationOpenedEventArgs.cs" />
     <Compile Include="Events\GlobalSettingsChangedEventArgs.cs" />
@@ -145,6 +146,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Translation.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\AppConsoleViewModel.cs" />
     <Compile Include="ViewModels\DataBrowserViewModel.cs" />
     <Compile Include="ViewModels\DataLoaderViewModel.cs" />
     <Compile Include="ViewModels\DataPullingSettingsViewModel.cs" />
@@ -163,6 +165,9 @@
     <Compile Include="ViewModels\SettingsWindow\GlobalSettingsViewModel.cs" />
     <Compile Include="ViewModels\SettingsWindow\GlobalSettingsViewModelBase.cs" />
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
+    <Compile Include="Views\AppConsoleView.xaml.cs">
+      <DependentUpon>AppConsoleView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\BasicChartLegendView.xaml.cs">
       <DependentUpon>BasicChartLegendView.xaml</DependentUpon>
     </Compile>
@@ -199,6 +204,10 @@
     <Compile Include="Views\VisualizerView.xaml.cs">
       <DependentUpon>VisualizerView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\AppConsoleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\BasicChartLegendView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

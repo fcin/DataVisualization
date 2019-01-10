@@ -201,12 +201,14 @@ namespace DataVisualization.Core.ViewModels
                 }
                 catch (DataPullingException ex)
                 {
-                    MessageBox.Show(ex?.InnerException?.ToString());
+                    var e = new AppConsoleLogEventArgs(new AppConsoleLog(ex.Message));
+                    _eventAggregator.PublishOnUIThread(e);
                     continue;
                 }
                 catch (DataParsingException ex)
                 {
-                    MessageBox.Show(ex?.InnerException?.ToString());
+                    var e = new AppConsoleLogEventArgs(new AppConsoleLog(ex.Message));
+                    _eventAggregator.PublishOnUIThread(e);
                     continue;
                 }
 

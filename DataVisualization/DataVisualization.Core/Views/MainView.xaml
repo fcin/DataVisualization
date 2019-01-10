@@ -19,20 +19,30 @@
         WindowStartupLocation="CenterScreen">
     <materialDesign:DialogHost Identifier="RootHost">
         <Grid IsEnabled="{Binding IsMainWindowEnabled}">
-            <DockPanel>
-                <ContentControl x:Name="MenuVm" DockPanel.Dock="Top" Margin="0, 0, 0, 20"></ContentControl>
-                <Expander ExpandDirection="Right" IsExpanded="True" Margin="0, 0, 10, 0">
-                    <Expander.Header>
-                        <TextBlock Text="{x:Static trans:Translation.DataList}" RenderTransformOrigin=".5,.5">
-                            <TextBlock.LayoutTransform>
-                                <RotateTransform Angle="90" />
-                            </TextBlock.LayoutTransform>
-                        </TextBlock>
-                    </Expander.Header>
-                    <ContentControl DockPanel.Dock="Left" x:Name="DataBrowserVm"></ContentControl>
-                </Expander>
-                <ContentControl x:Name="VisualizerVm"></ContentControl>
-            </DockPanel>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <ContentControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" x:Name="MenuVm" Margin="0, 0, 0, 20"></ContentControl>
+            <Expander Grid.Column="0" Grid.Row="1" ExpandDirection="Right" IsExpanded="True" Margin="0, 0, 10, 0">
+                <Expander.Header>
+                    <TextBlock Text="{x:Static trans:Translation.DataList}" RenderTransformOrigin=".5,.5">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="90" />
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Expander.Header>
+                <ContentControl x:Name="DataBrowserVm"></ContentControl>
+            </Expander>
+            <ContentControl Grid.Column="1" Grid.Row="1" x:Name="VisualizerVm"></ContentControl>
+            <Expander Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Header="Console" ExpandDirection="Down" IsExpanded="False">
+                <ContentControl x:Name="AppConsoleVm"></ContentControl>
+            </Expander>
         </Grid>
     </materialDesign:DialogHost>
 </Window>

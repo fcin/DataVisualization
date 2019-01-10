@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppConsoleLog.cs" />
     <Compile Include="Axes.cs" />
     <Compile Include="ColumnTypes.cs" />
     <Compile Include="Data.cs" />

@@ -45,6 +45,7 @@ namespace DataVisualization.Core
             _container.PerRequest<GlobalSettingsViewModel, GlobalSettingsViewModel>();
             _container.PerRequest<DataFileReader, DataFileReader>();
             _container.PerRequest<DataPullerFactory, DataPullerFactory>();
+            _container.PerRequest<AppConsoleViewModel, AppConsoleViewModel>();
 
             base.Configure();
         }

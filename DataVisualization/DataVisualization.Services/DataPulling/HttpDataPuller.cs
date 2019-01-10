@@ -27,11 +27,30 @@ namespace DataVisualization.Services.DataPulling
 
             try
             {
-                var newestData = await _httpClient.GetStringAsync(config.PullingMethod.EndpointUrl);
-                var packets = JsonConvert.DeserializeObject<DataPacket[]>(newestData, new JsonSerializerSettings
+                string newestData = null;
+
+                try
                 {
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                });
+                    newestData = await _httpClient.GetStringAsync(config.PullingMethod.EndpointUrl);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new DataPullingException("Invalid remote address", ex);
+                }
+
+                DataPacket[] packets = null;
+
+                try
+                {
+                    packets = JsonConvert.DeserializeObject<DataPacket[]>(newestData, new JsonSerializerSettings
+                    {
+                        MissingMemberHandling = MissingMemberHandling.Ignore
+                    });
+                }
+                catch (JsonException ex)
+                {
+                    throw new DataParsingException("Invalid format of JSON", ex);
+                }
 
                 var rows = packets.OrderBy(p => p.Added).SelectMany(p => p.Rows).ToList();
 
