@@ -13,7 +13,13 @@
     <Grid>
         <DockPanel>
             <Label Content="{x:Static trans:Translation.AllData}" DockPanel.Dock="Top"></Label>
-            <ListView Name="DataConfigs" DockPanel.Dock="Top" ItemsSource="{Binding AllDataConfigurations}" MouseDoubleClick="OpenConfig">
+
+            <ListView Name="DataConfigs" DockPanel.Dock="Top" ItemsSource="{Binding AllDataConfigurations}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <EventSetter Event="MouseDoubleClick" Handler="OpenConfig"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
