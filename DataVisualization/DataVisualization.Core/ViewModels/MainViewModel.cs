@@ -3,7 +3,7 @@ using DataVisualization.Core.Events;
 
 namespace DataVisualization.Core.ViewModels
 {
-    public class MainViewModel : Conductor<object>, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>
+    public class MainViewModel : Conductor<object>, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>, IHandle<AppConsoleLogEventArgs>
     {
         public VisualizerViewModel VisualizerVm { get; set; }
         public DataBrowserViewModel DataBrowserVm { get; set; }
@@ -16,6 +16,8 @@ namespace DataVisualization.Core.ViewModels
             get => _isMainWindowEnabled;
             set => Set(ref _isMainWindowEnabled, value);
         }
+
+        public int LogsCount => AppConsoleVm.Logs.Count;
 
         public MainViewModel(IEventAggregator eventAggregator, VisualizerViewModel visualizerVm, 
             DataBrowserViewModel dataBrowserVm, MenuViewModel menuVm, AppConsoleViewModel appConsoleVm)
@@ -43,6 +45,11 @@ namespace DataVisualization.Core.ViewModels
         public void Handle(LoadingBarClosedEventArgs message)
         {
             IsMainWindowEnabled = true;
+        }
+
+        public void Handle(AppConsoleLogEventArgs message)
+        {
+            NotifyOfPropertyChange(() => LogsCount);
         }
     }
 }

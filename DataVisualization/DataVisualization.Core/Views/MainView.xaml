@@ -40,7 +40,14 @@
                 <ContentControl x:Name="DataBrowserVm"></ContentControl>
             </Expander>
             <ContentControl Grid.Column="1" Grid.Row="1" x:Name="VisualizerVm"></ContentControl>
-            <Expander Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Header="Console" ExpandDirection="Down" IsExpanded="False">
+            <Expander Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" ExpandDirection="Down" IsExpanded="False">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:Badged Badge="{Binding LogsCount}" BadgePlacementMode="TopRight">
+                            <TextBlock Text="Console" Margin="5"></TextBlock>
+                        </materialDesign:Badged>
+                    </StackPanel>
+                </Expander.Header>
                 <ContentControl x:Name="AppConsoleVm"></ContentControl>
             </Expander>
         </Grid>
