@@ -89,6 +89,26 @@ namespace DataVisualization.Core.ViewModels
             set => SetValue(ref _hasSecondaryAxis, value);
         }
 
+        private bool _isLive;
+        public bool IsLive {
+            get => _isLive;
+            set => Set(ref _isLive, value);
+        }
+
+        private ZoomingOptions _zoomOption = ZoomingOptions.X;
+        public ZoomingOptions ZoomOption
+        {
+            get => _zoomOption;
+            set => Set(ref _zoomOption, value);
+        }
+
+        private PanningOptions _panOption = PanningOptions.X;
+        public PanningOptions PanOption
+        {
+            get => _panOption;
+            set => Set(ref _panOption, value);
+        }
+
         private readonly ISeriesFactory _seriesFactory;
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;
@@ -351,6 +371,21 @@ namespace DataVisualization.Core.ViewModels
             MinX = xAxisValues.Skip(xAxisValues.Count - _globalSettings.PointsCount).First(val => !double.IsNaN(val));
             MaxX = xAxisValues.Last(val => !double.IsNaN(val));
             RecreateSeries();
+        }
+
+        public void OnLiveToggled()
+        {
+            if (IsLive)
+            {
+                ZoomOption = ZoomingOptions.None;
+                PanOption = PanningOptions.None;
+                OnGoToNewest();
+            }
+            else
+            {
+                ZoomOption = ZoomingOptions.X;
+                PanOption = PanningOptions.X;
+            }
         }
 
         protected override void OnDeactivate(bool close)
