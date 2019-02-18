@@ -62,9 +62,10 @@ namespace DataVisualization.Services
                 var data = collection.Include(d => d.Series).FindOne(Query.EQ(nameof(Data.Name), name));
                 foreach (var series in data.Series)
                 {
-                    for (int index = series.Chunks.Count - 1; index >= 0; index--)
+                    for (int index = 0; index < series.Chunks.Count; index++)
                     {
-                        series.Chunks[index] = chunksColl.FindById(series.Chunks[index].ChunkId);
+                        var chunk = chunksColl.FindById(series.Chunks[index].ChunkId);
+                        series.ChangeChunk(index, chunk);
                     }
                 }
 

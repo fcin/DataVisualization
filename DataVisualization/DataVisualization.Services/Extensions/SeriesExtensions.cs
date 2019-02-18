@@ -26,7 +26,7 @@ namespace DataVisualization.Services.Extensions
 
             if (series.Chunks.Count == 0 || series.Chunks.Last().Chunk.Count == chunkSize)
             {
-                series.Chunks.Add(new ValuesChunk { Chunk = values });
+                series.AddChunk(new ValuesChunk { Chunk = values });
                 return;
             }
 
@@ -39,7 +39,7 @@ namespace DataVisualization.Services.Extensions
             else
             {
                 series.Chunks.Last().Chunk.AddRange(values.Take(missing));
-                series.Chunks.Add(new ValuesChunk { Chunk = values.Skip(missing).ToList() });
+                series.AddChunk(new ValuesChunk { Chunk = values.Skip(missing).ToList() });
             }
         }
     }

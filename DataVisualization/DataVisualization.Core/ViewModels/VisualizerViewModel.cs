@@ -160,6 +160,7 @@ namespace DataVisualization.Core.ViewModels
             IsDisplayed = true;
 
             _data = _dataService.GetData(_config.DataName);
+            _data.ApplyTransformations();
 
             Legend = new BasicChartLegendView(_windowManager, _dataService, _data, currentSeries =>
             {
