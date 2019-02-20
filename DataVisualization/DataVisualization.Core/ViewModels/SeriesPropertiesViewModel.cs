@@ -1,6 +1,8 @@
 ﻿using Caliburn.Micro;
 using DataVisualization.Models;
+using DataVisualization.Models.Transformations;
 using DataVisualization.Services;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 
@@ -38,6 +40,13 @@ namespace DataVisualization.Core.ViewModels
             }
         }
 
+        private List<TransformationDefinition> _transformations;
+        public List<TransformationDefinition> Transformations
+        {
+            get => _transformations;
+            set => Set(ref _transformations, value);
+        }
+
         private readonly string _oldName;
         private readonly Series _series;
         private readonly DataService _dataService;
@@ -47,6 +56,12 @@ namespace DataVisualization.Core.ViewModels
             _series = series;
             _dataService = dataService;
             _oldName = series.Name;
+
+            Transformations = new List<TransformationDefinition>
+            {
+                TransformationDefinitionFactory.GetDefinition("Add")
+            };
+
         }
 
         public void OnSave()

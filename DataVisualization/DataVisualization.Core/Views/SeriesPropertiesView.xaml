@@ -8,8 +8,9 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
+        xmlns:ctrl="clr-namespace:DataVisualization.Core.Controls"
         mc:Ignorable="d"
-        Title="{x:Static trans:Translation.SeriesProperties}" MinHeight="400" Height="400" MinWidth="350" Width="350" 
+        Title="{x:Static trans:Translation.SeriesProperties}" MinHeight="400" Height="600" MinWidth="350" Width="550" 
         WindowStartupLocation="CenterOwner">
     <Grid Margin="15" HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel HorizontalAlignment="Center">
@@ -29,6 +30,8 @@
                 <Button Content="{x:Static trans:Translation.Save}" Margin="5" cal:Message.Attach="[Event Click] = [Action OnSave]"></Button>
                 <Button Content="{x:Static trans:Translation.Cancel}" Margin="5"  cal:Message.Attach="[Event Click] = [Action OnCancel]"></Button>
             </StackPanel>
+
+            <ctrl:TransformList Transformations="{Binding Transformations}"></ctrl:TransformList>
         </StackPanel>
     </Grid>
 </Window>
