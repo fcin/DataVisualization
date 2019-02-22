@@ -2,7 +2,9 @@
 using DataVisualization.Models;
 using DataVisualization.Models.Transformations;
 using DataVisualization.Services;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
@@ -40,12 +42,19 @@ namespace DataVisualization.Core.ViewModels
             }
         }
 
-        private List<TransformationDefinition> _transformations;
-        public List<TransformationDefinition> Transformations
+        private BindableCollection<TransformationListItem> _transformations;
+        public BindableCollection<TransformationListItem> Transformations
         {
             get => _transformations;
             set => Set(ref _transformations, value);
         }
+
+        public IEnumerable<string> AllTransformationDefinitionNames => _availableTransformations.Select(trans => trans.Transformation.Name);
+
+        private IEnumerable<TransformationListItem> _availableTransformations = new TransformationListItem[] {
+            new TransformationListItem { Value = 0, Transformation = new AddTransformation(0) },
+            new TransformationListItem { Value = 0, Transformation = new SubtractTransformation(0) }
+        };
 
         private readonly string _oldName;
         private readonly Series _series;
@@ -57,11 +66,10 @@ namespace DataVisualization.Core.ViewModels
             _dataService = dataService;
             _oldName = series.Name;
 
-            Transformations = new List<TransformationDefinition>
+            Transformations = new BindableCollection<TransformationListItem>
             {
-                TransformationDefinitionFactory.GetDefinition("Add")
+                new TransformationListItem { Name = "Add", Value = 0, Transformation = new AddTransformation(0) }
             };
-
         }
 
         public void OnSave()
@@ -81,5 +89,46 @@ namespace DataVisualization.Core.ViewModels
         {
             TryClose(false);
         }
+
+        public void AddTransformation()
+        {
+            Transformations.Add(new TransformationListItem { Name = "Add", Value = 0, Transformation = new AddTransformation(0) });
+        }
+
+        public void TransformationChanged(TransformationListItem item)
+        {
+            if (item == null)
+                return;
+
+            switch (item.Name)
+            {
+                case "Add":
+                    item.Transformation = new AddTransformation(item.Value);
+                    break;
+                case "Subtract":
+                    item.Transformation = new SubtractTransformation(item.Value);
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+
+            var globalAggregate = 0d;
+
+            foreach (var transformation in Transformations)
+            {
+                globalAggregate = transformation.Transformation.Transform(globalAggregate);
+                transformation.Aggregate = globalAggregate;
+            }
+            
+            Transformations.Refresh();
+        }
+    }
+
+    public class TransformationListItem
+    {
+        public string Name { get; set; }
+        public double Value { get; set; }
+        public double Aggregate { get; set; }
+        public ITransformation Transformation { get; set; }
     }
 }

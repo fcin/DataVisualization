@@ -8,12 +8,19 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
-        xmlns:ctrl="clr-namespace:DataVisualization.Core.Controls"
         mc:Ignorable="d"
         Title="{x:Static trans:Translation.SeriesProperties}" MinHeight="400" Height="600" MinWidth="350" Width="550" 
         WindowStartupLocation="CenterOwner">
-    <Grid Margin="15" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <StackPanel HorizontalAlignment="Center">
+    <Grid Margin="15" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
             <TextBox Text="{Binding SeriesName}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                      materialDesign:HintAssist.Hint="{x:Static trans:Translation.SeriesName}"></TextBox>
             <Label Content="{x:Static trans:Translation.Color}"></Label>
@@ -25,13 +32,49 @@
                     ToolTip="{x:Static trans:Translation.Thickness}"/>
 
             <Separator Margin="0,20"></Separator>
-            
-            <StackPanel Orientation="Horizontal">
-                <Button Content="{x:Static trans:Translation.Save}" Margin="5" cal:Message.Attach="[Event Click] = [Action OnSave]"></Button>
-                <Button Content="{x:Static trans:Translation.Cancel}" Margin="5"  cal:Message.Attach="[Event Click] = [Action OnCancel]"></Button>
-            </StackPanel>
+        </StackPanel>
 
-            <ctrl:TransformList Transformations="{Binding Transformations}"></ctrl:TransformList>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1">
+            <StackPanel>
+                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}">
+            Transformations
+                </TextBlock>
+                <StackPanel>
+                    <ItemsControl ItemsSource="{Binding Transformations}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel></StackPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <ComboBox ItemsSource="{Binding DataContext.AllTransformationDefinitionNames, Mode=OneTime, 
+                        RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                              SelectedValue="{Binding Name}" 
+                              cal:Message.Attach="[Event SelectionChanged] = [Action TransformationChanged($dataContext)]"
+                              Margin="15" HorizontalAlignment="Stretch" MinWidth="75"
+                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                 materialDesign:HintAssist.Hint="Name"></ComboBox>
+                                    <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
+                                 cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext)]"
+                                 DataObject.Pasting="TryPasteItemValue" 
+                                 Margin="15" HorizontalAlignment="Right" MinWidth="55"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                 materialDesign:HintAssist.Hint="Numeric value"></TextBox>
+                                    <TextBlock Text="{Binding Aggregate}" VerticalAlignment="Center"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button cal:Message.Attach="[Event Click] = [Action AddTransformation()]" Content="Add" HorizontalAlignment="Right" Margin="10"></Button>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="{x:Static trans:Translation.Save}" Margin="5" cal:Message.Attach="[Event Click] = [Action OnSave]"></Button>
+            <Button Content="{x:Static trans:Translation.Cancel}" Margin="5"  cal:Message.Attach="[Event Click] = [Action OnCancel]"></Button>
         </StackPanel>
     </Grid>
 </Window>

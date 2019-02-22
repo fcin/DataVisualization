@@ -118,9 +118,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\TransformList.xaml.cs">
-      <DependentUpon>TransformList.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ColumnAxisConverter.cs" />
     <Compile Include="Converters\ColumnIgnoreConverter.cs" />
@@ -207,10 +204,6 @@
     <Compile Include="Views\VisualizerView.xaml.cs">
       <DependentUpon>VisualizerView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\TransformList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\AppConsoleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
