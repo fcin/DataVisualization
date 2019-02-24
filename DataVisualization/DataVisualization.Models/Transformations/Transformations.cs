@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DataVisualization.Models.Transformations
+﻿namespace DataVisualization.Models.Transformations
 {
     public class AddTransformation : ITransformation
     {

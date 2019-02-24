@@ -12,6 +12,28 @@
         mc:Ignorable="d"
         Title="{x:Static trans:Translation.SeriesProperties}" MinHeight="400" Height="600" MinWidth="350" Width="550" 
         WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <DataTemplate x:Key="AddTransformationTemplate">
+            <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
+                <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
+                                 cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]"
+                                 DataObject.Pasting="TryPasteItemValue" 
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                 materialDesign:HintAssist.Hint="Numeric value"></TextBox>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="SubtractTransformationTemplate">
+            <Border BorderBrush="Red" BorderThickness="2">
+                <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
+                    <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
+                                 cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]"
+                                 DataObject.Pasting="TryPasteItemValue" 
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                 materialDesign:HintAssist.Hint="Numeric value"></TextBox>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
     <Grid Margin="15" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -38,7 +60,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1">
             <StackPanel>
                 <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}">
-            Transformations
+                    Transformations
                 </TextBlock>
                 <StackPanel>
                     <ItemsControl ItemsSource="{Binding TransformationVms}">
@@ -47,59 +69,54 @@
                                 <StackPanel></StackPanel>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-                        <ItemsControl.Resources>
-                            <DataTemplate x:Key="AddTransformationTemplate">
-                                <StackPanel Orientation="Horizontal">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" cal:Message.Attach="[Event Click] = [Action RemoveTransformation($dataContext)]"
+                                            Margin="0,0,5,0" Padding="0" VerticalAlignment="Center" 
+                                            Style="{StaticResource MaterialDesignFlatButton}">
+                                        <Button.Content>
+                                            <materialDesign:PackIcon Kind="CloseBox" Foreground="Red" />
+                                        </Button.Content>
+                                    </Button>
                                     <ComboBox ItemsSource="{Binding DataContext.AllTransformationDefinitionNames, Mode=OneTime, 
-                            RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                              SelectedValue="{Binding Name}" 
-                              cal:Message.Attach="[Event SelectionChanged] = [Action TransformationChanged($dataContext, $eventArgs)]"
-                              Margin="15" HorizontalAlignment="Stretch" MinWidth="75"
-                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                 materialDesign:HintAssist.Hint="Name"></ComboBox>
-                                    <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
-                                 cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]"
-                                 DataObject.Pasting="TryPasteItemValue" 
-                                 Margin="15" HorizontalAlignment="Right" MinWidth="55"
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                 materialDesign:HintAssist.Hint="Numeric value"></TextBox>
-                                    <TextBlock Text="{Binding Aggregate}"></TextBlock>
-                                </StackPanel>
+                                        RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                                        SelectedValue="{Binding Name}" 
+                                        cal:Message.Attach="[Event SelectionChanged] = [Action TransformationChanged($dataContext, $eventArgs)]"
+                                        Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                        Grid.Column="1"
+                                        Margin="0,0,5,0"
+                                        VerticalAlignment="Center"
+                                        materialDesign:HintAssist.Hint="Name"/>
+                                    <ContentControl Grid.Column="2">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+                                                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                                                <Setter Property="MinWidth" Value="75"></Setter>
+                                                <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"></Setter>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Name}" Value="Subtract">
+                                                        <Setter Property="ContentTemplate" Value="{StaticResource SubtractTransformationTemplate}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Name}" Value="Add">
+                                                        <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
+                                    <TextBlock Text="{Binding Aggregate}" Grid.Column="3" Width="25" 
+                                               VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                                </Grid>
                             </DataTemplate>
-                            <DataTemplate x:Key="SubtractTransformationTemplate">
-                                <Border BorderBrush="Red" BorderThickness="2">
-                                    <StackPanel Orientation="Horizontal">
-                                        <ComboBox ItemsSource="{Binding DataContext.AllTransformationDefinitionNames, Mode=OneTime, 
-                            RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                              SelectedValue="{Binding Name}" 
-                              cal:Message.Attach="[Event SelectionChanged] = [Action TransformationChanged($dataContext, $eventArgs)]"
-                              Margin="15" HorizontalAlignment="Stretch" MinWidth="75"
-                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                 materialDesign:HintAssist.Hint="Name"></ComboBox>
-                                        <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
-                                 cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]"
-                                 DataObject.Pasting="TryPasteItemValue" 
-                                 Margin="15" HorizontalAlignment="Right" MinWidth="55"
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                 materialDesign:HintAssist.Hint="Numeric value"></TextBox>
-                                        <TextBlock Text="{Binding Aggregate}"></TextBlock>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.Resources>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="{x:Type ContentPresenter}">
-                                <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"></Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Name}" Value="Subtract">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource SubtractTransformationTemplate}"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Name}" Value="Add">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
+                        </ItemsControl.ItemTemplate>
                     </ItemsControl>
                     <Button cal:Message.Attach="[Event Click] = [Action AddTransformation()]" Content="Add" HorizontalAlignment="Right" Margin="10"></Button>
                 </StackPanel>

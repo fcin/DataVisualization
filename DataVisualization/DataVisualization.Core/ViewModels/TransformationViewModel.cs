@@ -5,6 +5,7 @@ namespace DataVisualization.Core.ViewModels
 {
     public interface ITransformationViewModel
     {
+        Guid Id { get; }
         string Name { get; set; }
         ITransformation Transformation { get; }
         double Aggregate { get; set; }
@@ -30,6 +31,7 @@ namespace DataVisualization.Core.ViewModels
 
     public class AddTransformationViewModel : ITransformationViewModel
     {
+        public Guid Id { get; }
         public string Name { get; set; }
         public double Value { get; set; }
         public double Aggregate { get; set; }
@@ -39,7 +41,8 @@ namespace DataVisualization.Core.ViewModels
         {
             if (!(transformation is AddTransformation addTransformation))
                 throw new ArgumentException(nameof(transformation));
-            
+
+            Id = Guid.NewGuid();
             Name = addTransformation.Name;
             Value = addTransformation.Adder;
             Transformation = transformation;
@@ -55,6 +58,7 @@ namespace DataVisualization.Core.ViewModels
 
     public class SubtractTransformationViewModel : ITransformationViewModel
     {
+        public Guid Id { get; }
         public string Name { get; set; }
         public double Value { get; set; }
         public double Aggregate { get; set; }
@@ -64,7 +68,8 @@ namespace DataVisualization.Core.ViewModels
         {
             if (!(transformation is SubtractTransformation subtractTransformation))
                 throw new ArgumentException(nameof(transformation));
-            
+
+            Id = Guid.NewGuid();
             Name = subtractTransformation.Name;
             Value = subtractTransformation.Subtrahend;
             Transformation = transformation;

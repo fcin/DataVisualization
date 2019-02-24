@@ -102,10 +102,10 @@ namespace DataVisualization.Core.ViewModels
             if (item == null)
                 return;
 
-            if ((args != null && args.RemovedItems.Count != 0))
+            if (args != null && args.AddedItems.Count != 0)
             {
                 var index = TransformationVms.IndexOf(item);
-                switch (args.RemovedItems[0].ToString())
+                switch (args.AddedItems[0].ToString())
                 {
                     case "Add":
                         TransformationVms[index] = new AddTransformationViewModel(new AddTransformation(0));
@@ -120,6 +120,16 @@ namespace DataVisualization.Core.ViewModels
 
             RecalculateAggregate();
             
+            TransformationVms.Refresh();
+        }
+
+        public void RemoveTransformation(ITransformationViewModel transformationVm)
+        {
+            var index = TransformationVms.ToList().FindIndex(t => t.Id == transformationVm.Id);
+            TransformationVms.RemoveAt(index);
+
+            RecalculateAggregate();
+
             TransformationVms.Refresh();
         }
 
