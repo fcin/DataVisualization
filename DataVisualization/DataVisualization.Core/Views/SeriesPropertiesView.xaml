@@ -8,6 +8,7 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
+        xmlns:vms="clr-namespace:DataVisualization.Core.ViewModels"
         mc:Ignorable="d"
         Title="{x:Static trans:Translation.SeriesProperties}" MinHeight="400" Height="600" MinWidth="350" Width="550" 
         WindowStartupLocation="CenterOwner">
@@ -40,38 +41,71 @@
             Transformations
                 </TextBlock>
                 <StackPanel>
-                    <ItemsControl ItemsSource="{Binding Transformations}">
+                    <ItemsControl ItemsSource="{Binding TransformationVms}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel></StackPanel>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                        <ItemsControl.Resources>
+                            <DataTemplate x:Key="AddTransformationTemplate">
                                 <StackPanel Orientation="Horizontal">
                                     <ComboBox ItemsSource="{Binding DataContext.AllTransformationDefinitionNames, Mode=OneTime, 
-                        RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                            RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                               SelectedValue="{Binding Name}" 
-                              cal:Message.Attach="[Event SelectionChanged] = [Action TransformationChanged($dataContext)]"
+                              cal:Message.Attach="[Event SelectionChanged] = [Action TransformationChanged($dataContext, $eventArgs)]"
                               Margin="15" HorizontalAlignment="Stretch" MinWidth="75"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                  materialDesign:HintAssist.Hint="Name"></ComboBox>
                                     <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
-                                 cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext)]"
+                                 cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]"
                                  DataObject.Pasting="TryPasteItemValue" 
                                  Margin="15" HorizontalAlignment="Right" MinWidth="55"
                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                  materialDesign:HintAssist.Hint="Numeric value"></TextBox>
-                                    <TextBlock Text="{Binding Aggregate}" VerticalAlignment="Center"></TextBlock>
+                                    <TextBlock Text="{Binding Aggregate}"></TextBlock>
                                 </StackPanel>
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
+                            <DataTemplate x:Key="SubtractTransformationTemplate">
+                                <Border BorderBrush="Red" BorderThickness="2">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ComboBox ItemsSource="{Binding DataContext.AllTransformationDefinitionNames, Mode=OneTime, 
+                            RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                              SelectedValue="{Binding Name}" 
+                              cal:Message.Attach="[Event SelectionChanged] = [Action TransformationChanged($dataContext, $eventArgs)]"
+                              Margin="15" HorizontalAlignment="Stretch" MinWidth="75"
+                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                 materialDesign:HintAssist.Hint="Name"></ComboBox>
+                                        <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
+                                 cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]"
+                                 DataObject.Pasting="TryPasteItemValue" 
+                                 Margin="15" HorizontalAlignment="Right" MinWidth="55"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                 materialDesign:HintAssist.Hint="Numeric value"></TextBox>
+                                        <TextBlock Text="{Binding Aggregate}"></TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.Resources>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="{x:Type ContentPresenter}">
+                                <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"></Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Name}" Value="Subtract">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource SubtractTransformationTemplate}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="Add">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
                     </ItemsControl>
                     <Button cal:Message.Attach="[Event Click] = [Action AddTransformation()]" Content="Add" HorizontalAlignment="Right" Margin="10"></Button>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
-        
+
         <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Content="{x:Static trans:Translation.Save}" Margin="5" cal:Message.Attach="[Event Click] = [Action OnSave]"></Button>
             <Button Content="{x:Static trans:Translation.Cancel}" Margin="5"  cal:Message.Attach="[Event Click] = [Action OnCancel]"></Button>

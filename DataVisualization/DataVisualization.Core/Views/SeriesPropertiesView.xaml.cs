@@ -25,9 +25,6 @@ namespace DataVisualization.Core.Views
             if (double.TryParse(text, out var value))
             {
                 e.Handled = false;
-
-                ((TransformationListItem)textbox.DataContext).Value = value;
-
                 return;
             }
 

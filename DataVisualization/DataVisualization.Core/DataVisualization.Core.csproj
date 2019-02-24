@@ -164,6 +164,7 @@
     <Compile Include="ViewModels\SettingsWindow\GeneralGlobalSettingsViewModel.cs" />
     <Compile Include="ViewModels\SettingsWindow\GlobalSettingsViewModel.cs" />
     <Compile Include="ViewModels\SettingsWindow\GlobalSettingsViewModelBase.cs" />
+    <Compile Include="ViewModels\TransformationViewModel.cs" />
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
     <Compile Include="Views\AppConsoleView.xaml.cs">
       <DependentUpon>AppConsoleView.xaml</DependentUpon>

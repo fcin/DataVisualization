@@ -53,14 +53,14 @@ namespace DataVisualization.Models
 
         public Axes Axis { get; set; }
 
-        private readonly IList<ITransformation> _transformations;
+        public IList<ITransformation> Transformations { get; set; }
 
         [BsonIgnore]
         private bool _transformationsApplied = false;
 
         public Series()
         {
-            _transformations = new List<ITransformation>();
+            Transformations = new List<ITransformation>();
         }
 
         public void ApplyTransformations()
@@ -72,7 +72,7 @@ namespace DataVisualization.Models
 
             for (int index = 0; index < Values.Count; index++)
             {
-                foreach (var transformation in _transformations)
+                foreach (var transformation in Transformations)
                 {
                     Values[index] = transformation.Transform(Values[index]);
                 }
@@ -93,6 +93,11 @@ namespace DataVisualization.Models
         {
             _chunks.Add(chunk);
             _chunksCountCache += chunk.Chunk.Count;
+        }
+
+        public void SetTransformations(IList<ITransformation> transformations)
+        {
+            Transformations = transformations;
         }
     }
 

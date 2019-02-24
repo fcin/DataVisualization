@@ -1,38 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DataVisualization.Models.Transformations
 {
     public class AddTransformation : ITransformation
     {
-        private readonly double _adder;
-
-        public AddTransformation(double adder)
-        {
-            _adder = adder;
-        }
-
         public string Name => "Add";
+        public double Adder { get; set; }
+
+        public AddTransformation() => Adder = 0;
+        public AddTransformation(double adder) => Adder = adder;
 
         public double Transform(double value)
         {
-            return value + _adder;
+            return value + Adder;
         }
     }
 
     public class SubtractTransformation : ITransformation
     {
-        private readonly double _subtrahend;
-
-        public SubtractTransformation(double subtrahend)
-        {
-            _subtrahend = subtrahend;
-        }
-
         public string Name => "Subtract";
+        public double Subtrahend { get; set; }
+
+        public SubtractTransformation() => Subtrahend = 0;
+        public SubtractTransformation(double subtrahend) => Subtrahend = subtrahend;
 
         public double Transform(double value)
         {
-            return value - _subtrahend;
+            return value - Subtrahend;
         }
     }
 }
