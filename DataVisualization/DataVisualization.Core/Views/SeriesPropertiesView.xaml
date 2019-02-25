@@ -11,12 +11,12 @@
         xmlns:vms="clr-namespace:DataVisualization.Core.ViewModels"
         xmlns:vr="clr-namespace:DataVisualization.Core.ValidationRules"
         mc:Ignorable="d"
-        Title="{x:Static trans:Translation.SeriesProperties}" MinHeight="400" Height="600" MinWidth="350" Width="550" 
+        Title="{x:Static trans:Translation.SeriesProperties}" MinHeight="400" Height="600" MinWidth="400" Width="600" 
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <DataTemplate x:Key="AddTransformationTemplate">
             <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
-                <TextBox cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]" 
+                <TextBox cal:Message.Attach="[Event LostFocus] = [Action TransformationValueChanged()]" 
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                          materialDesign:HintAssist.Hint="Numeric value">
                     <TextBox.Text>
@@ -33,7 +33,7 @@
         <DataTemplate x:Key="MultiplyTransformationTemplate">
             <Border BorderBrush="Red" BorderThickness="2">
                 <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
-                    <TextBox cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]" 
+                    <TextBox cal:Message.Attach="[Event LostFocus] = [Action TransformationValueChanged()]" 
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                              materialDesign:HintAssist.Hint="Numeric value">
                         <TextBox.Text>
@@ -47,6 +47,14 @@
                     </TextBox>
                 </StackPanel>
             </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="RadiansToDegreesTransformationTemplate">
+            <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="In radians: "></TextBlock>
+                    <TextBlock Text="{Binding Aggregate, StringFormat={}{0:f4}}"></TextBlock>
+                </StackPanel>
+            </StackPanel>
         </DataTemplate>
     </Window.Resources>
     <Grid Margin="15" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -101,7 +109,7 @@
                                         <ColumnDefinition Width="*"></ColumnDefinition>
                                         <ColumnDefinition Width="2*"></ColumnDefinition>
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="2*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0" cal:Message.Attach="[Event Click] = [Action RemoveTransformation($dataContext)]"
                                             Margin="0,0,5,0" Padding="0" VerticalAlignment="Center" 
@@ -133,12 +141,16 @@
                                                     <DataTrigger Binding="{Binding Name}" Value="Add">
                                                         <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"/>
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Name}" Value="Radians to Degrees">
+                                                        <Setter Property="ContentTemplate" Value="{StaticResource RadiansToDegreesTransformationTemplate}"/>
+                                                    </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </ContentControl.Style>
                                     </ContentControl>
-                                    <TextBlock Text="{Binding Aggregate}" Grid.Column="3" Width="25" 
-                                               VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+                                    <TextBlock Text="{Binding Aggregate}" Grid.Column="3" 
+                                               VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                               TextWrapping="Wrap"></TextBlock>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

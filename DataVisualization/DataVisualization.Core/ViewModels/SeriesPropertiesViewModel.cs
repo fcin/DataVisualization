@@ -102,6 +102,8 @@ namespace DataVisualization.Core.ViewModels
         public void AddTransformation()
         {
             TransformationVms.Add(TransformationViewModelFactory.Create("Add"));
+
+
         }
 
         public void TransformationChanged(ITransformationViewModel item, SelectionChangedEventArgs args)
@@ -117,6 +119,13 @@ namespace DataVisualization.Core.ViewModels
 
             RecalculateAggregate();
             
+            TransformationVms.Refresh();
+        }
+
+        public void TransformationValueChanged()
+        {
+            RecalculateAggregate();
+
             TransformationVms.Refresh();
         }
 

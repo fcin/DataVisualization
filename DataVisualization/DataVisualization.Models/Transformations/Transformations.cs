@@ -1,4 +1,6 @@
-﻿namespace DataVisualization.Models.Transformations
+﻿using System;
+
+namespace DataVisualization.Models.Transformations
 {
     public class AddTransformation : ITransformation
     {
@@ -25,6 +27,16 @@
         public double Transform(double value)
         {
             return value * Multiplier;
+        }
+    }
+
+    public class RadiansToDegreesTransformation : ITransformation
+    {
+        public string Name => "Radians to Degrees";
+
+        public double Transform(double value)
+        {
+            return value * 180.0d / Math.PI;
         }
     }
 }

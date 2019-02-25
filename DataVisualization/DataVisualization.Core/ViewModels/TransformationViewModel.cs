@@ -1,6 +1,7 @@
 ﻿using DataVisualization.Models.Transformations;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataVisualization.Core.ViewModels
 {
@@ -25,32 +26,31 @@ namespace DataVisualization.Core.ViewModels
             {
                 return new MultiplyTransformationViewModel(multiplyTransformation);
             }
+            else if (transformation is RadiansToDegreesTransformation radiansToDegreesTransformation)
+            {
+                return new RadiansToDegreesTransformationViewModel(radiansToDegreesTransformation);
+            }
 
             throw new ArgumentException(nameof(transformation));
         }
 
         public static ITransformationViewModel Create(string transformationName)
         {
-            ITransformation transformation = null;
-            switch (transformationName)
-            {
-                case "Add":
-                    transformation = new AddTransformation(0);
-                    break;
-                case "Multiply":
-                    transformation = new MultiplyTransformation(0);
-                    break;
-                default:
-                    throw new ArgumentException(nameof(transformationName));
-            }
+            ITransformation transformation = GetAllTransformationVms()
+                .Select(t => t.Transformation)
+                .First(t => t.Name == transformationName);
 
             return Create(transformation);
         }
 
         public static IEnumerable<ITransformationViewModel> GetAllTransformationVms()
         {
-            yield return new AddTransformationViewModel(new AddTransformation(0));
-            yield return new MultiplyTransformationViewModel(new MultiplyTransformation(0));
+            return new ITransformationViewModel[] 
+            {
+                new AddTransformationViewModel(new AddTransformation(0)),
+                new MultiplyTransformationViewModel(new MultiplyTransformation(0)),
+                new RadiansToDegreesTransformationViewModel(new RadiansToDegreesTransformation())
+            };
         }
     }
 
@@ -103,6 +103,31 @@ namespace DataVisualization.Core.ViewModels
         public double ApplyTransformation(double aggregate)
         {
             Transformation = new MultiplyTransformation(Value);
+            Aggregate = Transformation.Transform(aggregate);
+            return Aggregate;
+        }
+    }
+
+    public class RadiansToDegreesTransformationViewModel : ITransformationViewModel
+    {
+        public Guid Id { get; }
+        public string Name { get; set; }
+        public ITransformation Transformation { get; private set; }
+        public double Aggregate { get; set; }
+
+        public RadiansToDegreesTransformationViewModel(ITransformation transformation)
+        {
+            if (!(transformation is RadiansToDegreesTransformation))
+                throw new ArgumentException(nameof(transformation));
+
+            Id = Guid.NewGuid();
+            Transformation = transformation;
+            Name = transformation.Name;
+        }
+
+        public double ApplyTransformation(double aggregate)
+        {
+            Transformation = new RadiansToDegreesTransformation();
             Aggregate = Transformation.Transform(aggregate);
             return Aggregate;
         }
