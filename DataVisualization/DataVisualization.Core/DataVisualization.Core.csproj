@@ -147,6 +147,7 @@
       <DependentUpon>Translation.resx</DependentUpon>
     </Compile>
     <Compile Include="ValidationRules\NotNullOrEmptyValidationRule.cs" />
+    <Compile Include="ValidationRules\NumericValidationRule.cs" />
     <Compile Include="ViewModels\AppConsoleViewModel.cs" />
     <Compile Include="ViewModels\DataBrowserViewModel.cs" />
     <Compile Include="ViewModels\DataLoaderViewModel.cs" />

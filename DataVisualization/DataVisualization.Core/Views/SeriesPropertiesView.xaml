@@ -16,15 +16,14 @@
     <Window.Resources>
         <DataTemplate x:Key="AddTransformationTemplate">
             <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
-                <TextBox PreviewTextInput="TryUpdateItemValue"
-                                 cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]"
-                                 DataObject.Pasting="TryPasteItemValue" 
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                 materialDesign:HintAssist.Hint="Numeric value">
+                <TextBox cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         materialDesign:HintAssist.Hint="Numeric value">
                     <TextBox.Text>
-                        <Binding Path="Value" UpdateSourceTrigger="PropertyChanged">
+                        <Binding Path="Value" UpdateSourceTrigger="LostFocus">
                             <Binding.ValidationRules>
-                                <vr:NotNullOrEmptyValidationRule></vr:NotNullOrEmptyValidationRule>
+                                <vr:NotNullOrEmptyValidationRule ValidatesOnTargetUpdated="True"></vr:NotNullOrEmptyValidationRule>
+                                <vr:NumericValidationRule></vr:NumericValidationRule>
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
@@ -34,11 +33,18 @@
         <DataTemplate x:Key="MultiplyTransformationTemplate">
             <Border BorderBrush="Red" BorderThickness="2">
                 <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
-                    <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
-                                 cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]"
-                                 DataObject.Pasting="TryPasteItemValue" 
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                 materialDesign:HintAssist.Hint="Numeric value"></TextBox>
+                    <TextBox cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                             materialDesign:HintAssist.Hint="Numeric value">
+                        <TextBox.Text>
+                            <Binding Path="Value" UpdateSourceTrigger="LostFocus">
+                                <Binding.ValidationRules>
+                                    <vr:NotNullOrEmptyValidationRule></vr:NotNullOrEmptyValidationRule>
+                                    <vr:NumericValidationRule></vr:NumericValidationRule>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </Border>
         </DataTemplate>
