@@ -41,34 +41,33 @@ namespace DataVisualization.Core.ViewModels
             get
             {
                 var xLineType = _data.Series.First(d => d.Axis == Axes.X1).InternalType;
-                var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
                 var xValues = SeriesCollection.First().Values.OfType<DateModel>().Select(val => val.HorizontalAxis);
                 return _formatter.GetFormat(xLineType, xValues);
             }
         }
 
-        private double? _minX = null;
+        private double? _minX;
         public double? MinX
         {
             get => _minX;
             set => SetValue(ref _minX, value);
         }
 
-        private double? _maxX = null;
+        private double? _maxX;
         public double? MaxX
         {
             get => _maxX;
             set => SetValue(ref _maxX, value);
         }
 
-        private double? _minX2 = null;
+        private double? _minX2;
         public double? MinX2
         {
             get => _minX2;
             set => SetValue(ref _minX2, value);
         }
 
-        private double? _maxX2 = null;
+        private double? _maxX2;
         public double? MaxX2
         {
             get => _maxX2;
@@ -211,10 +210,10 @@ namespace DataVisualization.Core.ViewModels
 
             while (!ct.IsCancellationRequested)
             {
-                await Task.Delay(_config.RefreshRate);
+                await Task.Delay(_config.RefreshRate, ct);
 
-                List<Series> series = new List<Series>();
-                int readLines = 0;
+                List<Series> series;
+                int readLines;
 
                 try
                 {

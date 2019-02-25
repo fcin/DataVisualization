@@ -4,7 +4,7 @@ namespace DataVisualization.Services.Exceptions
 {
     public class DataPullingException : Exception
     {
-        public DataPullingException() : base()
+        public DataPullingException()
         {
 
         }

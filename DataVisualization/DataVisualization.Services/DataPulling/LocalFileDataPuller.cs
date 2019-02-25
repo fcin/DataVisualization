@@ -32,7 +32,6 @@ namespace DataVisualization.Services.DataPulling
 
                 await reader.ReadAsync();
 
-                var columnsCount = reader.Context.Record.Length;
                 var data = new List<List<double>>(config.Columns.Count);
                 for (var index = config.Columns.Count - 1; index >= 0; index--)
                 {
@@ -57,13 +56,13 @@ namespace DataVisualization.Services.DataPulling
                         var configColumn = config.Columns[index];
                         var fileColumnIndex = configColumn.Index;
                         var value = reader.Context.Record[fileColumnIndex];
-                        var convertedValue = parser.TryParse(value, configColumn.ColumnType);
-                        if (convertedValue.IsParsed)
+                        var (isParsed, parsedObject) = parser.TryParse(value, configColumn.ColumnType);
+                        if (isParsed)
                         {
-                            if (convertedValue.ParsedObject is DateTime dtValue)
+                            if (parsedObject is DateTime dtValue)
                                 data[index].Add(dtValue.Ticks);
                             else
-                                data[index].Add((double)convertedValue.ParsedObject);
+                                data[index].Add((double)parsedObject);
                         }
                         else
                         {

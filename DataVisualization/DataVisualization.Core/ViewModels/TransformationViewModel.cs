@@ -18,25 +18,22 @@ namespace DataVisualization.Core.ViewModels
     {
         public static ITransformationViewModel Create(ITransformation transformation)
         {
-            if (transformation is AddTransformation addTransformation)
+            switch (transformation)
             {
-                return new AddTransformationViewModel(addTransformation);
+                case AddTransformation addTransformation:
+                    return new AddTransformationViewModel(addTransformation);
+                case MultiplyTransformation multiplyTransformation:
+                    return new MultiplyTransformationViewModel(multiplyTransformation);
+                case RadiansToDegreesTransformation radiansToDegreesTransformation:
+                    return new RadiansToDegreesTransformationViewModel(radiansToDegreesTransformation);
+                default:
+                    throw new ArgumentException(nameof(transformation));
             }
-            else if (transformation is MultiplyTransformation multiplyTransformation)
-            {
-                return new MultiplyTransformationViewModel(multiplyTransformation);
-            }
-            else if (transformation is RadiansToDegreesTransformation radiansToDegreesTransformation)
-            {
-                return new RadiansToDegreesTransformationViewModel(radiansToDegreesTransformation);
-            }
-
-            throw new ArgumentException(nameof(transformation));
         }
 
         public static ITransformationViewModel Create(string transformationName)
         {
-            ITransformation transformation = GetAllTransformationVms()
+            var transformation = GetAllTransformationVms()
                 .Select(t => t.Transformation)
                 .First(t => t.Name == transformationName);
 

@@ -4,7 +4,7 @@ namespace DataVisualization.Services.Exceptions
 {
     public class DataParsingException : Exception
     {
-        public DataParsingException() : base()
+        public DataParsingException()
         {
 
         }

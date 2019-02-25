@@ -1,8 +1,6 @@
 ﻿using Caliburn.Micro;
 using DataVisualization.Models;
-using DataVisualization.Models.Transformations;
 using DataVisualization.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -25,7 +23,7 @@ namespace DataVisualization.Core.ViewModels
 
         public Color SeriesColor
         {
-            get => (Color)ColorConverter.ConvertFromString(_series.ColorHex);
+            get => (Color)(ColorConverter.ConvertFromString(_series.ColorHex) ?? Colors.Black);
             set
             {
                 _series.ColorHex = value.ToString();
@@ -60,7 +58,7 @@ namespace DataVisualization.Core.ViewModels
 
         public IEnumerable<string> AllTransformationDefinitionNames => _availableTransformations.Select(trans => trans.Name);
 
-        private IEnumerable<ITransformationViewModel> _availableTransformations =
+        private readonly IEnumerable<ITransformationViewModel> _availableTransformations =
             TransformationViewModelFactory.GetAllTransformationVms();
 
         private readonly string _oldName;

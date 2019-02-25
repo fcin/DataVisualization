@@ -3,7 +3,7 @@ using DataVisualization.Core.Events;
 
 namespace DataVisualization.Core.ViewModels
 {
-    public class MainViewModel : Conductor<object>, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>, IHandle<AppConsoleLogEventArgs>
+    public sealed class MainViewModel : Conductor<object>, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>, IHandle<AppConsoleLogEventArgs>
     {
         public VisualizerViewModel VisualizerVm { get; set; }
         public DataBrowserViewModel DataBrowserVm { get; set; }

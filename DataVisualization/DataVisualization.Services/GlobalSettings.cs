@@ -12,8 +12,8 @@ namespace DataVisualization.Services
         private CultureInfo _currentLanguage;
         public CultureInfo CurrentLanguage
         {
-            get { lock (_sync) return GetValue(ref _currentLanguage); }
-            set { lock (_sync) _currentLanguage = value; }
+            get { lock (Sync) return GetValue(ref _currentLanguage); }
+            set { lock (Sync) _currentLanguage = value; }
         }
 
         public IEnumerable<CultureInfo> AllLanguages => new List<CultureInfo>
@@ -27,16 +27,16 @@ namespace DataVisualization.Services
         private int _pointsCount;
         public int PointsCount
         {
-            get { lock (_sync) return GetValue(ref _pointsCount); }
-            set { lock (_sync) _pointsCount = value; }
+            get { lock (Sync) return GetValue(ref _pointsCount); }
+            set { lock (Sync) _pointsCount = value; }
         }
 
-        private bool _isInitialized = false;
-        private static readonly object _sync = new object();
+        private bool _isInitialized;
+        private static readonly object Sync = new object();
 
         public void Persist()
         {
-            lock (_sync)
+            lock (Sync)
             {
                 if (!_isInitialized)
                     throw new InvalidOperationException("Settings not initialized. Initialize first.");
@@ -72,7 +72,7 @@ namespace DataVisualization.Services
         {
             if (!_isInitialized)
             {
-                lock (_sync)
+                lock (Sync)
                 {
                     if (!_isInitialized)
                     {

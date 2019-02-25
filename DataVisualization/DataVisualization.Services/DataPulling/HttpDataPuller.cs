@@ -27,7 +27,7 @@ namespace DataVisualization.Services.DataPulling
 
             try
             {
-                string newestData = null;
+                string newestData;
 
                 try
                 {
@@ -38,7 +38,7 @@ namespace DataVisualization.Services.DataPulling
                     throw new DataPullingException("Invalid remote address", ex);
                 }
 
-                DataPacket[] packets = null;
+                DataPacket[] packets;
 
                 try
                 {
@@ -75,13 +75,13 @@ namespace DataVisualization.Services.DataPulling
                     {
                         var configColumn = config.Columns[index];
                         var value = values[configColumn.Index];
-                        var convertedValue = parser.TryParse(value, configColumn.ColumnType);
-                        if (convertedValue.IsParsed)
+                        var (isParsed, parsedObject) = parser.TryParse(value, configColumn.ColumnType);
+                        if (isParsed)
                         {
-                            if (convertedValue.ParsedObject is DateTime dtValue)
+                            if (parsedObject is DateTime dtValue)
                                 data[index].Add(dtValue.Ticks);
                             else
-                                data[index].Add((double)convertedValue.ParsedObject);
+                                data[index].Add((double)parsedObject);
                         }
                         else
                         {
@@ -98,12 +98,10 @@ namespace DataVisualization.Services.DataPulling
             }
             catch (HttpRequestException ex)
             {
-                // Todo: waits for implementation of in-app console.
                 throw new DataPullingException("Http Request failed", ex);
             }
             catch (JsonSerializationException ex)
             {
-                // Todo: waits for implementation of in-app console.
                 throw new DataParsingException("JSON Parsing failed", ex);
             }
         }

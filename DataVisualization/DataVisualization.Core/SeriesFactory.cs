@@ -76,8 +76,8 @@ namespace DataVisualization.Core
             var dateRow = horizontalSeries;
             var row = dataSeries;
 
-            var minIndex = 0;
-            var maxIndex = 0;
+            int minIndex;
+            int maxIndex;
 
 
             if (min == null || max == null)
@@ -113,7 +113,7 @@ namespace DataVisualization.Core
             var allPoints = new ConcurrentBag<(List<DateModel> SeriesPoints, Series RelatedSeries)>();
             Parallel.ForEach(allVerticalSeries, series =>
             {
-                var points = this.CreateSeriesPoints(horizontalSeries, series, min, max).ToList();
+                var points = CreateSeriesPoints(horizontalSeries, series, min, max).ToList();
                 allPoints.Add((points, series));
             });
 
@@ -125,9 +125,9 @@ namespace DataVisualization.Core
                 );
 
             var allSeries = new List<ISeriesView>();
-            foreach (var (SeriesPoints, RelatedSeries) in allPointsSorted)
+            foreach (var (seriesPoints, relatedSeries) in allPointsSorted)
             {
-                var lineSeries = this.CreateLineSeries(SeriesPoints, RelatedSeries);
+                var lineSeries = CreateLineSeries(seriesPoints, relatedSeries);
                 allSeries.Add(lineSeries);
             }
 

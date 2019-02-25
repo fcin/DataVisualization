@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -67,7 +68,7 @@ namespace DataVisualization.Core.ViewModels
             set => SetValue(ref _allSelectableAxes, value);
         }
 
-        public List<bool> _isIgnoredList = new List<bool>();
+        private List<bool> _isIgnoredList = new List<bool>();
         public List<bool> IsIgnoredList
         {
             get => _isIgnoredList;
@@ -174,7 +175,7 @@ namespace DataVisualization.Core.ViewModels
 
             var parser = new ValueParser(SelectedThousandsSeparator.ToString(), SelectedDecimalSeparator.ToString());
             var valuesToParse = _sampleData.AsEnumerable().Select(s => s.Field<string>(index));
-            (bool isParsed, List<object> parsedValues) = parser.TryParseAll(valuesToParse, newType);
+            var (isParsed, parsedValues) = parser.TryParseAll(valuesToParse, newType);
 
             if (!isParsed)
             {
@@ -197,10 +198,11 @@ namespace DataVisualization.Core.ViewModels
             {
                 var item = DataGridCollection[propIndex];
                 var prop = item.GetType().GetProperty(columnName);
+                Debug.Assert(prop != null, nameof(prop) + " != null");
                 prop.SetValue(item, parsedValues[propIndex].ToString());
             }
 
-            // Assing new type to header.
+            // Assign new type to header.
             DataGridColumnsModel.Columns[index] = new GridColumn(columnName, newType, DataGridColumnsModel.Columns[index].IsIgnored, DataGridColumnsModel.Columns[index].Axis);
             DataGridCollection.Refresh();
 
@@ -255,14 +257,15 @@ namespace DataVisualization.Core.ViewModels
 
         private void GuessColumnTypes()
         {
-            for (int index = 0; index < DataGridColumnsModel.Columns.Count; index++)
+            for (var index = 0; index < DataGridColumnsModel.Columns.Count; index++)
             {
                 var column = DataGridColumnsModel.Columns[index];
                 foreach (var type in ColumnTypeDef.AllTypes.Where(t => t != ColumnTypeDef.Unknown))
                 {
                     var parser = new ValueParser(SelectedThousandsSeparator.ToString(), SelectedDecimalSeparator.ToString());
-                    var valuesToParse = _sampleData.AsEnumerable().Select(s => s.Field<string>(index));
-                    (bool isParsed, List<object> parsedValues) = parser.TryParseAll(valuesToParse, type);
+                    var localIndex = index;
+                    var valuesToParse = _sampleData.AsEnumerable().Select(s => s.Field<string>(localIndex));
+                    var (isParsed, parsedValues) = parser.TryParseAll(valuesToParse, type);
 
                     if (!isParsed)
                     {
@@ -273,11 +276,12 @@ namespace DataVisualization.Core.ViewModels
                     {
                         var item = DataGridCollection[propIndex];
                         var prop = item.GetType().GetProperty(column.Name);
+                        Debug.Assert(prop != null, nameof(prop) + " != null");
                         prop.SetValue(item, parsedValues[propIndex].ToString());
                     }
 
-                    DataGridColumnsModel.Columns[index] = new GridColumn(column.Name, type, DataGridColumnsModel.Columns[index].IsIgnored, DataGridColumnsModel.Columns[index].Axis);
-                    AllSelectableTypes[index].SelectedType = type.PrettyType;
+                    DataGridColumnsModel.Columns[localIndex] = new GridColumn(column.Name, type, DataGridColumnsModel.Columns[localIndex].IsIgnored, DataGridColumnsModel.Columns[index].Axis);
+                    AllSelectableTypes[localIndex].SelectedType = type.PrettyType;
 
                     break;
                 }

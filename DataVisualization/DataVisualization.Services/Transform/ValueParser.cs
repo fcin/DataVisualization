@@ -50,10 +50,10 @@ namespace DataVisualization.Services.Transform
             var parsedValues = new List<object>();
             foreach (var value in values)
             {
-                var parsedValue = TryParse(value, type);
-                if (!parsedValue.IsParsed)
+                var (isParsed, parsedObject) = TryParse(value, type);
+                if (!isParsed)
                     return (false, new List<object>());
-                parsedValues.Add(parsedValue.ParsedObject);
+                parsedValues.Add(parsedObject);
             }
             return (true, parsedValues);
         }

@@ -12,19 +12,19 @@ namespace DataVisualization.Core
         {
             if (type == ColumnTypeDef.Number)
                 return val => val.ToString(CultureInfo.CurrentCulture);
-            else if (type == ColumnTypeDef.Datetime)
+
+            if (type == ColumnTypeDef.Datetime)
             {
                 var interval = TimeSpan.FromTicks(values.Max() - values.Min());
 
                 if (interval < TimeSpan.FromDays(1))
                     return val => new DateTime((long)val).ToString("hh:mm:ss");
-                else if (interval >= TimeSpan.FromDays(1) && interval < TimeSpan.FromDays(365))
+                if (interval >= TimeSpan.FromDays(1) && interval < TimeSpan.FromDays(365))
                     return val => new DateTime((long)val).ToShortDateString();
-                else
-                    return val => new DateTime((long)val).ToString("yyyy");
+                return val => new DateTime((long)val).ToString("yyyy");
             }
-            else
-                throw new ArgumentException("Unsupported type");
+
+            throw new ArgumentException("Unsupported type");
         }
     }
 }

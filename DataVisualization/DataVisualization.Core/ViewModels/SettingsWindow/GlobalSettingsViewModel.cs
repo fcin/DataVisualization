@@ -10,12 +10,8 @@ namespace DataVisualization.Core.ViewModels.SettingsWindow
     {
         public IEnumerable<TreeNode> Nodes { get; set; }
 
-        private readonly GlobalSettings _globalSettings;
-
         public GlobalSettingsViewModel(GlobalSettings globalSettings, IEventAggregator eventAggregator)
         {
-            _globalSettings = globalSettings;
-
             Nodes = new List<TreeNode> {
                 new TreeNode
                 {
@@ -27,12 +23,12 @@ namespace DataVisualization.Core.ViewModels.SettingsWindow
                         {
                             Name = Translation.General,
                             Openable = true,
-                            NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new GeneralGlobalSettingsViewModel(_globalSettings, eventAggregator)) },
+                            NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new GeneralGlobalSettingsViewModel(globalSettings, eventAggregator)) },
                         new TreeNode
                         {
                             Name = Translation.Advanced,
                             Openable = true,
-                            NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new AdvancedGlobalSettingsViewModel(_globalSettings))
+                            NodeView = new Lazy<GlobalSettingsViewModelBase>(() => new AdvancedGlobalSettingsViewModel(globalSettings))
                         }
                     }
                 }

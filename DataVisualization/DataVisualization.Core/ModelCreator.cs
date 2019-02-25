@@ -21,7 +21,7 @@ namespace DataVisualization.Core
             var asmBuilder = currentDomain.DefineDynamicAssembly(dynamicAssemblyName, AssemblyBuilderAccess.Run);
             var moduleBuilder = asmBuilder.DefineDynamicModule(dynamicAssemblyName.Name);
 
-            var typeBuilder = moduleBuilder.DefineType("DynamicData", TypeAttributes.Public); ;
+            var typeBuilder = moduleBuilder.DefineType("DynamicData", TypeAttributes.Public);
 
             foreach (var property in properties)
             {
