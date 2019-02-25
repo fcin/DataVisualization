@@ -43,6 +43,14 @@ namespace DataVisualization.Core.ViewModels
             }
         }
 
+        private double _sampleValue;
+        public double SampleValue
+        {
+            get => _sampleValue;
+            set => Set(ref _sampleValue, value);
+        }
+
+
         private BindableCollection<ITransformationViewModel> _transformations;
         public BindableCollection<ITransformationViewModel> TransformationVms
         {
@@ -64,6 +72,7 @@ namespace DataVisualization.Core.ViewModels
             _series = series;
             _dataService = dataService;
             _oldName = series.Name;
+            SampleValue = 0;
 
             var transformations = series.Transformations.Select(t => TransformationViewModelFactory.Create(t));
             TransformationVms = new BindableCollection<ITransformationViewModel>(transformations);
@@ -121,9 +130,16 @@ namespace DataVisualization.Core.ViewModels
             TransformationVms.Refresh();
         }
 
+        public void SampleValueUpdated()
+        {
+            RecalculateAggregate();
+
+            TransformationVms.Refresh();
+        }
+
         private void RecalculateAggregate()
         {
-            var globalAggregate = 0d;
+            var globalAggregate = SampleValue;
 
             foreach (var transformation in TransformationVms)
             {

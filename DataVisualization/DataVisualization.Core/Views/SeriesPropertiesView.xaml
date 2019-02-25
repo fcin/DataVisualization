@@ -22,7 +22,7 @@
                     <TextBox.Text>
                         <Binding Path="Value" UpdateSourceTrigger="LostFocus">
                             <Binding.ValidationRules>
-                                <vr:NotNullOrEmptyValidationRule ValidatesOnTargetUpdated="True"></vr:NotNullOrEmptyValidationRule>
+                                <vr:NotNullOrEmptyValidationRule></vr:NotNullOrEmptyValidationRule>
                                 <vr:NumericValidationRule></vr:NumericValidationRule>
                             </Binding.ValidationRules>
                         </Binding>
@@ -51,8 +51,8 @@
     </Window.Resources>
     <Grid Margin="15" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="5*"></RowDefinition>
@@ -78,6 +78,16 @@
                     Transformations
                 </TextBlock>
                 <StackPanel>
+                    <TextBox cal:Message.Attach="[Event LostFocus] = [Action SampleValueUpdated()]"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        materialDesign:HintAssist.Hint="Sample Value" Margin="0,5,0,15" Width="75">
+                        <Binding Path="SampleValue" UpdateSourceTrigger="LostFocus">
+                            <Binding.ValidationRules>
+                                <vr:NotNullOrEmptyValidationRule></vr:NotNullOrEmptyValidationRule>
+                                <vr:NumericValidationRule></vr:NumericValidationRule>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox>
                     <ItemsControl ItemsSource="{Binding TransformationVms}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
