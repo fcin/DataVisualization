@@ -31,7 +31,7 @@
                 </TextBox>
             </StackPanel>
         </DataTemplate>
-        <DataTemplate x:Key="DivideTransformationTemplate">
+        <DataTemplate x:Key="MultiplyTransformationTemplate">
             <Border BorderBrush="Red" BorderThickness="2">
                 <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
                     <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
@@ -111,8 +111,8 @@
                                                 <Setter Property="MinWidth" Value="75"></Setter>
                                                 <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"></Setter>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Name}" Value="Divide">
-                                                        <Setter Property="ContentTemplate" Value="{StaticResource DivideTransformationTemplate}"/>
+                                                    <DataTrigger Binding="{Binding Name}" Value="Multiply">
+                                                        <Setter Property="ContentTemplate" Value="{StaticResource MultiplyTransformationTemplate}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Name}" Value="Add">
                                                         <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"/>
