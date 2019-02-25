@@ -14,17 +14,17 @@
         }
     }
 
-    public class SubtractTransformation : ITransformation
+    public class MultiplyTransformation : ITransformation
     {
-        public string Name => "Subtract";
-        public double Subtrahend { get; set; }
+        public string Name => "Multiply";
+        public double Multiplier { get; set; }
 
-        public SubtractTransformation() => Subtrahend = 0;
-        public SubtractTransformation(double subtrahend) => Subtrahend = subtrahend;
+        public MultiplyTransformation() => Multiplier = 0;
+        public MultiplyTransformation(double multiplier) => Multiplier = multiplier;
 
         public double Transform(double value)
         {
-            return value - Subtrahend;
+            return value * Multiplier;
         }
     }
 }

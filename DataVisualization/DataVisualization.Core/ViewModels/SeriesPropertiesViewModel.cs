@@ -52,10 +52,8 @@ namespace DataVisualization.Core.ViewModels
 
         public IEnumerable<string> AllTransformationDefinitionNames => _availableTransformations.Select(trans => trans.Name);
 
-        private IEnumerable<ITransformationViewModel> _availableTransformations = new ITransformationViewModel[] {
-            new AddTransformationViewModel(new AddTransformation(0)),
-            new SubtractTransformationViewModel(new SubtractTransformation(0))
-        };
+        private IEnumerable<ITransformationViewModel> _availableTransformations =
+            TransformationViewModelFactory.GetAllTransformationVms();
 
         private readonly string _oldName;
         private readonly Series _series;
@@ -94,7 +92,7 @@ namespace DataVisualization.Core.ViewModels
 
         public void AddTransformation()
         {
-            TransformationVms.Add(new AddTransformationViewModel(new AddTransformation(0)));
+            TransformationVms.Add(TransformationViewModelFactory.Create("Add"));
         }
 
         public void TransformationChanged(ITransformationViewModel item, SelectionChangedEventArgs args)
@@ -105,17 +103,7 @@ namespace DataVisualization.Core.ViewModels
             if (args != null && args.AddedItems.Count != 0)
             {
                 var index = TransformationVms.IndexOf(item);
-                switch (args.AddedItems[0].ToString())
-                {
-                    case "Add":
-                        TransformationVms[index] = new AddTransformationViewModel(new AddTransformation(0));
-                        break;
-                    case "Subtract":
-                        TransformationVms[index] = new SubtractTransformationViewModel(new SubtractTransformation(0));
-                        break;
-                    default:
-                        throw new ArgumentException();
-                }
+                TransformationVms[index] = TransformationViewModelFactory.Create(args.AddedItems[0].ToString());
             }
 
             RecalculateAggregate();

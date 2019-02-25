@@ -1,5 +1,6 @@
 ﻿using DataVisualization.Models.Transformations;
 using System;
+using System.Collections.Generic;
 
 namespace DataVisualization.Core.ViewModels
 {
@@ -20,12 +21,36 @@ namespace DataVisualization.Core.ViewModels
             {
                 return new AddTransformationViewModel(addTransformation);
             }
-            else if(transformation is SubtractTransformation subtractTransformation)
+            else if (transformation is MultiplyTransformation multiplyTransformation)
             {
-                return new SubtractTransformationViewModel(subtractTransformation);
+                return new MultiplyTransformationViewModel(multiplyTransformation);
             }
 
             throw new ArgumentException(nameof(transformation));
+        }
+
+        public static ITransformationViewModel Create(string transformationName)
+        {
+            ITransformation transformation = null;
+            switch (transformationName)
+            {
+                case "Add":
+                    transformation = new AddTransformation(0);
+                    break;
+                case "Multiply":
+                    transformation = new MultiplyTransformation(0);
+                    break;
+                default:
+                    throw new ArgumentException(nameof(transformationName));
+            }
+
+            return Create(transformation);
+        }
+
+        public static IEnumerable<ITransformationViewModel> GetAllTransformationVms()
+        {
+            yield return new AddTransformationViewModel(new AddTransformation(0));
+            yield return new MultiplyTransformationViewModel(new MultiplyTransformation(0));
         }
     }
 
@@ -56,7 +81,7 @@ namespace DataVisualization.Core.ViewModels
         }
     }
 
-    public class SubtractTransformationViewModel : ITransformationViewModel
+    public class MultiplyTransformationViewModel : ITransformationViewModel
     {
         public Guid Id { get; }
         public string Name { get; set; }
@@ -64,20 +89,20 @@ namespace DataVisualization.Core.ViewModels
         public double Aggregate { get; set; }
         public ITransformation Transformation { get; private set; }
 
-        public SubtractTransformationViewModel(ITransformation transformation)
+        public MultiplyTransformationViewModel(ITransformation transformation)
         {
-            if (!(transformation is SubtractTransformation subtractTransformation))
+            if (!(transformation is MultiplyTransformation multiplyTransformation))
                 throw new ArgumentException(nameof(transformation));
 
             Id = Guid.NewGuid();
-            Name = subtractTransformation.Name;
-            Value = subtractTransformation.Subtrahend;
+            Name = multiplyTransformation.Name;
+            Value = multiplyTransformation.Multiplier;
             Transformation = transformation;
         }
 
         public double ApplyTransformation(double aggregate)
         {
-            Transformation = new SubtractTransformation(Value);
+            Transformation = new MultiplyTransformation(Value);
             Aggregate = Transformation.Transform(aggregate);
             return Aggregate;
         }

@@ -9,20 +9,29 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
         xmlns:vms="clr-namespace:DataVisualization.Core.ViewModels"
+        xmlns:vr="clr-namespace:DataVisualization.Core.ValidationRules"
         mc:Ignorable="d"
         Title="{x:Static trans:Translation.SeriesProperties}" MinHeight="400" Height="600" MinWidth="350" Width="550" 
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <DataTemplate x:Key="AddTransformationTemplate">
             <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
-                <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
+                <TextBox PreviewTextInput="TryUpdateItemValue"
                                  cal:Message.Attach="[Event LostFocus] = [Action TransformationChanged($dataContext, $eventArgs)]"
                                  DataObject.Pasting="TryPasteItemValue" 
                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                 materialDesign:HintAssist.Hint="Numeric value"></TextBox>
+                                 materialDesign:HintAssist.Hint="Numeric value">
+                    <TextBox.Text>
+                        <Binding Path="Value" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <vr:NotNullOrEmptyValidationRule></vr:NotNullOrEmptyValidationRule>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
             </StackPanel>
         </DataTemplate>
-        <DataTemplate x:Key="SubtractTransformationTemplate">
+        <DataTemplate x:Key="DivideTransformationTemplate">
             <Border BorderBrush="Red" BorderThickness="2">
                 <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
                     <TextBox Text="{Binding Value}" PreviewTextInput="TryUpdateItemValue"
@@ -102,8 +111,8 @@
                                                 <Setter Property="MinWidth" Value="75"></Setter>
                                                 <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"></Setter>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Name}" Value="Subtract">
-                                                        <Setter Property="ContentTemplate" Value="{StaticResource SubtractTransformationTemplate}"/>
+                                                    <DataTrigger Binding="{Binding Name}" Value="Divide">
+                                                        <Setter Property="ContentTemplate" Value="{StaticResource DivideTransformationTemplate}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Name}" Value="Add">
                                                         <Setter Property="ContentTemplate" Value="{StaticResource AddTransformationTemplate}"/>
