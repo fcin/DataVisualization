@@ -61,6 +61,15 @@ namespace DataVisualization.Core.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Advanced.
         /// </summary>
         public static string Advanced {
@@ -232,6 +241,15 @@ namespace DataVisualization.Core.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In radians.
+        /// </summary>
+        public static string InRadians {
+            get {
+                return ResourceManager.GetString("InRadians", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal error.
         /// </summary>
         public static string InternalError {
@@ -349,6 +367,15 @@ namespace DataVisualization.Core.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number.
+        /// </summary>
+        public static string Number {
+            get {
+                return ResourceManager.GetString("Number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         public static string Open {
@@ -372,6 +399,15 @@ namespace DataVisualization.Core.Translations {
         public static string PointsCountTooltip {
             get {
                 return ResourceManager.GetString("PointsCountTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sample value.
+        /// </summary>
+        public static string SampleValue {
+            get {
+                return ResourceManager.GetString("SampleValue", resourceCulture);
             }
         }
         
@@ -444,6 +480,33 @@ namespace DataVisualization.Core.Translations {
         public static string ThousandsSeparator {
             get {
                 return ResourceManager.GetString("ThousandsSeparator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string TransformationName_Add {
+            get {
+                return ResourceManager.GetString("TransformationName_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiply.
+        /// </summary>
+        public static string TransformationName_Multiply {
+            get {
+                return ResourceManager.GetString("TransformationName_Multiply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radians to degrees.
+        /// </summary>
+        public static string TransformationName_RadiansToDegrees {
+            get {
+                return ResourceManager.GetString("TransformationName_RadiansToDegrees", resourceCulture);
             }
         }
         

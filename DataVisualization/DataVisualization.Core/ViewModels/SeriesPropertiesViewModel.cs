@@ -56,7 +56,8 @@ namespace DataVisualization.Core.ViewModels
             set => Set(ref _transformations, value);
         }
 
-        public IEnumerable<string> AllTransformationDefinitionNames => _availableTransformations.Select(trans => trans.Name);
+        public IEnumerable<TransformationVisualName> AllTransformationDefinitionNames 
+            => _availableTransformations.Select(trans => new TransformationVisualName(trans.Name, trans.PrettyName));
 
         private readonly IEnumerable<ITransformationViewModel> _availableTransformations =
             TransformationViewModelFactory.GetAllTransformationVms();
@@ -72,7 +73,7 @@ namespace DataVisualization.Core.ViewModels
             _oldName = series.Name;
             SampleValue = 0;
 
-            var transformations = series.Transformations.Select(t => TransformationViewModelFactory.Create(t));
+            var transformations = series.Transformations.Select(TransformationViewModelFactory.Create);
             TransformationVms = new BindableCollection<ITransformationViewModel>(transformations);
 
             RecalculateAggregate();
@@ -101,7 +102,9 @@ namespace DataVisualization.Core.ViewModels
         {
             TransformationVms.Add(TransformationViewModelFactory.Create("Add"));
 
+            RecalculateAggregate();
 
+            TransformationVms.Refresh();
         }
 
         public void TransformationChanged(ITransformationViewModel item, SelectionChangedEventArgs args)
@@ -109,10 +112,10 @@ namespace DataVisualization.Core.ViewModels
             if (item == null)
                 return;
 
-            if (args != null && args.AddedItems.Count != 0)
+            if (args != null && args.AddedItems.Count != 0 && args.AddedItems[0] is TransformationVisualName name)
             {
                 var index = TransformationVms.IndexOf(item);
-                TransformationVms[index] = TransformationViewModelFactory.Create(args.AddedItems[0].ToString());
+                TransformationVms[index] = TransformationViewModelFactory.Create(name.Name);
             }
 
             RecalculateAggregate();
@@ -152,6 +155,18 @@ namespace DataVisualization.Core.ViewModels
             {
                 globalAggregate = transformation.ApplyTransformation(globalAggregate);
             }
+        }
+    }
+
+    public class TransformationVisualName
+    {
+        public string Name { get; set; }
+        public string PrettyName { get; set; }
+
+        public TransformationVisualName(string name, string prettyName)
+        {
+            Name = name;
+            PrettyName = prettyName;
         }
     }
 }

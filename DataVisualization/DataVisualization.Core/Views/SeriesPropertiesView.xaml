@@ -18,7 +18,7 @@
             <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
                 <TextBox cal:Message.Attach="[Event LostFocus] = [Action TransformationValueChanged()]" 
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                         materialDesign:HintAssist.Hint="Numeric value">
+                         materialDesign:HintAssist.Hint="{x:Static trans:Translation.Number}">
                     <TextBox.Text>
                         <Binding Path="Value" UpdateSourceTrigger="LostFocus">
                             <Binding.ValidationRules>
@@ -35,7 +35,7 @@
                 <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
                     <TextBox cal:Message.Attach="[Event LostFocus] = [Action TransformationValueChanged()]" 
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                             materialDesign:HintAssist.Hint="Numeric value">
+                             materialDesign:HintAssist.Hint="{x:Static trans:Translation.Number}">
                         <TextBox.Text>
                             <Binding Path="Value" UpdateSourceTrigger="LostFocus">
                                 <Binding.ValidationRules>
@@ -51,7 +51,7 @@
         <DataTemplate x:Key="RadiansToDegreesTransformationTemplate">
             <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="In radians: "></TextBlock>
+                    <TextBlock Text="{x:Static trans:Translation.InRadians}" Margin="0,0,5,0"></TextBlock>
                     <TextBlock Text="{Binding Aggregate, StringFormat={}{0:f4}}"></TextBlock>
                 </StackPanel>
             </StackPanel>
@@ -88,7 +88,7 @@
                 <StackPanel>
                     <TextBox cal:Message.Attach="[Event LostFocus] = [Action SampleValueUpdated()]"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                        materialDesign:HintAssist.Hint="Sample Value" Margin="0,5,0,15" Width="75">
+                        materialDesign:HintAssist.Hint="{x:Static trans:Translation.SampleValue}" Margin="0,5,0,15" Width="75">
                         <Binding Path="SampleValue" UpdateSourceTrigger="LostFocus">
                             <Binding.ValidationRules>
                                 <vr:NotNullOrEmptyValidationRule></vr:NotNullOrEmptyValidationRule>
@@ -120,7 +120,9 @@
                                     </Button>
                                     <ComboBox ItemsSource="{Binding DataContext.AllTransformationDefinitionNames, Mode=OneTime, 
                                         RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                                        SelectedValue="{Binding Name}" 
+                                        SelectedValue="{Binding Name}"
+                                        DisplayMemberPath="PrettyName"
+                                        SelectedValuePath="Name"
                                         cal:Message.Attach="[Event SelectionChanged] = [Action TransformationChanged($dataContext, $eventArgs)]"
                                         Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                         Grid.Column="1"
@@ -155,7 +157,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Button cal:Message.Attach="[Event Click] = [Action AddTransformation()]" Content="Add" HorizontalAlignment="Right" Margin="10"></Button>
+                    <Button cal:Message.Attach="[Event Click] = [Action AddTransformation()]" Content="{x:Static trans:Translation.Add}" HorizontalAlignment="Right" Margin="10"></Button>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

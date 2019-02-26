@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DataVisualization.Core.Translations;
 
 namespace DataVisualization.Core.ViewModels
 {
@@ -9,6 +10,7 @@ namespace DataVisualization.Core.ViewModels
     {
         Guid Id { get; }
         string Name { get; set; }
+        string PrettyName { get; set; }
         ITransformation Transformation { get; }
         double Aggregate { get; set; }
         double ApplyTransformation(double aggregate);
@@ -55,6 +57,7 @@ namespace DataVisualization.Core.ViewModels
     {
         public Guid Id { get; }
         public string Name { get; set; }
+        public string PrettyName { get; set; }
         public double Value { get; set; }
         public double Aggregate { get; set; }
         public ITransformation Transformation { get; private set; }
@@ -68,6 +71,7 @@ namespace DataVisualization.Core.ViewModels
             Name = addTransformation.Name;
             Value = addTransformation.Adder;
             Transformation = transformation;
+            PrettyName = Translation.TransformationName_Add;
         }
 
         public double ApplyTransformation(double aggregate)
@@ -82,6 +86,7 @@ namespace DataVisualization.Core.ViewModels
     {
         public Guid Id { get; }
         public string Name { get; set; }
+        public string PrettyName { get; set; }
         public double Value { get; set; }
         public double Aggregate { get; set; }
         public ITransformation Transformation { get; private set; }
@@ -95,6 +100,7 @@ namespace DataVisualization.Core.ViewModels
             Name = multiplyTransformation.Name;
             Value = multiplyTransformation.Multiplier;
             Transformation = transformation;
+            PrettyName = Translation.TransformationName_Multiply;
         }
 
         public double ApplyTransformation(double aggregate)
@@ -109,6 +115,7 @@ namespace DataVisualization.Core.ViewModels
     {
         public Guid Id { get; }
         public string Name { get; set; }
+        public string PrettyName { get; set; }
         public ITransformation Transformation { get; private set; }
         public double Aggregate { get; set; }
 
@@ -120,6 +127,7 @@ namespace DataVisualization.Core.ViewModels
             Id = Guid.NewGuid();
             Transformation = transformation;
             Name = transformation.Name;
+            PrettyName = Translation.TransformationName_RadiansToDegrees;
         }
 
         public double ApplyTransformation(double aggregate)

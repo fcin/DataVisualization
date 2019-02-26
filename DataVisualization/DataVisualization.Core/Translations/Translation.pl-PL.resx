@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Add" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
   <data name="Advanced" xml:space="preserve">
     <value>Zaawansowane</value>
   </data>
@@ -174,6 +177,9 @@
   <data name="Ignore" xml:space="preserve">
     <value>Ignoruj</value>
   </data>
+  <data name="InRadians" xml:space="preserve">
+    <value>W radianach</value>
+  </data>
   <data name="InternalError" xml:space="preserve">
     <value>Krytyczny błąd</value>
   </data>
@@ -213,6 +219,9 @@
   <data name="NoDataLoaded" xml:space="preserve">
     <value>Otwórz plik by zobaczyć wykres</value>
   </data>
+  <data name="Number" xml:space="preserve">
+    <value>Liczba</value>
+  </data>
   <data name="Open" xml:space="preserve">
     <value>Otwórz</value>
   </data>
@@ -221,6 +230,9 @@
   </data>
   <data name="PointsCountTooltip" xml:space="preserve">
     <value>Liczba punktów które są wyświetlane w tym samym czasie dla pojedyńczej serii w wykresie liniowym</value>
+  </data>
+  <data name="SampleValue" xml:space="preserve">
+    <value>Przykładowa wartość</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Zapisz</value>
@@ -245,6 +257,15 @@
   </data>
   <data name="ThousandsSeparator" xml:space="preserve">
     <value>Separator tysięcy</value>
+  </data>
+  <data name="TransformationName_Add" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
+  <data name="TransformationName_Multiply" xml:space="preserve">
+    <value>Pomnóż</value>
+  </data>
+  <data name="TransformationName_RadiansToDegrees" xml:space="preserve">
+    <value>Radiany na stopnie</value>
   </data>
   <data name="WatchForChanges" xml:space="preserve">
     <value>Sprawdzaj zmiany</value>
