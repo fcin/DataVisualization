@@ -31,22 +31,20 @@
             </StackPanel>
         </DataTemplate>
         <DataTemplate x:Key="MultiplyTransformationTemplate">
-            <Border BorderBrush="Red" BorderThickness="2">
-                <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
-                    <TextBox cal:Message.Attach="[Event LostFocus] = [Action TransformationValueChanged()]" 
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                             materialDesign:HintAssist.Hint="{x:Static trans:Translation.Number}">
-                        <TextBox.Text>
-                            <Binding Path="Value" UpdateSourceTrigger="LostFocus">
-                                <Binding.ValidationRules>
-                                    <vr:NotNullOrEmptyValidationRule></vr:NotNullOrEmptyValidationRule>
-                                    <vr:NumericValidationRule></vr:NumericValidationRule>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                </StackPanel>
-            </Border>
+            <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
+                <TextBox cal:Message.Attach="[Event LostFocus] = [Action TransformationValueChanged()]" 
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         materialDesign:HintAssist.Hint="{x:Static trans:Translation.Number}">
+                    <TextBox.Text>
+                        <Binding Path="Value" UpdateSourceTrigger="LostFocus">
+                            <Binding.ValidationRules>
+                                <vr:NotNullOrEmptyValidationRule></vr:NotNullOrEmptyValidationRule>
+                                <vr:NumericValidationRule></vr:NumericValidationRule>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </StackPanel>
         </DataTemplate>
         <DataTemplate x:Key="RadiansToDegreesTransformationTemplate">
             <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ContentControl, Mode=FindAncestor}}" Orientation="Horizontal">
