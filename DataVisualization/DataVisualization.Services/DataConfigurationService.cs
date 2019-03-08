@@ -10,9 +10,9 @@ namespace DataVisualization.Services
     {
         private readonly string _dbPath;
 
-        public DataConfigurationService(GlobalSettings globalSettings)
+        public DataConfigurationService()
         {
-            _dbPath = globalSettings.DbPath;
+            _dbPath = GlobalSettings.DbPath;
         }
 
         public void Add(DataConfiguration configuration)

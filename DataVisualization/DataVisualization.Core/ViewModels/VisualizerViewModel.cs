@@ -115,22 +115,20 @@ namespace DataVisualization.Core.ViewModels
         private readonly DataPullerFactory _dataPullerFactory;
         private readonly DataService _dataService;
         private readonly DataConfigurationService _dataConfigurationService;
-        private readonly GlobalSettings _globalSettings;
         private DataConfiguration _config;
         private IDataPuller _puller;
         private Data _data;
         private CancellationTokenSource _cts;
 
         public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager, IEventAggregator eventAggregator,
-            DataService dataService, DataConfigurationService dataConfigurationService, GlobalSettings globalSettings, 
-            DataFileReader dataFileReader, DataPullerFactory dataPullerFactory)
+            DataService dataService, DataConfigurationService dataConfigurationService, DataFileReader dataFileReader, 
+            DataPullerFactory dataPullerFactory)
         {
             _seriesFactory = seriesFactory;
             _windowManager = windowManager;
             _eventAggregator = eventAggregator;
             _dataService = dataService;
             _dataConfigurationService = dataConfigurationService;
-            _globalSettings = globalSettings;
             _cts = new CancellationTokenSource();
             _dataFileReader = dataFileReader;
             _dataPullerFactory = dataPullerFactory;
@@ -261,7 +259,7 @@ namespace DataVisualization.Core.ViewModels
 
                         foreach (var chunk in serie.Chunks)
                         {
-                            _data.Series[index].AddToChunks(chunk.Chunk, _globalSettings.PointsCount);
+                            _data.Series[index].AddToChunks(chunk.Chunk, GlobalSettings.PointsCount);
                         }
                     }
 
@@ -368,7 +366,7 @@ namespace DataVisualization.Core.ViewModels
                 return;
 
             var xAxisValues = _data.Series.First(s => s.Axis == Axes.X1).Values;
-            MinX = xAxisValues.Skip(xAxisValues.Count - _globalSettings.PointsCount).First(val => !double.IsNaN(val));
+            MinX = xAxisValues.Skip(xAxisValues.Count - GlobalSettings.PointsCount).First(val => !double.IsNaN(val));
             MaxX = xAxisValues.Last(val => !double.IsNaN(val));
             RecreateSeries();
         }

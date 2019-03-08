@@ -186,6 +186,9 @@
   <data name="Language" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="LiveButtonTooltip" xml:space="preserve">
+    <value>Show only newest data</value>
+  </data>
   <data name="LoadError_ColumnWithAxisX1Missing" xml:space="preserve">
     <value>At least 1 column has to be set to axis X1.</value>
   </data>

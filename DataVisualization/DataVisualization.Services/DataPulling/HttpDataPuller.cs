@@ -14,12 +14,10 @@ namespace DataVisualization.Services.DataPulling
     public class HttpDataPuller : IDataPuller
     {
         private HttpClient _httpClient;
-        private GlobalSettings _globalSettings;
 
-        public HttpDataPuller(GlobalSettings globalSettings)
+        public HttpDataPuller()
         {
             _httpClient = new HttpClient();
-            _globalSettings = globalSettings;
         }
 
         public async Task<(List<Series> latest, int readLines)> PullAsync(DataConfiguration config, int startFromLine)
@@ -92,7 +90,7 @@ namespace DataVisualization.Services.DataPulling
 
                 return (data.Select((d, index) => new Series
                 {
-                    Chunks = d.ToChunks(_globalSettings.PointsCount),
+                    Chunks = d.ToChunks(GlobalSettings.PointsCount),
                     Name = config.Columns[index].Name
                 }).ToList(), data.Count);
             }

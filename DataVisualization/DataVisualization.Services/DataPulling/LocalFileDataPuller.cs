@@ -12,13 +12,6 @@ namespace DataVisualization.Services.DataPulling
 {
     public class LocalFileDataPuller : IDataPuller
     {
-        private readonly GlobalSettings _globalSettings;
-
-        public LocalFileDataPuller(GlobalSettings globalSettings)
-        {
-            _globalSettings = globalSettings;
-        }
-
         public async Task<(List<Series> latest, int readLines)> PullAsync(DataConfiguration config, int startFromLine)
         {
             var path = config.FilePath;
@@ -73,7 +66,7 @@ namespace DataVisualization.Services.DataPulling
 
                 return (data.Select((d, index) => new Series
                 {
-                    Chunks = d.ToChunks(_globalSettings.PointsCount),
+                    Chunks = d.ToChunks(GlobalSettings.PointsCount),
                     Name = config.Columns[index].Name
                 }).ToList(), countLines);
             }

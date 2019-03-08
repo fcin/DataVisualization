@@ -33,7 +33,7 @@
                 <Button Margin="2, 0" IsEnabled="{Binding IsLive, Converter={StaticResource LogicalNotConverter}}" Content="{materialDesign:PackIcon Kind=ArrowRight}" ToolTip="{x:Static trans:Translation.MoveRight}" cal:Message.Attach="[Event Click] = [Action OnMoveRight]"/>
                 <Button Margin="2, 0" IsEnabled="{Binding IsLive, Converter={StaticResource LogicalNotConverter}}" Content="{materialDesign:PackIcon Kind=ArrowExpandAll}" ToolTip="{x:Static trans:Translation.CenterScreen}" cal:Message.Attach="[Event Click] = [Action OnCenterScreen]"/>
                 <Button Margin="2, 0" IsEnabled="{Binding IsLive, Converter={StaticResource LogicalNotConverter}}" Content="{materialDesign:PackIcon Kind=RayStartArrow}" ToolTip="{x:Static trans:Translation.GoToNewest}" cal:Message.Attach="[Event Click] = [Action OnGoToNewest]"/>
-                <CheckBox Margin="2, 0" Focusable="False" IsChecked="{Binding IsLive}" Content="Live" ToolTip="Show only newest data" cal:Message.Attach="[Event Checked] = [Action OnLiveToggled()];[Event Unchecked] = [Action OnLiveToggled()]"></CheckBox>
+                <CheckBox Margin="2, 0" Focusable="False" IsChecked="{Binding IsLive}" Content="Live" ToolTip="{x:Static trans:Translation.LiveButtonTooltip}" cal:Message.Attach="[Event Checked] = [Action OnLiveToggled()];[Event Unchecked] = [Action OnLiveToggled()]"></CheckBox>
             </StackPanel>
             <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="{Binding ZoomOption}" Pan="{Binding PanOption}" 
                             ChartLegend="{Binding Legend}" LegendLocation="Bottom"

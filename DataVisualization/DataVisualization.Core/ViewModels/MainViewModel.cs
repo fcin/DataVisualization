@@ -1,5 +1,12 @@
 ﻿using Caliburn.Micro;
 using DataVisualization.Core.Events;
+using DataVisualization.Core.Views;
+using DataVisualization.Services;
+using DataVisualization.Services.Exceptions;
+using MaterialDesignThemes.Wpf;
+using NLog;
+using System.Threading;
+using System.Windows;
 
 namespace DataVisualization.Core.ViewModels
 {
@@ -35,6 +42,24 @@ namespace DataVisualization.Core.ViewModels
             ActivateItem(DataBrowserVm);
             ActivateItem(MenuVm);
             ActivateItem(AppConsoleVm);
+        }
+
+        public async void OnDialogHostLoaded()
+        {
+            if (!GlobalSettings.LoadedSuccessfully)
+            {
+                var ex = GlobalSettings.LoadedWithException;
+                var message = string.Join(": ", ex.Message, ex.InnerException?.Message);
+                var popup = new PopupBoxView
+                {
+                    DataContext = new PopupBoxViewModel(PopupBoxType.Ok, message, true)
+                };
+
+                NLog.LogManager.GetCurrentClassLogger().Fatal(ex);
+                await DialogHost.Show(popup, "RootHost");
+                Application.Current.Shutdown();
+                return;
+            }
         }
 
         public void Handle(LoadingBarOpenedEventArgs message)

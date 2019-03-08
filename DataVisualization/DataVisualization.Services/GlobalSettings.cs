@@ -1,47 +1,62 @@
-﻿using LiteDB;
+﻿using DataVisualization.Services.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Xml;
+using System.Xml.Serialization;
+using FileMode = System.IO.FileMode;
 
 namespace DataVisualization.Services
 {
-    public sealed class GlobalSettings
+    public static class GlobalSettings
     {
-        private CultureInfo _currentLanguage;
-        public CultureInfo CurrentLanguage
+        private static CultureInfo _currentLanguage;
+        public static CultureInfo CurrentLanguage
         {
-            get { lock (Sync) return GetValue(ref _currentLanguage); }
+            get { lock (Sync) return _currentLanguage; }
             set { lock (Sync) _currentLanguage = value; }
         }
 
-        public IEnumerable<CultureInfo> AllLanguages => new List<CultureInfo>
+        public static IEnumerable<CultureInfo> AllLanguages => new List<CultureInfo>
         {
             new CultureInfo("en-US"),
             new CultureInfo("pl-PL")
         };
 
-        public string DbPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data.db");
+        public static string DbPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data.db");
 
-        private int _pointsCount;
-        public int PointsCount
+        private static int _pointsCount;
+        public static int PointsCount
         {
-            get { lock (Sync) return GetValue(ref _pointsCount); }
+            get { lock (Sync) return _pointsCount; }
             set { lock (Sync) _pointsCount = value; }
         }
 
-        private bool _isInitialized;
-        private static readonly object Sync = new object();
+        public static bool LoadedSuccessfully = true;
+        public static Exception LoadedWithException = null;
 
-        public void Persist()
+        private static bool _isLoaded;
+        private static readonly object Sync = new object();
+        private static readonly string SettingsFilePath;
+
+        static GlobalSettings()
+        {
+            var settingsRelativeFilePath = ConfigurationManager.AppSettings["SettingsRelativeFilePath"];
+            SettingsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, settingsRelativeFilePath);
+        }
+
+        public static void Save()
         {
             lock (Sync)
             {
-                if (!_isInitialized)
-                    throw new InvalidOperationException("Settings not initialized. Initialize first.");
+                if (!_isLoaded)
+                    throw new InvalidOperationException("Load settings first");
 
-                using (var db = new LiteDatabase(DbPath))
+                var serializer = new XmlSerializer(typeof(GlobalSettingsStorage));
+
+                using (var file = File.Create(SettingsFilePath))
                 {
                     var settings = new GlobalSettingsStorage
                     {
@@ -49,82 +64,73 @@ namespace DataVisualization.Services
                         PointsCount = PointsCount
                     };
 
-                    var collection = db.GetCollection<GlobalSettingsStorage>(nameof(GlobalSettingsStorage));
-                    if (collection.Count() != 0)
-                    {
-                        var document = collection.FindOne(Query.All());
-                        settings.Id = document.Id;
-
-                        if (document.Equals(settings))
-                            return;
-
-                        collection.Update(settings);
-                    }
-                    else
-                    {
-                        collection.Insert(settings);
-                    }
+                    serializer.Serialize(file, settings);
                 }
             }
         }
 
-        private T GetValue<T>(ref T value)
+        public static bool TryLoad()
         {
-            if (!_isInitialized)
+            lock (Sync)
             {
-                lock (Sync)
+                try
                 {
-                    if (!_isInitialized)
+                    var fileExists = File.Exists(SettingsFilePath);
+
+                    var deserializer = new XmlSerializer(typeof(GlobalSettingsStorage));
+                    using (var reader = File.Open(SettingsFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
                     {
-                        using (var db = new LiteDatabase(DbPath))
+                        GlobalSettingsStorage settings = null;
+                        if (!fileExists)
                         {
-                            var collection = db.GetCollection<GlobalSettingsStorage>(nameof(GlobalSettingsStorage));
-                            var documents = collection.FindAll().ToList();
-                            var savedSettings = documents.Count == 0 ? new GlobalSettingsStorage() : documents[0];
-
-                            _currentLanguage = new CultureInfo(savedSettings.CurrentLanguageShortName);
-                            _pointsCount = savedSettings.PointsCount;
+                            settings = new GlobalSettingsStorage();
+                            deserializer.Serialize(reader, settings);
                         }
-                        _isInitialized = true;
-                    }
-                }
-            }
+                        else
+                        {
+                            settings = (GlobalSettingsStorage)deserializer.Deserialize(reader);
+                        }
 
-            return value;
+                        _currentLanguage = new CultureInfo(settings.CurrentLanguageShortName);
+                        _pointsCount = settings.PointsCount;
+                    }
+
+                    _isLoaded = true;
+                }
+                catch (InvalidOperationException ex) when (ex.InnerException is XmlException)
+                {
+                    LoadedSuccessfully = false;
+                    LoadedWithException = new SettingsLoadingException("XML settings file corrupted", ex);
+                    return false;
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    LoadedSuccessfully = false;
+                    LoadedWithException = new SettingsLoadingException("You do not have access to the settings file.", ex);
+                    return false;
+                }
+                catch (Exception ex) when (ex is PathTooLongException || ex is DirectoryNotFoundException || ex is IOException)
+                {
+                    LoadedSuccessfully = false;
+                    LoadedWithException = new SettingsLoadingException("Failed to load settings file", ex);
+                    return false;
+                }
+
+                return true;
+            }
         }
     }
 
-    internal class GlobalSettingsStorage : IEquatable<GlobalSettingsStorage>
+    [Serializable]
+    public sealed class GlobalSettingsStorage
     {
-        [BsonId]
-        public int Id { get; set; }
         public string CurrentLanguageShortName { get; set; }
         public int PointsCount { get; set; }
 
         public GlobalSettingsStorage()
         {
-            CurrentLanguageShortName = "en-US";
-            PointsCount = 1000;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as GlobalSettingsStorage);
-        }
-
-        public bool Equals(GlobalSettingsStorage other)
-        {
-            return other != null &&
-                   Id == other.Id &&
-                   CurrentLanguageShortName.Equals(other.CurrentLanguageShortName);
-        }
-
-        public override int GetHashCode()
-        {
-            var hashCode = -1608065743;
-            hashCode = hashCode * -1521134295 + Id.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CurrentLanguageShortName);
-            return hashCode;
+            CurrentLanguageShortName = ConfigurationManager.AppSettings["DefaultLanguage"];
+            PointsCount = int.Parse(ConfigurationManager.AppSettings["DefaultPointsCount"]);
         }
     }
 }

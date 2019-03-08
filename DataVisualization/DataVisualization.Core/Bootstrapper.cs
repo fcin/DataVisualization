@@ -17,14 +17,16 @@ namespace DataVisualization.Core
         public Bootstrapper()
         {
             Initialize();
+
+            if (GlobalSettings.TryLoad())
+            {
+                Thread.CurrentThread.CurrentCulture = GlobalSettings.CurrentLanguage;
+                Thread.CurrentThread.CurrentUICulture = GlobalSettings.CurrentLanguage;
+            }
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            var globalSettings = new GlobalSettings();
-            Thread.CurrentThread.CurrentCulture = globalSettings.CurrentLanguage;
-            Thread.CurrentThread.CurrentUICulture = globalSettings.CurrentLanguage;
-
             DisplayRootViewFor<MainViewModel>();
         }
 
@@ -35,7 +37,6 @@ namespace DataVisualization.Core
             _container.Singleton<IEventAggregator, EventAggregator>();
             _container.Singleton<ISeriesFactory, SeriesFactory>();
             _container.Singleton<LoadingBarManager, LoadingBarManager>();
-            _container.Singleton<GlobalSettings, GlobalSettings>();
             _container.PerRequest<DataService, DataService>();
             _container.PerRequest<DataConfigurationService, DataConfigurationService>();
             _container.PerRequest<DataLoaderViewModelFactory, DataLoaderViewModelFactory>();

@@ -268,6 +268,15 @@ namespace DataVisualization.Core.Translations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show only newest data.
+        /// </summary>
+        public static string LiveButtonTooltip {
+            get {
+                return ResourceManager.GetString("LiveButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to At least 1 column has to be set to axis X1..
         /// </summary>
         public static string LoadError_ColumnWithAxisX1Missing {

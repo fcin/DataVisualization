@@ -10,19 +10,17 @@ namespace DataVisualization.Core.ViewModels.SettingsWindow
             get => _pointsCount;
             set => Set(ref _pointsCount, value);
         }
+        
 
-        private readonly GlobalSettings _globalSettings;
-
-        public AdvancedGlobalSettingsViewModel(GlobalSettings globalSettings)
+        public AdvancedGlobalSettingsViewModel()
         {
-            _globalSettings = globalSettings;
-            PointsCount = _globalSettings.PointsCount;
+            PointsCount = GlobalSettings.PointsCount;
         }
 
         public void Save()
         {
-            _globalSettings.PointsCount = PointsCount;
-            _globalSettings.Persist();
+            GlobalSettings.PointsCount = PointsCount;
+            GlobalSettings.Save();
         }
     }
 }
