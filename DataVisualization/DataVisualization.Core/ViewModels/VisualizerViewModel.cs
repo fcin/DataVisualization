@@ -197,6 +197,10 @@ namespace DataVisualization.Core.ViewModels
             RecreateSeries();
 
             IsLive = _config.IsLiveByDefault;
+            if (IsLive)
+            {
+                OnLiveToggled();
+            }
 
             await keepPullingTask;
         }
