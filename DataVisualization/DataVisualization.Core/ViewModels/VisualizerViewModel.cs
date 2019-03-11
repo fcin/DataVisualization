@@ -15,6 +15,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using DataVisualization.Core.Controls;
+using DataVisualization.Core.Formatters;
 using Series = DataVisualization.Models.Series;
 
 namespace DataVisualization.Core.ViewModels
@@ -108,6 +110,14 @@ namespace DataVisualization.Core.ViewModels
             set => Set(ref _panOption, value);
         }
 
+        private IChartTooltip _tooltip;
+
+        public IChartTooltip Tooltip
+        {
+            get => _tooltip;
+            set => Set(ref _tooltip, value);
+        }
+
         private readonly ISeriesFactory _seriesFactory;
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _eventAggregator;
@@ -155,6 +165,8 @@ namespace DataVisualization.Core.ViewModels
                 return;
 
             IsDisplayed = true;
+            var tooltipFormat = TooltipTitleFormatter.GetFormat(_config.Columns.First(c => c.Axis == Axes.X1).ColumnType);
+            Tooltip = new BasicTooltip(tooltipFormat);
 
             _data = _dataService.GetData(_config.DataName);
             _data.ApplyTransformations();

@@ -118,6 +118,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\BasicTooltip.xaml.cs">
+      <DependentUpon>BasicTooltip.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ColumnAxisConverter.cs" />
     <Compile Include="Converters\ColumnIgnoreConverter.cs" />
@@ -134,7 +137,8 @@
     <Compile Include="Events\DataConfigurationOpenedEventArgs.cs" />
     <Compile Include="Events\LoadingBarOpenedEventArgs.cs" />
     <Compile Include="Events\NewDataAddedEventArgs.cs" />
-    <Compile Include="Formatter.cs" />
+    <Compile Include="Formatters\Formatter.cs" />
+    <Compile Include="Formatters\TooltipTitleFormatter.cs" />
     <Compile Include="ILoadingBarWindow.cs" />
     <Compile Include="ModelCreator.cs" />
     <Compile Include="LoadingBarManager.cs" />
@@ -206,6 +210,10 @@
     <Compile Include="Views\VisualizerView.xaml.cs">
       <DependentUpon>VisualizerView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\BasicTooltip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AppConsoleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

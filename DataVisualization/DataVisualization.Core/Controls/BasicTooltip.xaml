@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="DataVisualization.Core.Controls.BasicTooltip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DataVisualization.Core.Controls"
+             xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Control.Template>
+        <ControlTemplate>
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Border BorderThickness="1" Background="#8DDD" Effect="{Binding Effect}"
+                CornerRadius="4" Width="{Binding Width, FallbackValue=150}" Height="{Binding Height, FallbackValue=150}"/>
+                <Border Background="#8FFF" CornerRadius="4"
+                BorderThickness="{Binding BorderThickness}" Padding="{Binding Padding}"
+                BorderBrush="{Binding BorderBrush}" Width="{Binding Width, FallbackValue=150}" Height="{Binding Height, FallbackValue=150}">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel>
+                            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
+                                <TextBlock Text="{Binding FormattedTitle, Mode=OneWay, FallbackValue=Lorem_ipsum}" 
+                                           Margin="5" HorizontalAlignment="Center" FontWeight="Bold"></TextBlock>
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding Data.Points}" Grid.IsSharedSizeScope="True">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type wpf:DataPointViewModel}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.Column="0" Stroke="{Binding Series.Stroke}" Fill="{Binding Series.Stroke}"
+                                                       Height="15" Width="15" Margin="0,0,5,0"></Rectangle>
+                                            <TextBlock Grid.Column="1" Text="{Binding Series.Title}" Margin="0,2,7,2"></TextBlock>
+                                            <TextBlock Grid.Column="2" Text="{Binding ChartPoint.Y}" Margin="0,2,7,2"></TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </ControlTemplate>
+    </Control.Template>
+</UserControl>

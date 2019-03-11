@@ -37,7 +37,8 @@
             </StackPanel>
             <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="{Binding ZoomOption}" Pan="{Binding PanOption}" 
                             ChartLegend="{Binding Legend}" LegendLocation="Bottom"
-                            Hoverable="False" ToolTip="{x:Null}" DisableAnimations="True">
+                            Hoverable="False" ToolTip="{x:Null}" DisableAnimations="True"
+                            DataTooltip="{Binding Tooltip}">
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis DisableAnimations="True" PreviewRangeChanged="Axis_OnPreviewRangeChanged" 
                           MinValue="{Binding MinX, Mode=TwoWay}" MaxValue="{Binding MaxX, Mode=TwoWay}" 
