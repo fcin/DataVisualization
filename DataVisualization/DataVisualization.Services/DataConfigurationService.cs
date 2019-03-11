@@ -24,16 +24,13 @@ namespace DataVisualization.Services
 
             using (var db = new LiteDatabase(_dbPath))
             {
-                var collection = db.GetCollection("DataConfiguration");
+                var collection = db.GetCollection<DataConfiguration>("DataConfiguration");
 
                 if (Exists(configuration.DataName))
                     throw new ArgumentException($"Document with name {configuration.DataName} already exists!");
 
-                var document = BsonMapper.Global.ToDocument(configuration);
-                document.Add(nameof(DataConfiguration.DataName), configuration.DataName);
-
-                collection.Insert(document);
                 collection.EnsureIndex(nameof(DataConfiguration.DataName));
+                collection.Insert(configuration);
             }
         }
 
@@ -76,6 +73,15 @@ namespace DataVisualization.Services
             {
                 var collection = db.GetCollection<DataConfiguration>("DataConfiguration");
                 return collection.Find(Query.EQ(nameof(DataConfiguration.DataName), name)).FirstOrDefault();
+            }
+        }
+
+        public bool Update(DataConfiguration dataConfiguration)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection<DataConfiguration>("DataConfiguration");
+                return collection.Update(dataConfiguration);
             }
         }
     }

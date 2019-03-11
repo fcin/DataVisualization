@@ -184,6 +184,8 @@ namespace DataVisualization.Core.ViewModels
 
             RecreateSeries();
 
+            IsLive = _config.IsLiveByDefault;
+
             await keepPullingTask;
         }
 
@@ -208,7 +210,14 @@ namespace DataVisualization.Core.ViewModels
 
             while (!ct.IsCancellationRequested)
             {
-                await Task.Delay(_config.RefreshRate, ct);
+                try
+                {
+                    await Task.Delay(_config.RefreshRate, ct);
+                }
+                catch (TaskCanceledException)
+                {
+                    return;
+                }
 
                 List<Series> series;
                 int readLines;
@@ -383,6 +392,12 @@ namespace DataVisualization.Core.ViewModels
             {
                 ZoomOption = ZoomingOptions.X;
                 PanOption = PanningOptions.X;
+            }
+
+            if (_config.IsLiveByDefault != IsLive)
+            {
+                _config.IsLiveByDefault = IsLive;
+                _dataConfigurationService.Update(_config);
             }
         }
 
