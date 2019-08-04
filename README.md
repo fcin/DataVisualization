@@ -6,6 +6,7 @@ DataVisualization supports:
 * Updating charts based on data from local file/json request
 * Adding transformations to individual columns (such as add value to each point, convert radians to degrees)
 * Displaying hundreds of thousands of points at the same time
+* Available both in English and Polish
 
 
 ![alt text](https://drive.google.com/uc?id=1W_5sxoDLVXp8di9j5_PDCXHE4_XLX3gm "Program")
