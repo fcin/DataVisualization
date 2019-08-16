@@ -26,14 +26,14 @@ namespace DataVisualization.Core.ViewModels
 
         public int LogsCount => AppConsoleVm.Logs.Count;
 
-        public MainViewModel(IEventAggregator eventAggregator, VisualizerViewModel visualizerVm, 
+        public MainViewModel(IEventAggregator eventAggregator, VisualizerViewModelBase visualizerVm, 
             DataBrowserViewModel dataBrowserVm, MenuViewModel menuVm, AppConsoleViewModel appConsoleVm)
         {
             IsMainWindowEnabled = true;
 
             eventAggregator.Subscribe(this);
 
-            VisualizerVm = new FastVisualizerViewModel();
+            VisualizerVm = visualizerVm;
             DataBrowserVm = dataBrowserVm;
             MenuVm = menuVm;
             AppConsoleVm = appConsoleVm;
