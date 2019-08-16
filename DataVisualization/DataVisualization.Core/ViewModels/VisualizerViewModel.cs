@@ -21,7 +21,7 @@ using Series = DataVisualization.Models.Series;
 
 namespace DataVisualization.Core.ViewModels
 {
-    public class VisualizerViewModel : Screen, IHandle<DataConfigurationOpenedEventArgs>, IHandle<BeforeDataConfigurationDeletedEventArgs>
+    public class VisualizerViewModel : VisualizerViewModelBase, IHandle<DataConfigurationOpenedEventArgs>, IHandle<BeforeDataConfigurationDeletedEventArgs>
     {
         private bool _isDisplayed;
         public bool IsDisplayed

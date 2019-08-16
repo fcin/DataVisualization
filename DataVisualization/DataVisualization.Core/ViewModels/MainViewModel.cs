@@ -12,7 +12,7 @@ namespace DataVisualization.Core.ViewModels
 {
     public sealed class MainViewModel : Conductor<object>, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>, IHandle<AppConsoleLogEventArgs>
     {
-        public VisualizerViewModel VisualizerVm { get; set; }
+        public VisualizerViewModelBase VisualizerVm { get; set; }
         public DataBrowserViewModel DataBrowserVm { get; set; }
         public MenuViewModel MenuVm { get; set; }
         public AppConsoleViewModel AppConsoleVm { get; set; }
@@ -33,7 +33,7 @@ namespace DataVisualization.Core.ViewModels
 
             eventAggregator.Subscribe(this);
 
-            VisualizerVm = visualizerVm;
+            VisualizerVm = new FastVisualizerViewModel();
             DataBrowserVm = dataBrowserVm;
             MenuVm = menuVm;
             AppConsoleVm = appConsoleVm;
