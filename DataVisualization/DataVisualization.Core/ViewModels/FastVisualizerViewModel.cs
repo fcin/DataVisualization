@@ -109,14 +109,9 @@ namespace DataVisualization.Core.ViewModels
                 var seriesVm = new FastVisualizerSeriesViewModel(lineGeometry, selectedColor, new TranslateTransform3D(0, 0, 0));
                 SeriesVms.Add(seriesVm);
             }
-            
-            var axisLineBuilder = new LineBuilder();
 
-            axisLineBuilder.AddLine(new Vector3(0, 0, 0), new Vector3(5, 0, 0));
-
-            var axisLineGeometry = axisLineBuilder.ToLineGeometry3D();
-            
-            var axisVm = new FastVisualizerAxisViewModel(axisLineGeometry, Colors.Black, new TranslateTransform3D(0, 0, 0));
+            var primaryAxisX = data.Series.First(s => s.Axis == Axes.X1);
+            var axisVm = new FastVisualizerAxisViewModel(primaryAxisX, Camera);
             AxesVms.Add(axisVm);
         }
     }

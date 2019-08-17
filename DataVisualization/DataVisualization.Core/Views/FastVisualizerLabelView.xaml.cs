@@ -17,11 +17,11 @@ using HelixToolkit.Wpf.SharpDX;
 namespace DataVisualization.Core.Views
 {
     /// <summary>
-    /// Interaction logic for FastVisualizerAxisView.xaml
+    /// Interaction logic for FastVisualizerLabelView.xaml
     /// </summary>
-    public partial class FastVisualizerAxisView : ItemsModel3D
+    public partial class FastVisualizerLabelView : BillboardTextModel3D
     {
-        public FastVisualizerAxisView()
+        public FastVisualizerLabelView()
         {
             InitializeComponent();
         }
