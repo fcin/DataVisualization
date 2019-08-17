@@ -185,6 +185,7 @@
     <Compile Include="ViewModels\DataBrowserViewModel.cs" />
     <Compile Include="ViewModels\DataLoaderViewModel.cs" />
     <Compile Include="ViewModels\DataPullingSettingsViewModel.cs" />
+    <Compile Include="ViewModels\FastVisualizerSeriesViewModel.cs" />
     <Compile Include="ViewModels\FastVisualizerViewModel.cs" />
     <Compile Include="ViewModels\LoadingBarViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

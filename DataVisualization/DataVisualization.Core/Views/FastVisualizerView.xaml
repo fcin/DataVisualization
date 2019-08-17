@@ -14,10 +14,17 @@
             <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
             <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="{Binding DirectionalLightColor}" />
             <hx:ScreenQuadModel3D Texture="{Binding BackgroundTexture}"/>
-            <hx:LineGeometryModel3D
-                Geometry="{Binding Model}"
-                Transform="{Binding Transform}">
-            </hx:LineGeometryModel3D>
+            <hx:ItemsModel3D ItemsSource="{Binding SeriesVms}">
+                <hx:ItemsModel3D.ItemTemplate>
+                    <DataTemplate>
+                        <hx:LineGeometryModel3D
+                            Geometry="{Binding Model}"
+                            Transform="{Binding Transform}"
+                            Color="{Binding Color}">
+                        </hx:LineGeometryModel3D>
+                    </DataTemplate>
+                </hx:ItemsModel3D.ItemTemplate>
+            </hx:ItemsModel3D>
         </hx:Viewport3DX>
     </Grid>
 </UserControl>

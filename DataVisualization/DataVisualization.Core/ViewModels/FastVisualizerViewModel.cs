@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Caliburn.Micro;
 using DataVisualization.Core.Events;
 using DataVisualization.Services;
 using HelixToolkit.Wpf.SharpDX;
+using LiveCharts.Wpf;
 using SharpDX;
 using Camera = HelixToolkit.Wpf.SharpDX.Camera;
+using Color = SharpDX.Color;
 using OrthographicCamera = HelixToolkit.Wpf.SharpDX.OrthographicCamera;
 using Colors = System.Windows.Media.Colors;
 
@@ -15,6 +19,8 @@ namespace DataVisualization.Core.ViewModels
 {
     public class FastVisualizerViewModel : VisualizerViewModelBase, IHandle<DataConfigurationOpenedEventArgs>
     {
+        private readonly DataService _dataService;
+
         private Camera _camera;
 
         public Camera Camera
@@ -23,16 +29,8 @@ namespace DataVisualization.Core.ViewModels
             set => Set(ref _camera, value);
         }
 
-        private LineGeometry3D _model;
-        private DataService _dataService;
+        public BindableCollection<FastVisualizerSeriesViewModel> SeriesVms { get; set; }
 
-        public LineGeometry3D Model
-        {
-            get => _model;
-            set => Set(ref _model, value);
-        }
-        public PhongMaterial Material { get; set; }
-        public Transform3D Transform { get; set; }
         public EffectsManager EffectsManager { get; set; }
 
         public Vector3D DirectionalLightDirection { get; }
@@ -52,7 +50,7 @@ namespace DataVisualization.Core.ViewModels
                 Width = 1
             };
             EffectsManager = new DefaultEffectsManager();
-
+            SeriesVms = new BindableCollection<FastVisualizerSeriesViewModel>();
 
             AmbientLightColor = Colors.DimGray;
             DirectionalLightColor = Colors.White;
@@ -69,11 +67,9 @@ namespace DataVisualization.Core.ViewModels
 
         public void Handle(DataConfigurationOpenedEventArgs message)
         {
+            SeriesVms.Clear();
             var data = _dataService.GetData(message.Opened.DataName);
-
-
-            var lineBuilder = new LineBuilder();
-            var colors = new List<Color4>();
+            
             foreach (var dataSeries in data.Series)
             {
                 var vertices = dataSeries.Values;
@@ -88,6 +84,10 @@ namespace DataVisualization.Core.ViewModels
                 var newMaxX = 100d;
                 var newMinX = 0d;
 
+                
+
+                var lineBuilder = new LineBuilder();
+
                 for (var index = 1; index < vertices.Count; index++)
                 {
                     var lastVertex = vertices[index - 1];
@@ -100,18 +100,14 @@ namespace DataVisualization.Core.ViewModels
                     var newValueX = (((index - oldMinX) * (newMaxX - newMinX)) / (oldMaxX - oldMinX)) + newMinX;
 
                     lineBuilder.AddLine(new Vector3((float)newOldValueX, (float)newOldValue, 0), new Vector3((float)newValueX, (float)newValue, 0));
-                    colors.Add(Color.Black);
-                    colors.Add(Color.Black);
                 }
+
+                var lineGeometry = lineBuilder.ToLineGeometry3D();
+                
+                var selectedColor = (System.Windows.Media.Color) (ColorConverter.ConvertFromString(dataSeries.ColorHex) ?? Colors.Black);
+                var seriesVm = new FastVisualizerSeriesViewModel(lineGeometry, selectedColor, new TranslateTransform3D(0, 0, 0));
+                SeriesVms.Add(seriesVm);
             }
-
-            var lineGeometry = lineBuilder.ToLineGeometry3D();
-            lineGeometry.Colors = new Color4Collection(colors);
-
-            Model = lineGeometry;
-
-            Material = PhongMaterials.Red;
-            Transform = new TranslateTransform3D(0, 0, 0);
         }
     }
 }
