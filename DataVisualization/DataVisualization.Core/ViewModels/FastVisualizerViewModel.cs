@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Caliburn.Micro;
 using DataVisualization.Core.Events;
+using DataVisualization.Models;
 using DataVisualization.Services;
 using HelixToolkit.Wpf.SharpDX;
 using LiveCharts.Wpf;
@@ -30,6 +31,7 @@ namespace DataVisualization.Core.ViewModels
         }
 
         public BindableCollection<FastVisualizerSeriesViewModel> SeriesVms { get; set; }
+        public BindableCollection<FastVisualizerAxisViewModel> AxesVms { get; set; }
 
         public EffectsManager EffectsManager { get; set; }
 
@@ -51,6 +53,7 @@ namespace DataVisualization.Core.ViewModels
             };
             EffectsManager = new DefaultEffectsManager();
             SeriesVms = new BindableCollection<FastVisualizerSeriesViewModel>();
+            AxesVms = new BindableCollection<FastVisualizerAxisViewModel>();
 
             AmbientLightColor = Colors.DimGray;
             DirectionalLightColor = Colors.White;
@@ -70,21 +73,19 @@ namespace DataVisualization.Core.ViewModels
             SeriesVms.Clear();
             var data = _dataService.GetData(message.Opened.DataName);
             
-            foreach (var dataSeries in data.Series)
+            foreach (var dataSeries in data.Series.Where(s => s.Axis != Axes.X1 && s.Axis != Axes.X2))
             {
                 var vertices = dataSeries.Values;
                 
                 var oldMinY = vertices.Where(v => !double.IsNaN(v)).Min();
                 var oldMaxY = vertices.Where(v => !double.IsNaN(v)).Max();
-                var newMinY = -1d;
+                var newMinY = 0d;
                 var newMaxY = 1d;
 
                 var oldMaxX = (float)vertices.Count;
                 var oldMinX = 0d;
                 var newMaxX = 100d;
                 var newMinX = 0d;
-
-                
 
                 var lineBuilder = new LineBuilder();
 
@@ -108,6 +109,15 @@ namespace DataVisualization.Core.ViewModels
                 var seriesVm = new FastVisualizerSeriesViewModel(lineGeometry, selectedColor, new TranslateTransform3D(0, 0, 0));
                 SeriesVms.Add(seriesVm);
             }
+            
+            var axisLineBuilder = new LineBuilder();
+
+            axisLineBuilder.AddLine(new Vector3(0, 0, 0), new Vector3(5, 0, 0));
+
+            var axisLineGeometry = axisLineBuilder.ToLineGeometry3D();
+            
+            var axisVm = new FastVisualizerAxisViewModel(axisLineGeometry, Colors.Black, new TranslateTransform3D(0, 0, 0));
+            AxesVms.Add(axisVm);
         }
     }
 }

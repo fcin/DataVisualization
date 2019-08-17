@@ -25,6 +25,13 @@
                     </DataTemplate>
                 </hx:ItemsModel3D.ItemTemplate>
             </hx:ItemsModel3D>
+            <hx:ItemsModel3D ItemsSource="{Binding AxesVms}">
+                <hx:ItemsModel3D.ItemTemplate>
+                    <DataTemplate>
+                        <local:FastVisualizerAxisView></local:FastVisualizerAxisView>
+                    </DataTemplate>
+                </hx:ItemsModel3D.ItemTemplate>
+            </hx:ItemsModel3D>
         </hx:Viewport3DX>
     </Grid>
 </UserControl>

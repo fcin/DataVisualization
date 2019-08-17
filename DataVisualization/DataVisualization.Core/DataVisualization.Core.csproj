@@ -185,6 +185,7 @@
     <Compile Include="ViewModels\DataBrowserViewModel.cs" />
     <Compile Include="ViewModels\DataLoaderViewModel.cs" />
     <Compile Include="ViewModels\DataPullingSettingsViewModel.cs" />
+    <Compile Include="ViewModels\FastVisualizerAxisViewModel.cs" />
     <Compile Include="ViewModels\FastVisualizerSeriesViewModel.cs" />
     <Compile Include="ViewModels\FastVisualizerViewModel.cs" />
     <Compile Include="ViewModels\LoadingBarViewModel.cs" />
@@ -218,6 +219,9 @@
     </Compile>
     <Compile Include="Views\DataPullingSettingsView.xaml.cs">
       <DependentUpon>DataPullingSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FastVisualizerAxisView.xaml.cs">
+      <DependentUpon>FastVisualizerAxisView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FastVisualizerView.xaml.cs">
       <DependentUpon>FastVisualizerView.xaml</DependentUpon>
@@ -267,6 +271,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DataPullingSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FastVisualizerAxisView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
