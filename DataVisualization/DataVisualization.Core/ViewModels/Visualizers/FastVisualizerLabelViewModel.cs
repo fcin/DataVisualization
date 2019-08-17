@@ -1,10 +1,9 @@
 ﻿using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using Caliburn.Micro;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
 
-namespace DataVisualization.Core.ViewModels
+namespace DataVisualization.Core.ViewModels.Visualizers
 {
     public class FastVisualizerLabelViewModel : PropertyChangedBase
     {

@@ -185,10 +185,10 @@
     <Compile Include="ViewModels\DataBrowserViewModel.cs" />
     <Compile Include="ViewModels\DataLoaderViewModel.cs" />
     <Compile Include="ViewModels\DataPullingSettingsViewModel.cs" />
-    <Compile Include="ViewModels\FastVisualizerAxisViewModel.cs" />
-    <Compile Include="ViewModels\FastVisualizerLabelViewModel.cs" />
-    <Compile Include="ViewModels\FastVisualizerSeriesViewModel.cs" />
-    <Compile Include="ViewModels\FastVisualizerViewModel.cs" />
+    <Compile Include="ViewModels\Visualizers\FastVisualizerAxisViewModel.cs" />
+    <Compile Include="ViewModels\Visualizers\FastVisualizerLabelViewModel.cs" />
+    <Compile Include="ViewModels\Visualizers\FastVisualizerSeriesViewModel.cs" />
+    <Compile Include="ViewModels\Visualizers\FastVisualizerViewModel.cs" />
     <Compile Include="ViewModels\LoadingBarViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="App.xaml.cs">
@@ -204,8 +204,8 @@
     <Compile Include="ViewModels\SettingsWindow\GlobalSettingsViewModel.cs" />
     <Compile Include="ViewModels\SettingsWindow\GlobalSettingsViewModelBase.cs" />
     <Compile Include="ViewModels\TransformationViewModel.cs" />
-    <Compile Include="ViewModels\VisualizerViewModel.cs" />
-    <Compile Include="ViewModels\VisualizerViewModelBase.cs" />
+    <Compile Include="ViewModels\Visualizers\VisualizerViewModel.cs" />
+    <Compile Include="ViewModels\Visualizers\VisualizerViewModelBase.cs" />
     <Compile Include="Views\AppConsoleView.xaml.cs">
       <DependentUpon>AppConsoleView.xaml</DependentUpon>
     </Compile>
@@ -221,13 +221,13 @@
     <Compile Include="Views\DataPullingSettingsView.xaml.cs">
       <DependentUpon>DataPullingSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\FastVisualizerAxisView.xaml.cs">
+    <Compile Include="Views\Visualizers\FastVisualizerAxisView.xaml.cs">
       <DependentUpon>FastVisualizerAxisView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\FastVisualizerLabelView.xaml.cs">
+    <Compile Include="Views\Visualizers\FastVisualizerLabelView.xaml.cs">
       <DependentUpon>FastVisualizerLabelView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\FastVisualizerView.xaml.cs">
+    <Compile Include="Views\Visualizers\FastVisualizerView.xaml.cs">
       <DependentUpon>FastVisualizerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoadingBarView.xaml.cs">
@@ -251,7 +251,7 @@
     <Compile Include="Views\SettingsWindow\GlobalSettingsView.xaml.cs">
       <DependentUpon>GlobalSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VisualizerView.xaml.cs">
+    <Compile Include="Views\Visualizers\VisualizerView.xaml.cs">
       <DependentUpon>VisualizerView.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\BasicTooltip.xaml">
@@ -278,15 +278,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\FastVisualizerAxisView.xaml">
+    <Page Include="Views\Visualizers\FastVisualizerAxisView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\FastVisualizerLabelView.xaml">
+    <Page Include="Views\Visualizers\FastVisualizerLabelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\FastVisualizerView.xaml">
+    <Page Include="Views\Visualizers\FastVisualizerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -322,7 +322,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\VisualizerView.xaml">
+    <Page Include="Views\Visualizers\VisualizerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

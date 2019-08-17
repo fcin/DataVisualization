@@ -1,12 +1,12 @@
-﻿using Caliburn.Micro;
+﻿using System;
+using System.Linq;
+using Caliburn.Micro;
 using DataVisualization.Models;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
-using System;
-using System.Linq;
 using Camera = HelixToolkit.Wpf.SharpDX.Camera;
 
-namespace DataVisualization.Core.ViewModels
+namespace DataVisualization.Core.ViewModels.Visualizers
 {
     public class FastVisualizerAxisViewModel : PropertyChangedBase
     {

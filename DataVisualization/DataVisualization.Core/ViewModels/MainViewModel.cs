@@ -7,6 +7,7 @@ using MaterialDesignThemes.Wpf;
 using NLog;
 using System.Threading;
 using System.Windows;
+using DataVisualization.Core.ViewModels.Visualizers;
 
 namespace DataVisualization.Core.ViewModels
 {
