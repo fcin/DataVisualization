@@ -29,10 +29,10 @@ namespace DataVisualization.Services
                 
                 await reader.ReadAsync();
 
-                var data = new List<List<double>>(config.Columns.Count);
+                var data = new List<DataType>(config.Columns.Count);
                 for (var index = config.Columns.Count - 1; index >= 0; index--)
                 {
-                    data.Add(new List<double>());
+                    data.Add(new DataType());
                 }
 
                 var parser = new ValueParser(config.ThousandsSeparator, config.DecimalSeparator);
@@ -49,13 +49,18 @@ namespace DataVisualization.Services
                         if (isParsed)
                         {
                             if (parsedObject is DateTime dtValue)
-                                data[index].Add(dtValue.Ticks);
+                            {
+                                data[index].Data.Add(dtValue.Ticks);
+                                data[index].IsDateTime = true;
+                            }
                             else
-                                data[index].Add((double)parsedObject);
+                            {
+                                data[index].Data.Add((double)parsedObject);
+                            }
                         }
                         else
                         {
-                            data[index].Add(double.NaN);
+                            data[index].Data.Add(double.NaN);
                         }
                     }
 
@@ -79,12 +84,13 @@ namespace DataVisualization.Services
                     FileLinesRead = linesRead,
                     Series = data.Select((d, index) => new Series
                     {
-                        Chunks = d.ToChunks(GlobalSettings.PointsCount),
+                        Chunks = d.Data.ToChunks(GlobalSettings.PointsCount),
                         ColorHex = Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)).ToString(),
                         Thickness = 2,
                         InternalType = config.Columns[index].ColumnType,
                         Name = config.Columns[index].Name,
-                        Axis = config.Columns[index].Axis
+                        Axis = config.Columns[index].Axis,
+                        IsDateTime = data[index].IsDateTime
                     }).ToList()
                 };
             }
@@ -129,6 +135,18 @@ namespace DataVisualization.Services
             }
 
             return data;
+        }
+
+        private class DataType
+        {
+            public List<double> Data { get; set; }
+            public bool IsDateTime { get; set; }
+
+            public DataType()
+            {
+                Data = new List<double>();
+                IsDateTime = false;
+            }
         }
     }
 }

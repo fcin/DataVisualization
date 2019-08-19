@@ -15,14 +15,14 @@ namespace DataVisualization.Core.ViewModels.Visualizers
             set => Set(ref _model, value);
         }
 
-        public FastVisualizerLabelViewModel(string text, float offsetX)
+        public FastVisualizerLabelViewModel(string text, Vector3 position)
         {
             Model = new BillboardSingleText3D
             {
-                TextInfo = new TextInfo(text, new Vector3(offsetX, 0, 0)),
-                FontColor = Colors.Blue.ToColor4(),
+                TextInfo = new TextInfo(text, position),
+                FontColor = Colors.Black.ToColor4(),
                 FontSize = 12,
-                BackgroundColor = Colors.Plum.ToColor4(),
+                BackgroundColor = Colors.White.ToColor4(),
                 FontStyle = System.Windows.FontStyles.Italic,
                 Padding = new System.Windows.Thickness(2)
             };

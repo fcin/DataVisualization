@@ -55,6 +55,8 @@ namespace DataVisualization.Models
 
         public IList<ITransformation> Transformations { get; set; }
 
+        public bool IsDateTime { get; set; }
+
         [BsonIgnore]
         private bool _transformationsApplied = false;
 

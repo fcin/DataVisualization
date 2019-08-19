@@ -108,8 +108,20 @@ namespace DataVisualization.Core.ViewModels.Visualizers
             }
 
             var primaryAxisX = data.Series.First(s => s.Axis == Axes.X1);
-            var axisVm = new FastVisualizerAxisViewModel(primaryAxisX, Camera);
-            AxesVms.Add(axisVm);
+            var axisXVm = new FastVisualizerAxisViewModel(primaryAxisX, Camera);
+            AxesVms.Add(axisXVm);
+
+            var heighestValue = data.Series.Where(s => s.Axis == Axes.Y1).SelectMany(s => s.Values)
+                .Where(v => !double.IsNaN(v)).Max();
+            var lowestValue = data.Series.Where(s => s.Axis == Axes.Y1).SelectMany(s => s.Values)
+                .Where(v => !double.IsNaN(v)).Min();
+
+            var orderedValues = data.Series.Where(s => s.Axis != Axes.X1 && s.Axis != Axes.X2 && !s.IsDateTime).SelectMany(s => s.Values)
+                .OrderByDescending(g => g).ToList();
+
+            var primaryAxisY = data.Series.First(s => s.Axis == Axes.Y1);
+            var axisYVm = new FastVisualizerAxisViewModel(primaryAxisY, Camera, heighestValue, lowestValue, orderedValues);
+            AxesVms.Add(axisYVm);
         }
     }
 }
