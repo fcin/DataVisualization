@@ -25,8 +25,7 @@ namespace DataVisualization.Core.ViewModels.Visualizers
 
         private readonly Camera _camera;
 
-        public FastVisualizerAxisViewModel(Series series, Camera camera, double? heighestValue = null, double? lowestValue = null,
-            List<double> orderedValues = null)
+        public FastVisualizerAxisViewModel(Series series, Camera camera, List<double> orderedValues = null)
         {
             _camera = camera;
             LabelVms = new BindableCollection<FastVisualizerLabelViewModel>();
@@ -67,8 +66,8 @@ namespace DataVisualization.Core.ViewModels.Visualizers
             }
             else if(series.Axis == Axes.Y1)
             {
-                if(heighestValue == null || lowestValue == null)
-                    throw new InvalidOperationException(nameof(heighestValue));
+                if(orderedValues == null)
+                    throw new ArgumentNullException(nameof(orderedValues));
 
                 var axisLineBuilder = new LineBuilder();
                 axisLineBuilder.AddLine(new Vector3(0, 1, 0), new Vector3(0, 0, 0));
@@ -77,10 +76,6 @@ namespace DataVisualization.Core.ViewModels.Visualizers
                 Model = axisLineGeometry;
 
                 const int labelsCount = 10;
-                var oldMaxY = heighestValue;
-                var oldMinY = lowestValue;
-                var newMaxY = 1;
-                var newMinY = 0;
                 var interval = orderedValues.Count / labelsCount;
                 
                 for (int index = 1; index < labelsCount; index++)

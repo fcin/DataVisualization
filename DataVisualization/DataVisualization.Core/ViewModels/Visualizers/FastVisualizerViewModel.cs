@@ -120,7 +120,7 @@ namespace DataVisualization.Core.ViewModels.Visualizers
                 .OrderByDescending(g => g).ToList();
 
             var primaryAxisY = data.Series.First(s => s.Axis == Axes.Y1);
-            var axisYVm = new FastVisualizerAxisViewModel(primaryAxisY, Camera, heighestValue, lowestValue, orderedValues);
+            var axisYVm = new FastVisualizerAxisViewModel(primaryAxisY, Camera, orderedValues);
             AxesVms.Add(axisYVm);
         }
     }
