@@ -188,6 +188,7 @@
     <Compile Include="ViewModels\Visualizers\FastVisualizerAxisViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerLabelViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerSeriesViewModel.cs" />
+    <Compile Include="ViewModels\Visualizers\FastVisualizerTooltipViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerViewModel.cs" />
     <Compile Include="ViewModels\LoadingBarViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
@@ -226,6 +227,9 @@
     </Compile>
     <Compile Include="Views\Visualizers\FastVisualizerLabelView.xaml.cs">
       <DependentUpon>FastVisualizerLabelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Visualizers\FastVisualizerTooltipView.xaml.cs">
+      <DependentUpon>FastVisualizerTooltipView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Visualizers\FastVisualizerView.xaml.cs">
       <DependentUpon>FastVisualizerView.xaml</DependentUpon>
@@ -283,6 +287,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Visualizers\FastVisualizerLabelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Visualizers\FastVisualizerTooltipView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

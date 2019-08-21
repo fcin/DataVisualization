@@ -1,17 +1,16 @@
-﻿<hx:ItemsModel3D x:Class="DataVisualization.Core.Views.Visualizers.FastVisualizerAxisView"
+﻿<hx:ItemsModel3D x:Class="DataVisualization.Core.Views.Visualizers.FastVisualizerTooltipView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DataVisualization.Core.Views"
+             xmlns:local="clr-namespace:DataVisualization.Core.Views.Visualizers"
              xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
-             xmlns:visualizers="clr-namespace:DataVisualization.Core.Views.Visualizers"
              mc:Ignorable="d">
     <hx:LineGeometryModel3D Geometry="{Binding Model}"/>
-    <hx:ItemsModel3D ItemsSource="{Binding LabelVms}">
+    <hx:ItemsModel3D ItemsSource="{Binding TooltipLabels}">
         <hx:ItemsModel3D.ItemTemplate>
             <DataTemplate>
-                <visualizers:FastVisualizerLabelView></visualizers:FastVisualizerLabelView>
+                <hx:BillboardTextModel3D Geometry="{Binding }"></hx:BillboardTextModel3D>
             </DataTemplate>
         </hx:ItemsModel3D.ItemTemplate>
     </hx:ItemsModel3D>
