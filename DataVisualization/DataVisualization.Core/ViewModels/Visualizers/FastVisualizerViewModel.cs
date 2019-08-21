@@ -1,19 +1,15 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using DataVisualization.Core.Events;
 using DataVisualization.Models;
 using DataVisualization.Services;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
+using System.IO;
+using System.Linq;
+using System.Windows.Media.Media3D;
 using Camera = HelixToolkit.Wpf.SharpDX.Camera;
-using Color = SharpDX.Color;
-using OrthographicCamera = HelixToolkit.Wpf.SharpDX.OrthographicCamera;
 using Colors = System.Windows.Media.Colors;
+using OrthographicCamera = HelixToolkit.Wpf.SharpDX.OrthographicCamera;
 
 namespace DataVisualization.Core.ViewModels.Visualizers
 {

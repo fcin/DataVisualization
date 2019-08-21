@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Caliburn.Micro;
+using HelixToolkit.Wpf.SharpDX;
+using SharpDX;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using Caliburn.Micro;
-using DataVisualization.Models;
-using HelixToolkit.Wpf.SharpDX;
-using SharpDX;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace DataVisualization.Core.ViewModels.Visualizers
@@ -24,8 +21,7 @@ namespace DataVisualization.Core.ViewModels.Visualizers
         }
 
         public BindableCollection<BillboardSingleText3D> TooltipLabels { get; set; }
-
-        //private readonly Dictionary<double, List<NearestPoint>> _nearestPoints;
+        
         private readonly List<FastVisualizerSeriesViewModel> _seriesVms;
 
 
@@ -34,10 +30,6 @@ namespace DataVisualization.Core.ViewModels.Visualizers
             Model = new LineGeometry3D();
             TooltipLabels = new BindableCollection<BillboardSingleText3D>();
             _seriesVms = seriesVms;
-            //_nearestPoints = series.SelectMany(s => s.Values.Select(v => new NearestPoint(s.Name, v)))
-            //    .Distinct()
-            //    .GroupBy(g => g.Value, g => g)
-            //    .ToDictionary(g => g.Key, g => g.ToList());
         }
 
         public void ShowTooltip(Point3D point)
