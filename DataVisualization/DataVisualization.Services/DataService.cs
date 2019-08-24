@@ -1,6 +1,7 @@
 ﻿using DataVisualization.Models;
 using LiteDB;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DataVisualization.Services
@@ -8,10 +9,12 @@ namespace DataVisualization.Services
     public class DataService
     {
         private readonly string _dbPath;
+        private static Dictionary<string, Data> _cache;
 
         public DataService()
         {
             _dbPath = GlobalSettings.DbPath;
+            _cache = new Dictionary<string, Data>();
         }
 
         public void AddData(Data data)
@@ -54,6 +57,9 @@ namespace DataVisualization.Services
 
         public Data GetData(string name)
         {
+            if (_cache.ContainsKey(name))
+                return _cache[name];
+
             using (var db = new LiteDatabase(_dbPath))
             {
                 var collection = db.GetCollection<Data>("Data");
@@ -69,6 +75,7 @@ namespace DataVisualization.Services
                     }
                 }
 
+                _cache.Add(name, data);
                 return data;
             }
         }
@@ -144,6 +151,13 @@ namespace DataVisualization.Services
             {
                 var collection = db.GetCollection<Series>(nameof(Series));
                 collection.Update(series);
+            }
+
+            var keyToUpdate = _cache.FirstOrDefault(s => s.Value.Series.Any(a => a.SeriesId == series.SeriesId)).Key;
+            if (keyToUpdate != null)
+            {
+                var index = _cache[keyToUpdate].Series.FindIndex(s => s.SeriesId == series.SeriesId);
+                _cache[keyToUpdate].Series[index] = series;
             }
         }
 

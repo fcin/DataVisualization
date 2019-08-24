@@ -8,17 +8,15 @@
              xmlns:visualizers="clr-namespace:DataVisualization.Core.Views.Visualizers"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <StackPanel>
         <hx:Viewport3DX Title="FirstViewport"
                         Camera="{Binding Camera}"
                         EffectsManager="{Binding EffectsManager}" 
-                        MouseDown3D="ViewportOnMouseDown">
+                        MouseDown3D="ViewportOnMouseDown"
+                        DockPanel.Dock="Top">
             <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
             <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="{Binding DirectionalLightColor}" />
             <hx:ScreenQuadModel3D Texture="{Binding BackgroundTexture}"/>
-            <!--<hx:LineGeometryModel3D DataContext="{Binding TooltipVm}" Geometry="{Binding Tooltip}"/>-->
-            <!--<hx:Element3DPresenter Content="{Binding TooltipVm}"></hx:Element3DPresenter>-->
-
             <hx:ItemsModel3D ItemsSource="{Binding TooltipVm}">
                 <hx:ItemsModel3D.ItemTemplate>
                     <DataTemplate>
@@ -45,5 +43,5 @@
                 </hx:ItemsModel3D.ItemTemplate>
             </hx:ItemsModel3D>
         </hx:Viewport3DX>
-    </Grid>
+    </StackPanel>
 </UserControl>

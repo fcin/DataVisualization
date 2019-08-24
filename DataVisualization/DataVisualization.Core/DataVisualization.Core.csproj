@@ -152,6 +152,7 @@
       <DependentUpon>BasicTooltip.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\ColorHexToColorConverter.cs" />
     <Compile Include="Converters\ColumnAxisConverter.cs" />
     <Compile Include="Converters\ColumnIgnoreConverter.cs" />
     <Compile Include="Converters\ColumnNameConverter.cs" />
@@ -187,6 +188,7 @@
     <Compile Include="ViewModels\DataPullingSettingsViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerAxisViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerLabelViewModel.cs" />
+    <Compile Include="ViewModels\Visualizers\FastVisualizerLegendViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerSeriesViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerTooltipViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerViewModel.cs" />
@@ -227,6 +229,9 @@
     </Compile>
     <Compile Include="Views\Visualizers\FastVisualizerLabelView.xaml.cs">
       <DependentUpon>FastVisualizerLabelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Visualizers\FastVisualizerLegendView.xaml.cs">
+      <DependentUpon>FastVisualizerLegendView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Visualizers\FastVisualizerTooltipView.xaml.cs">
       <DependentUpon>FastVisualizerTooltipView.xaml</DependentUpon>
@@ -287,6 +292,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Visualizers\FastVisualizerLabelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Visualizers\FastVisualizerLegendView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

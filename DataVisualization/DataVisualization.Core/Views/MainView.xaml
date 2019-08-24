@@ -7,6 +7,7 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
+        xmlns:visualizers="clr-namespace:DataVisualization.Core.Views.Visualizers"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -25,6 +26,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="5*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
@@ -40,7 +42,14 @@
                 <ContentControl x:Name="DataBrowserVm"></ContentControl>
             </Expander>
             <ContentControl Grid.Column="1" Grid.Row="1" x:Name="VisualizerVm"></ContentControl>
-            <Expander Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" ExpandDirection="Down" IsExpanded="False">
+            <ContentControl Grid.Column="1" Grid.Row="2" Content="{Binding Legend}">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate>
+                        <visualizers:FastVisualizerLegendView></visualizers:FastVisualizerLegendView>
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
+            <Expander Grid.Column="1" Grid.Row="3" ExpandDirection="Down" IsExpanded="False">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:Badged Badge="{Binding LogsCount}" BadgePlacementMode="TopRight">

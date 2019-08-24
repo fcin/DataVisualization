@@ -26,9 +26,10 @@ namespace DataVisualization.Core.ViewModels
         }
 
         public int LogsCount => AppConsoleVm.Logs.Count;
+        public FastVisualizerLegendViewModel Legend { get; set; }
 
         public MainViewModel(IEventAggregator eventAggregator, VisualizerViewModelBase visualizerVm, 
-            DataBrowserViewModel dataBrowserVm, MenuViewModel menuVm, AppConsoleViewModel appConsoleVm)
+            DataBrowserViewModel dataBrowserVm, MenuViewModel menuVm, AppConsoleViewModel appConsoleVm, FastVisualizerLegendViewModel legend)
         {
             IsMainWindowEnabled = true;
 
@@ -38,6 +39,7 @@ namespace DataVisualization.Core.ViewModels
             DataBrowserVm = dataBrowserVm;
             MenuVm = menuVm;
             AppConsoleVm = appConsoleVm;
+            Legend = legend;
 
             ActivateItem(VisualizerVm);
             ActivateItem(DataBrowserVm);

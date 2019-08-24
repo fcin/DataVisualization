@@ -25,7 +25,13 @@ namespace DataVisualization.Core.ViewModels.Visualizers
             set => Set(ref _camera, value);
         }
 
-        public BindableCollection<FastVisualizerSeriesViewModel> SeriesVms { get; set; }
+        private BindableCollection<FastVisualizerSeriesViewModel> _seriesVms;
+
+        public BindableCollection<FastVisualizerSeriesViewModel> SeriesVms
+        {
+            get => _seriesVms;
+            set => Set(ref _seriesVms, value);
+        }
         public BindableCollection<FastVisualizerAxisViewModel> AxesVms { get; set; }
 
         public EffectsManager EffectsManager { get; set; }
@@ -68,7 +74,8 @@ namespace DataVisualization.Core.ViewModels.Visualizers
 
         public void Handle(DataConfigurationOpenedEventArgs message)
         {
-            SeriesVms.Clear();
+            SeriesVms = new BindableCollection<FastVisualizerSeriesViewModel>();
+
             var data = _dataService.GetData(message.Opened.DataName);
 
             foreach (var dataSeries in data.Series.Where(s => s.Axis != Axes.X1 && s.Axis != Axes.X2))
