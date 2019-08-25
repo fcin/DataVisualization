@@ -76,7 +76,12 @@
     <Compile Include="Extensions\SeriesExtensions.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="IDataFileReader.cs" />
+    <Compile Include="Language\Expressions\BinaryExpression.cs" />
     <Compile Include="Language\Expressions\Expression.cs" />
+    <Compile Include="Language\Expressions\ExpressionVisitor.cs" />
+    <Compile Include="Language\Expressions\GroupingExpression.cs" />
+    <Compile Include="Language\Expressions\LiteralExpression.cs" />
+    <Compile Include="Language\Expressions\UnaryExpression.cs" />
     <Compile Include="Language\Lexer.cs" />
     <Compile Include="Language\Parser.cs" />
     <Compile Include="Language\Token.cs" />

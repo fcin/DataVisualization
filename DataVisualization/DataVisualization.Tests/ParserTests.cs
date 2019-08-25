@@ -18,5 +18,17 @@ namespace DataVisualization.Tests
 
             Assert.AreEqual(0, parser.Errors.Count());
         }
+
+        [Test]
+        public void ShouldReturnErrorOnLeftHandOperandMissing()
+        {
+            const string source = @" + 3";
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+
+            var result = parser.Parse();
+
+            Assert.IsNull(result);
+        }
     }
 }
