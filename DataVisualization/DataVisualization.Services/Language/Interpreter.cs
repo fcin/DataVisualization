@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using DataVisualization.Services.Exceptions;
 using DataVisualization.Services.Language.Expressions;
 
@@ -11,7 +12,7 @@ namespace DataVisualization.Services.Language
 
         public List<string> Errors { get; } = new List<string>();
 
-        private readonly Environment _environment = new Environment();
+        private Environment _environment = new Environment();
 
         public object Interpret(IEnumerable<Statement> statements)
         {
@@ -89,6 +90,32 @@ namespace DataVisualization.Services.Language
         public override object VisitVarExpression(VarExpression expression)
         {
             return _environment.Get(expression.Name);
+        }
+
+        public override object VisitAssignExpression(AssignExpression assignExpression)
+        {
+            var value = Evaluate(assignExpression.Value);
+
+            _environment.Assign(assignExpression.Identifier.Lexeme, value);
+
+            return value;
+        }
+
+        public override void VisitBlockStatement(BlockStatement blockStatement)
+        {
+            var previous = new Environment(_environment);
+
+            try
+            {
+                foreach (var statement in blockStatement.Statements)
+                {
+                    Execute(statement);
+                }
+            }
+            finally
+            {
+                _environment = previous;
+            }
         }
 
         public override object VisitBinary(BinaryExpression expression)

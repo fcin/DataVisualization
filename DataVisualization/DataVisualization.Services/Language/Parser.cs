@@ -66,7 +66,26 @@ namespace DataVisualization.Services.Language
 
         private Statement HandleStatement()
         {
-            return Match(TokenType.Print) ? HandlePrintStatement() : HandleExpressionStatement();
+            if (Match(TokenType.Print))
+            {
+                return HandlePrintStatement();
+            }
+
+            if (Match(TokenType.LeftBrace))
+            {
+                var statements = new List<Statement>();
+
+                while (!Check(TokenType.RightBrace) && !IsEof())
+                {
+                    statements.Add(HandleDeclaration());
+                }
+
+                Consume(TokenType.RightBrace, "Expected '}' after block.");
+
+                return new BlockStatement(statements);
+            }
+
+            return HandleExpressionStatement();
         }
 
         private Statement HandleExpressionStatement()
@@ -85,7 +104,28 @@ namespace DataVisualization.Services.Language
 
         private Expression Expression()
         {
-            return Equality();
+            return Assignment();
+        }
+
+        private Expression Assignment()
+        {
+            var expression = Equality();
+
+            if (Match(TokenType.Equal))
+            {
+                var equals = Previous();
+                var value = Assignment();
+
+                if (expression is VarExpression varExpression)
+                {
+                    var name = varExpression.Name;
+                    return new AssignExpression(name, value);
+                }
+
+                throw Error(equals, "Invalid assignment");
+            }
+
+            return expression;
         }
 
         private Expression Equality()

@@ -28,5 +28,9 @@ namespace DataVisualization.Services.Language
         public abstract object VisitPrintStatement(Expression expression);
         public abstract object VisitVarStatement(VarStatement statement);
         public abstract object VisitVarExpression(VarExpression expression);
+
+        public abstract object VisitAssignExpression(AssignExpression assignExpression);
+
+        public abstract void VisitBlockStatement(BlockStatement blockStatement);
     }
 }

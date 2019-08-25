@@ -71,5 +71,32 @@ namespace DataVisualization.Tests
 
             Assert.AreEqual("3\n", _traceListener.Data);
         }
+
+        [Test]
+        public void ShouldPrintNestedLocalVariables()
+        {
+            const string source = @"
+            var a = ""global a"";
+            {
+                var a = ""outer a"";
+                {
+                    var a = ""inner a"";
+                    print a;
+                }
+                print a;
+            }
+            print a;
+            ";
+
+            const string expectedResult = "inner a\ninner a\ninner a\n";
+
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+            var interpreter = new Interpreter();
+
+            var result = interpreter.Interpret(parser.Parse());
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
     }
 }

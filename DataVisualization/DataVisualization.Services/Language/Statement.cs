@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DataVisualization.Services.Language.Expressions;
 
 namespace DataVisualization.Services.Language
@@ -51,6 +52,22 @@ namespace DataVisualization.Services.Language
         public override object Accept(ExpressionVisitor visitor)
         {
             return visitor.VisitVarStatement(this);
+        }
+    }
+
+    public class BlockStatement : Statement
+    {
+        public IReadOnlyList<Statement> Statements { get; }
+
+        public BlockStatement(IReadOnlyList<Statement> statements)
+        {
+            Statements = statements;
+        }
+
+        public override object Accept(ExpressionVisitor visitor)
+        {
+            visitor.VisitBlockStatement(this);
+            return null;
         }
     }
 }
