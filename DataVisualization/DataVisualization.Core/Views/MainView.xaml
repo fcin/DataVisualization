@@ -26,12 +26,13 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="5*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="7*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <ContentControl Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" x:Name="MenuVm" Margin="0, 0, 0, 20"></ContentControl>
-            <Expander Grid.Column="0" Grid.Row="1" ExpandDirection="Right" IsExpanded="True" Margin="0, 0, 10, 0">
+            <Expander Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" ExpandDirection="Right" IsExpanded="True" Margin="0, 0, 10, 0">
                 <Expander.Header>
                     <TextBlock Text="{x:Static trans:Translation.DataList}" RenderTransformOrigin=".5,.5">
                         <TextBlock.LayoutTransform>
@@ -41,24 +42,23 @@
                 </Expander.Header>
                 <ContentControl x:Name="DataBrowserVm"></ContentControl>
             </Expander>
-            <ContentControl Grid.Column="1" Grid.Row="1" x:Name="VisualizerVm"></ContentControl>
-            <ContentControl Grid.Column="1" Grid.Row="2" Content="{Binding Legend}">
+            <ContentControl Grid.Column="1" Grid.Row="1" x:Name="ActionToolbarVm"></ContentControl>
+            <ContentControl Grid.Column="1" Grid.Row="2" x:Name="CodeEditorVm"></ContentControl>
+            <ContentControl Grid.Column="1" Grid.Row="3" Content="{Binding Legend}">
                 <ContentControl.ContentTemplate>
                     <DataTemplate>
                         <visualizers:FastVisualizerLegendView></visualizers:FastVisualizerLegendView>
                     </DataTemplate>
                 </ContentControl.ContentTemplate>
             </ContentControl>
-            <Expander Grid.Column="1" Grid.Row="3" ExpandDirection="Down" IsExpanded="False">
-                <Expander.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:Badged Badge="{Binding LogsCount}" BadgePlacementMode="TopRight">
-                            <TextBlock Text="Console" Margin="5"></TextBlock>
-                        </materialDesign:Badged>
-                    </StackPanel>
-                </Expander.Header>
-                <ContentControl x:Name="AppConsoleVm"></ContentControl>
-            </Expander>
+            <TabControl Grid.Column="1" Grid.Row="4">
+                <TabItem Header="Console">
+                    <ContentControl x:Name="AppConsoleVm"></ContentControl>
+                </TabItem>
+                <TabItem Header="Output">
+                    <ContentControl x:Name="OutputVm"></ContentControl>
+                </TabItem>
+            </TabControl>
         </Grid>
     </materialDesign:DialogHost>
 </Window>

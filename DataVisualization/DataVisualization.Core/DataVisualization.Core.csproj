@@ -56,6 +56,9 @@
     <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2.8.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.Wpf.SharpDX.2.8.0\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
     </Reference>
@@ -182,10 +185,13 @@
     </Compile>
     <Compile Include="ValidationRules\NotNullOrEmptyValidationRule.cs" />
     <Compile Include="ValidationRules\NumericValidationRule.cs" />
+    <Compile Include="ViewModels\ActionToolbarViewModel.cs" />
     <Compile Include="ViewModels\AppConsoleViewModel.cs" />
+    <Compile Include="ViewModels\CodeEditorViewModel.cs" />
     <Compile Include="ViewModels\DataBrowserViewModel.cs" />
     <Compile Include="ViewModels\DataLoaderViewModel.cs" />
     <Compile Include="ViewModels\DataPullingSettingsViewModel.cs" />
+    <Compile Include="ViewModels\OutputViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerAxisViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerLabelViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerLegendViewModel.cs" />
@@ -209,11 +215,17 @@
     <Compile Include="ViewModels\TransformationViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\VisualizerViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\VisualizerViewModelBase.cs" />
+    <Compile Include="Views\ActionToolbarView.xaml.cs">
+      <DependentUpon>ActionToolbarView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AppConsoleView.xaml.cs">
       <DependentUpon>AppConsoleView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\BasicChartLegendView.xaml.cs">
       <DependentUpon>BasicChartLegendView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CodeEditorView.xaml.cs">
+      <DependentUpon>CodeEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DataBrowserView.xaml.cs">
       <DependentUpon>DataBrowserView.xaml</DependentUpon>
@@ -223,6 +235,9 @@
     </Compile>
     <Compile Include="Views\DataPullingSettingsView.xaml.cs">
       <DependentUpon>DataPullingSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OutputView.xaml.cs">
+      <DependentUpon>OutputView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Visualizers\FastVisualizerAxisView.xaml.cs">
       <DependentUpon>FastVisualizerAxisView.xaml</DependentUpon>
@@ -267,11 +282,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ActionToolbarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AppConsoleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BasicChartLegendView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CodeEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -284,6 +307,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DataPullingSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\OutputView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
