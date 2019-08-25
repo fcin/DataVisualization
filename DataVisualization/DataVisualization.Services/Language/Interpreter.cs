@@ -118,6 +118,20 @@ namespace DataVisualization.Services.Language
             }
         }
 
+        public override object VisitIfStatement(IfStatement ifStatement)
+        {
+            if (IsTruthy(ifStatement.Condition))
+            {
+                Execute(ifStatement.ThenStatement);
+            }
+            else if (ifStatement.ElseStatement != null)
+            {
+                Execute(ifStatement.ElseStatement);
+            }
+
+            return null;
+        }
+
         public override object VisitBinary(BinaryExpression expression)
         {
             var left = Evaluate(expression.Left);

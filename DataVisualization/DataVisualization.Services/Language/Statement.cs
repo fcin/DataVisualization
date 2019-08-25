@@ -70,4 +70,23 @@ namespace DataVisualization.Services.Language
             return null;
         }
     }
+
+    public class IfStatement : Statement
+    {
+        public Expression Condition { get; }
+        public Statement ThenStatement { get; }
+        public Statement ElseStatement { get; }
+
+        public IfStatement(Expression condition, Statement thenStatement, Statement elseStatement)
+        {
+            Condition = condition;
+            ThenStatement = thenStatement;
+            ElseStatement = elseStatement;
+        }
+
+        public override object Accept(ExpressionVisitor visitor)
+        {
+            return visitor.VisitIfStatement(this);
+        }
+    }
 }

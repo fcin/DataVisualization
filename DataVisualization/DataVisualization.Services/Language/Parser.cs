@@ -85,6 +85,21 @@ namespace DataVisualization.Services.Language
                 return new BlockStatement(statements);
             }
 
+            if (Match(TokenType.If))
+            {
+                Consume(TokenType.LeftParenthesis, "Expected '(' after 'if'.");
+                var condition = Expression();
+                Consume(TokenType.RightParenthesis, "Expected ')' after if condition.");
+                var thenStatement = HandleStatement();
+                Statement elseStatement = null;
+                if (Match(TokenType.Else))
+                {
+                    elseStatement = HandleStatement();
+                }
+
+                return new IfStatement(condition, thenStatement, elseStatement);
+            }
+
             return HandleExpressionStatement();
         }
 
