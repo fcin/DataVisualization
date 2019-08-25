@@ -13,7 +13,7 @@
             Right = right;
         }
 
-        public override string Accept(ExpressionVisitor visitor)
+        public override object Accept(ExpressionVisitor visitor)
         {
             return visitor.VisitBinary(this);
         }

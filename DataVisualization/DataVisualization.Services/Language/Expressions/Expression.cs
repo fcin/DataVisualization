@@ -5,6 +5,6 @@ namespace DataVisualization.Services.Language.Expressions
 {
     public abstract class Expression
     {
-        public abstract string Accept(ExpressionVisitor visitor);
+        public abstract object Accept(ExpressionVisitor visitor);
     }
 }

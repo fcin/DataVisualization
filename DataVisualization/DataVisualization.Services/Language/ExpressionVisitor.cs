@@ -4,22 +4,22 @@ namespace DataVisualization.Services.Language
 {
     public class ExpressionVisitor
     {
-        public string VisitBinary(BinaryExpression expression)
+        public virtual object VisitBinary(BinaryExpression expression)
         {
             return $"({expression.Operator.Lexeme} {expression.Left} {expression.Right})";
         }
 
-        public string VisitLiteral(LiteralExpression expression)
+        public virtual object VisitLiteral(LiteralExpression expression)
         {
             return $"({expression.Literal})";
         }
 
-        public string VisitGrouping(GroupingExpression expression)
+        public virtual object VisitGrouping(GroupingExpression expression)
         {
             return $"({expression.Expression})";
         }
 
-        public string VisitUnary(UnaryExpression expression)
+        public virtual object VisitUnary(UnaryExpression expression)
         {
             return $"({expression.Operator} {expression.Right})";
         }
