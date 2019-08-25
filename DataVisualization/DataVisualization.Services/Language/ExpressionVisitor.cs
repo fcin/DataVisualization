@@ -2,7 +2,7 @@
 
 namespace DataVisualization.Services.Language
 {
-    public class ExpressionVisitor
+    public abstract class ExpressionVisitor
     {
         public virtual object VisitBinary(BinaryExpression expression)
         {
@@ -23,5 +23,8 @@ namespace DataVisualization.Services.Language
         {
             return $"({expression.Operator} {expression.Right})";
         }
+
+        public abstract object VisitExpressionStatement(Expression expression);
+        public abstract object VisitPrintStatement(Expression expression);
     }
 }

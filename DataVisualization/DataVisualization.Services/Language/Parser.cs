@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Media3D;
 using DataVisualization.Services.Exceptions;
 using DataVisualization.Services.Language.Expressions;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DataVisualization.Services.Language
 {
@@ -24,16 +20,36 @@ namespace DataVisualization.Services.Language
             _errors = new List<string>();
         }
 
-        public Expression Parse()
+        public IEnumerable<Statement> Parse()
         {
-            try
+            var statements = new List<Statement>();
+
+            while (!IsEof())
             {
-                return Expression();
+                var statement = HandleStatement();
+                statements.Add(statement);
             }
-            catch (ParserException)
-            {
-                return null;
-            }
+
+            return statements;
+        }
+
+        private Statement HandleStatement()
+        {
+            return Match(TokenType.Print) ? HandlePrintStatement() : HandleExpressionStatement();
+        }
+
+        private Statement HandleExpressionStatement()
+        {
+            var expression = Expression();
+            Consume(TokenType.Semicolon, "Expected ';' after value");
+            return new ExpressionStatement(expression);
+        }
+
+        private Statement HandlePrintStatement()
+        {
+            var expression = Expression();
+            Consume(TokenType.Semicolon, "Expected ';' after value");
+            return new PrintStatement(expression);
         }
 
         private Expression Expression()
@@ -179,6 +195,8 @@ namespace DataVisualization.Services.Language
             {
                 _errors.Add($"{token.Line}  at ' + {token.Lexeme} + ' {message}");
             }
+
+            Debug.WriteLine($"{token.Lexeme}: {message}");
 
             return new ParserException(token, message);
         }

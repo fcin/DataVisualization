@@ -22,10 +22,25 @@ namespace DataVisualization.Tests
             var expression = new BinaryExpression(left, @operator, right);
             var interpreter = new Interpreter();
             
-            var result = interpreter.Interpret(expression);
+            var result = interpreter.Interpret(new List<Statement> { new ExpressionStatement(expression) });
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(3.0d, result);
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void ShouldPrintStatements()
+        {
+            var source = @"
+            print ""one"";
+            print true;
+            print 2 + 1;
+            ";
+
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+            var interpreter = new Interpreter();
+
+            interpreter.Interpret(parser.Parse());
         }
     }
 }

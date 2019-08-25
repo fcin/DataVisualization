@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Caliburn.Micro, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.Core.3.2.0\lib\net45\Caliburn.Micro.dll</HintPath>
+    </Reference>
     <Reference Include="CsvHelper, Version=6.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.6.1.1\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
@@ -86,6 +89,7 @@
     <Compile Include="Language\Interpreter.cs" />
     <Compile Include="Language\Lexer.cs" />
     <Compile Include="Language\Parser.cs" />
+    <Compile Include="Language\Statement.cs" />
     <Compile Include="Language\Token.cs" />
     <Compile Include="Language\TokenType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

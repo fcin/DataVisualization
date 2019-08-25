@@ -11,11 +11,16 @@ namespace DataVisualization.Services.Language
 
         public List<string> Errors { get; } = new List<string>();
 
-        public object Interpret(Expression expression)
+        public object Interpret(IEnumerable<Statement> statements)
         {
             try
             {
-                return Evaluate(expression);
+                foreach (var statement in statements)
+                {
+                    Execute(statement);
+                }
+
+                return null;
             }
             catch (RuntimeException ex)
             {
@@ -23,6 +28,11 @@ namespace DataVisualization.Services.Language
                 Errors.Add(ex.Message);
                 return null;
             }
+        }
+
+        private void Execute(Statement statement)
+        {
+            statement.Accept(this);
         }
 
         public override object VisitLiteral(LiteralExpression expression)
@@ -47,6 +57,19 @@ namespace DataVisualization.Services.Language
                     return !IsTruthy(right);
             }
 
+            return null;
+        }
+
+        public override object VisitExpressionStatement(Expression expression)
+        {
+            Evaluate(expression);
+            return null;
+        }
+
+        public override object VisitPrintStatement(Expression expression)
+        {
+            var result = Evaluate(expression);
+            Debug.WriteLine(result);
             return null;
         }
 
@@ -91,6 +114,11 @@ namespace DataVisualization.Services.Language
                     if (left is string leftString && right is string rightString)
                     {
                         return leftString + rightString;
+                    }
+
+                    if ((left is double && right is string) || (right is double && left is string))
+                    {
+                        return left.ToString() + right;
                     }
 
                     throw new RuntimeException(expression.Operator, "Operands must be two numbers or two strings.");

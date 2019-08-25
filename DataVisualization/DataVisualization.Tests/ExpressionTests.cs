@@ -15,9 +15,11 @@ namespace DataVisualization.Tests
             var right = new LiteralExpression("567");
 
             var expression = new BinaryExpression(left, @operator, right);
+            var interpreter = new Interpreter();
 
-            var visitor = new ExpressionVisitor();
-            Assert.AreEqual("(+ 123 567)", expression.Accept(visitor));
+            var result = expression.Accept(interpreter);
+
+            Assert.AreEqual("123567", result);
         }
     }
 }

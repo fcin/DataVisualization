@@ -1,6 +1,7 @@
 ﻿using DataVisualization.Services.Language;
 using NUnit.Framework;
 using System.Linq;
+using DataVisualization.Services.Exceptions;
 
 namespace DataVisualization.Tests
 {
@@ -10,7 +11,7 @@ namespace DataVisualization.Tests
         [Test]
         public void ShouldParse()
         {
-            const string source = @"1 + 2 * 3 + 4";
+            const string source = @"1 + 2 * 3 + 4;";
             var lexer = new Lexer(source);
             var parser = new Parser(lexer.Scan());
 
@@ -22,13 +23,11 @@ namespace DataVisualization.Tests
         [Test]
         public void ShouldReturnErrorOnLeftHandOperandMissing()
         {
-            const string source = @" + 3";
+            const string source = @" + 3;";
             var lexer = new Lexer(source);
             var parser = new Parser(lexer.Scan());
 
-            var result = parser.Parse();
-
-            Assert.IsNull(result);
+            Assert.Throws<ParserException>(() => parser.Parse());
         }
     }
 }
