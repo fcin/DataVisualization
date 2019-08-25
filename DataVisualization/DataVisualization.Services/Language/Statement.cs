@@ -1,4 +1,5 @@
-﻿using DataVisualization.Services.Language.Expressions;
+﻿using System;
+using DataVisualization.Services.Language.Expressions;
 
 namespace DataVisualization.Services.Language
 {
@@ -33,6 +34,23 @@ namespace DataVisualization.Services.Language
         public override object Accept(ExpressionVisitor visitor)
         {
             return visitor.VisitExpressionStatement(Expression);
+        }
+    }
+
+    public class VarStatement : Statement
+    {
+        public Token Name { get; }
+        public Expression Initializer { get; }
+
+        public VarStatement(Token name, Expression initializer)
+        {
+            Name = name;
+            Initializer = initializer;
+        }
+
+        public override object Accept(ExpressionVisitor visitor)
+        {
+            return visitor.VisitVarStatement(this);
         }
     }
 }

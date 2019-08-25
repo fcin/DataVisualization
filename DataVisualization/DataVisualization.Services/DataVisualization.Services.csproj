@@ -80,8 +80,10 @@
     <Compile Include="Extensions\SeriesExtensions.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="IDataFileReader.cs" />
+    <Compile Include="Language\Environment.cs" />
     <Compile Include="Language\Expressions\BinaryExpression.cs" />
     <Compile Include="Language\Expressions\Expression.cs" />
+    <Compile Include="Language\Expressions\VarExpression.cs" />
     <Compile Include="Language\ExpressionVisitor.cs" />
     <Compile Include="Language\Expressions\GroupingExpression.cs" />
     <Compile Include="Language\Expressions\LiteralExpression.cs" />

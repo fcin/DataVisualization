@@ -26,11 +26,42 @@ namespace DataVisualization.Services.Language
 
             while (!IsEof())
             {
-                var statement = HandleStatement();
-                statements.Add(statement);
+                statements.Add(HandleDeclaration());
             }
 
             return statements;
+        }
+
+        private Statement HandleDeclaration()
+        {
+            try
+            {
+                if (Match(TokenType.Var))
+                {
+                    return VarDeclaration();
+                }
+
+                return HandleStatement();
+            }
+            catch (ParserException)
+            {
+                Synchronize();
+                return null;
+            }
+        }
+
+        private Statement VarDeclaration()
+        {
+            var name = Consume(TokenType.Identifier, "Identifier expected");
+
+            Expression initializer = null;
+            if (Match(TokenType.Equal))
+            {
+                initializer = Expression();
+            }
+
+            Consume(TokenType.Semicolon, "Expected ';' after variable declaration");
+            return new VarStatement(name, initializer);
         }
 
         private Statement HandleStatement()
@@ -139,6 +170,11 @@ namespace DataVisualization.Services.Language
                 return new LiteralExpression(Previous().Literal);
             }
 
+            if (Match(TokenType.Identifier))
+            {
+                return new VarExpression(Previous());
+            }
+
             if (Match(TokenType.LeftParenthesis))
             {
                 var expression = Expression();
@@ -151,8 +187,6 @@ namespace DataVisualization.Services.Language
 
         private void Synchronize()
         {
-            Advance();
-
             while (!IsEof())
             {
                 if (Previous().Type == TokenType.Semicolon)
@@ -170,9 +204,9 @@ namespace DataVisualization.Services.Language
                     case TokenType.Return:
                         return;
                 }
-            }
 
-            Advance();
+                Advance();
+            }
         }
 
         private Token Consume(TokenType token, string error)

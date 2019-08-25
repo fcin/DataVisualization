@@ -11,6 +11,8 @@ namespace DataVisualization.Services.Language
 
         public List<string> Errors { get; } = new List<string>();
 
+        private readonly Environment _environment = new Environment();
+
         public object Interpret(IEnumerable<Statement> statements)
         {
             try
@@ -71,6 +73,22 @@ namespace DataVisualization.Services.Language
             var result = Evaluate(expression);
             Debug.WriteLine(result);
             return null;
+        }
+
+        public override object VisitVarStatement(VarStatement statement)
+        {
+            object value = null;
+
+            if (statement.Initializer != null)
+                value = Evaluate(statement.Initializer);
+            
+            _environment.Define(statement.Name.Lexeme, value);
+            return value;
+        }
+
+        public override object VisitVarExpression(VarExpression expression)
+        {
+            return _environment.Get(expression.Name);
         }
 
         public override object VisitBinary(BinaryExpression expression)
