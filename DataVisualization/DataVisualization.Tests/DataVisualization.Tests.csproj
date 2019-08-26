@@ -56,7 +56,6 @@
     <Compile Include="ExpressionTests.cs" />
     <Compile Include="InterpreterTests.cs" />
     <Compile Include="LexerTests.cs" />
-    <Compile Include="MemoryTraceListener.cs" />
     <Compile Include="ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SeriesExtensionsTests.cs" />

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DataVisualization.Core.ViewModels;
 
 namespace DataVisualization.Core.Views
 {
@@ -23,6 +24,12 @@ namespace DataVisualization.Core.Views
         public CodeEditorView()
         {
             InitializeComponent();
+            Loaded += Onloaded;
+        }
+
+        private void Onloaded(object sender, RoutedEventArgs e)
+        {
+            ((CodeEditorViewModel)DataContext).TextEditor = Editor;
         }
     }
 }

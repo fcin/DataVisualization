@@ -1,27 +1,28 @@
 ﻿using System.Collections.Generic;
 using Caliburn.Micro;
+using DataVisualization.Core.Events;
 
 namespace DataVisualization.Core.ViewModels
 {
-    public class OutputViewModel : PropertyChangedBase
+    public class OutputViewModel : PropertyChangedBase, IHandle<OutputLogEventArgs>
     {
-        public IEnumerable<OutputValue> OutputValues { get; }
+        private string _outputValues;
 
-        public OutputViewModel()
+        public string OutputValues
         {
-            OutputValues = new List<OutputValue>();
+            get => _outputValues;
+            set => Set(ref _outputValues, value);
         }
-    }
 
-    public class OutputValue
-    {
-        public string Message { get; }
-        public int Line { get; }
-
-        public OutputValue(string message, int line)
+        public OutputViewModel(IEventAggregator eventAggregator)
         {
-            Message = message;
-            Line = line;
+            OutputValues = string.Empty;
+            eventAggregator.Subscribe(this);
+        }
+
+        public void Handle(OutputLogEventArgs message)
+        {
+            OutputValues = message.Output;
         }
     }
 }

@@ -42,7 +42,6 @@
                 </Expander.Header>
                 <ContentControl x:Name="DataBrowserVm"></ContentControl>
             </Expander>
-            <ContentControl Grid.Column="1" Grid.Row="1" x:Name="ActionToolbarVm"></ContentControl>
             <ContentControl Grid.Column="1" Grid.Row="2" x:Name="CodeEditorVm"></ContentControl>
             <ContentControl Grid.Column="1" Grid.Row="3" Content="{Binding Legend}">
                 <ContentControl.ContentTemplate>

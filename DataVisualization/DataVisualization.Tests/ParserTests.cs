@@ -27,7 +27,9 @@ namespace DataVisualization.Tests
             var lexer = new Lexer(source);
             var parser = new Parser(lexer.Scan());
 
-            Assert.Throws<ParserException>(() => parser.Parse());
+            var result = parser.Parse();
+
+            Assert.AreEqual(1, parser.Errors.Count());
         }
     }
 }

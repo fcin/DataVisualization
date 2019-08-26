@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using DataVisualization.Services;
 
 namespace DataVisualization.Tests
 {
@@ -12,6 +13,7 @@ namespace DataVisualization.Tests
     {
         private MemoryStream _readStream;
         private MemoryTraceListener _traceListener;
+        private readonly string _newLine = System.Environment.NewLine;
 
         [SetUp]
         public void Setup()
@@ -51,7 +53,7 @@ namespace DataVisualization.Tests
             
             interpreter.Interpret(parser.Parse());
             
-            Assert.AreEqual("one\nTrue\n3\n", _traceListener.Data);
+            Assert.AreEqual($"one{_newLine}True{_newLine}3{_newLine}", _traceListener.Data);
         }
 
         [Test]
@@ -69,7 +71,7 @@ namespace DataVisualization.Tests
 
             interpreter.Interpret(parser.Parse());
 
-            Assert.AreEqual("3\n", _traceListener.Data);
+            Assert.AreEqual("3" + _newLine, _traceListener.Data);
         }
 
         [Test]
@@ -88,7 +90,7 @@ namespace DataVisualization.Tests
             print a;
             ";
 
-            const string expectedResult = "inner a\ninner a\ninner a\n";
+            var expectedResult = $"inner a{_newLine}inner a{_newLine}inner a{_newLine}";
 
             var lexer = new Lexer(source);
             var parser = new Parser(lexer.Scan());

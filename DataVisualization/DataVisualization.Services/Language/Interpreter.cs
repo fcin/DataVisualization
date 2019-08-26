@@ -72,7 +72,7 @@ namespace DataVisualization.Services.Language
         public override object VisitPrintStatement(Expression expression)
         {
             var result = Evaluate(expression);
-            Debug.WriteLine(result);
+            Trace.WriteLine(result);
             return null;
         }
 

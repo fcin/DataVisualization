@@ -244,6 +244,9 @@ namespace DataVisualization.Services.Language
         {
             while (!IsEof())
             {
+                if (_current == 0)
+                    Advance();
+
                 if (Previous().Type == TokenType.Semicolon)
                     return;
 
