@@ -124,7 +124,7 @@ namespace DataVisualization.Services.Language
 
         private Expression Assignment()
         {
-            var expression = Equality();
+            var expression = Or();
 
             if (Match(TokenType.Equal))
             {
@@ -138,6 +138,34 @@ namespace DataVisualization.Services.Language
                 }
 
                 throw Error(equals, "Invalid assignment");
+            }
+
+            return expression;
+        }
+
+        private Expression Or()
+        {
+            var expression = And();
+
+            while (Match(TokenType.Or))
+            {
+                var @operator = Peek();
+                var right = And();
+                expression = new LogicalExpression(expression, @operator, right);
+            }
+
+            return expression;
+        }
+
+        private Expression And()
+        {
+            var expression = Equality();
+
+            while (Match(TokenType.And))
+            {
+                var @operator = Peek();
+                var right = Equality();
+                expression = new LogicalExpression(expression, @operator, right);
             }
 
             return expression;

@@ -132,6 +132,24 @@ namespace DataVisualization.Services.Language
             return null;
         }
 
+        public override object VisitLogicalExpression(LogicalExpression logicalExpression)
+        {
+            var left = Evaluate(logicalExpression.Left);
+
+            if (logicalExpression.Operator.Type == TokenType.Or)
+            {
+                if (IsTruthy(left))
+                    return left;
+            }
+            else
+            {
+                if (!IsTruthy(left))
+                    return left;
+            }
+
+            return Evaluate(logicalExpression.Right);
+        }
+
         public override object VisitBinary(BinaryExpression expression)
         {
             var left = Evaluate(expression.Left);

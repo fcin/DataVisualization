@@ -34,5 +34,7 @@ namespace DataVisualization.Services.Language
         public abstract void VisitBlockStatement(BlockStatement blockStatement);
 
         public abstract object VisitIfStatement(IfStatement ifStatement);
+
+        public abstract object VisitLogicalExpression(LogicalExpression logicalExpression);
     }
 }
