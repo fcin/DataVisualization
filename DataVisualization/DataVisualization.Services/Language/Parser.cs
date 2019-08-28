@@ -73,8 +73,6 @@ namespace DataVisualization.Services.Language
 
             if (Match(TokenType.While))
             {
-                var statements = new List<Statement>();
-
                 Consume(TokenType.LeftParenthesis, "Expected '(' after while");
 
                 var condition = Expression();
@@ -84,6 +82,62 @@ namespace DataVisualization.Services.Language
                 var body = HandleStatement();
 
                 return new WhileStatement(condition, body);
+            }
+
+            if (Match(TokenType.For))
+            {
+                Consume(TokenType.LeftParenthesis, "Expected '(' after for statement");
+                Statement initializer = null;
+                if (Match(TokenType.Semicolon))
+                {
+                    initializer = null;
+                }
+                else if (Match(TokenType.Var))
+                {
+                    initializer = VarDeclaration();
+                }
+                else
+                {
+                    initializer = HandleDeclaration();
+                }
+
+                Expression condition = null;
+
+                if (!Check(TokenType.Semicolon))
+                {
+                    condition = Expression();
+                }
+
+                Consume(TokenType.Semicolon, "Expected ';' after condition");
+
+                Expression incrementer = null;
+                if (!Check(TokenType.RightParenthesis))
+                {
+                    incrementer = Expression();
+                }
+
+                Consume(TokenType.RightParenthesis, "Expected ')' after for loop incrementer");
+
+                var body = HandleStatement();
+
+                if (incrementer != null)
+                {
+                    body = new BlockStatement(new List<Statement> { body, new ExpressionStatement(incrementer) });
+                }
+
+                if (condition == null)
+                {
+                    condition = new LiteralExpression(true);
+                }
+
+                body = new WhileStatement(condition, body);
+
+                if (initializer != null)
+                {
+                    body = new BlockStatement(new List<Statement> { initializer, body });
+                }
+
+                return body;
             }
 
             if (Match(TokenType.LeftBrace))
