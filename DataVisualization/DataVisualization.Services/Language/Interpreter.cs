@@ -150,6 +150,16 @@ namespace DataVisualization.Services.Language
             return Evaluate(logicalExpression.Right);
         }
 
+        public override object VisitWhileStatement(WhileStatement whileStatement)
+        {
+            while (IsTruthy(Evaluate(whileStatement.Condition)))
+            {
+                Execute(whileStatement.Body);
+            }
+
+            return null;
+        }
+
         public override object VisitBinary(BinaryExpression expression)
         {
             var left = Evaluate(expression.Left);

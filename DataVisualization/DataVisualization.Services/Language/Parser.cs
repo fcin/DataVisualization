@@ -71,6 +71,21 @@ namespace DataVisualization.Services.Language
                 return HandlePrintStatement();
             }
 
+            if (Match(TokenType.While))
+            {
+                var statements = new List<Statement>();
+
+                Consume(TokenType.LeftParenthesis, "Expected '(' after while");
+
+                var condition = Expression();
+
+                Consume(TokenType.RightParenthesis, "Expected ')' after while");
+
+                var body = HandleStatement();
+
+                return new WhileStatement(condition, body);
+            }
+
             if (Match(TokenType.LeftBrace))
             {
                 var statements = new List<Statement>();

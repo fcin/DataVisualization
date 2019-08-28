@@ -36,5 +36,7 @@ namespace DataVisualization.Services.Language
         public abstract object VisitIfStatement(IfStatement ifStatement);
 
         public abstract object VisitLogicalExpression(LogicalExpression logicalExpression);
+
+        public abstract object VisitWhileStatement(WhileStatement whileStatement);
     }
 }

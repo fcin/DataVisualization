@@ -55,7 +55,10 @@ namespace DataVisualization.Services.Language
 
             Enclosing?.Assign(name, value);
 
-            throw new RuntimeException($"Undefined variable {name}");
+            if (Enclosing == null)
+            {
+                throw new RuntimeException($"Undefined variable {name}");
+            }
         }
     }
 }

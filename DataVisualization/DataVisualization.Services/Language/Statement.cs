@@ -89,4 +89,21 @@ namespace DataVisualization.Services.Language
             return visitor.VisitIfStatement(this);
         }
     }
+
+    public class WhileStatement : Statement
+    {
+        public Expression Condition { get; }
+        public Statement Body { get; }
+
+        public WhileStatement(Expression condition, Statement body)
+        {
+            Condition = condition;
+            Body = body;
+        }
+
+        public override object Accept(ExpressionVisitor visitor)
+        {
+            return visitor.VisitWhileStatement(this);
+        }
+    }
 }
