@@ -281,14 +281,14 @@ namespace DataVisualization.Services.Language
         {
             if (token.Type == TokenType.Eof)
             {
-                _errors.Add($"{token.Line} ' at end' {message}");
+                _errors.Add($"Line: {token.Line}: ' at end', {message}");
             }
             else
             {
-                _errors.Add($"{token.Line}  at ' + {token.Lexeme} + ' {message}");
+                _errors.Add($"Line: {token.Line}: '{token.Lexeme}', {message}");
             }
 
-            Debug.WriteLine($"{token.Lexeme}: {message}");
+            Trace.WriteLine($"{token.Lexeme}: {message}");
 
             return new ParserException(token, message);
         }

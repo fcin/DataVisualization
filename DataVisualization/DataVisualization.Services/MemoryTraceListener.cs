@@ -18,5 +18,10 @@ namespace DataVisualization.Services
         {
             _stringBuilder.AppendLine(message);
         }
+
+        public void Clear()
+        {
+            _stringBuilder.Clear();
+        }
     }
 }
