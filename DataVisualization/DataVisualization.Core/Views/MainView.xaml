@@ -50,7 +50,7 @@
                     </DataTemplate>
                 </ContentControl.ContentTemplate>
             </ContentControl>
-            <TabControl Grid.Column="1" Grid.Row="4">
+            <TabControl Grid.Column="1" Grid.Row="4" MaxHeight="350">
                 <TabItem Header="Console">
                     <ContentControl x:Name="AppConsoleVm"></ContentControl>
                 </TabItem>

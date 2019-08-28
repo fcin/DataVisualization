@@ -1,9 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using DataVisualization.Services.Exceptions;
+﻿using DataVisualization.Services.Exceptions;
 using DataVisualization.Services.Language.Expressions;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 
 namespace DataVisualization.Services.Language
 {
@@ -14,12 +13,14 @@ namespace DataVisualization.Services.Language
 
         private Environment _environment = new Environment();
 
-        public object Interpret(IEnumerable<Statement> statements)
+        public object Interpret(IEnumerable<Statement> statements, CancellationToken token)
         {
             try
             {
                 foreach (var statement in statements)
                 {
+                    token.ThrowIfCancellationRequested();
+
                     Execute(statement);
                 }
 

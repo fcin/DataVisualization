@@ -1,5 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using DataVisualization.Services.Language;
 
 namespace DataVisualization.Services
@@ -11,7 +14,7 @@ namespace DataVisualization.Services
         /// </summary>
         /// <param name="source">Code to run</param>
         /// <returns>Stdout</returns>
-        public string Run(string source)
+        public async Task<string> RunAsync(string source, CancellationToken token)
         {
             var memoryListener = new MemoryTraceListener();
             if (!Trace.Listeners.OfType<MemoryTraceListener>().Any())
@@ -44,7 +47,18 @@ namespace DataVisualization.Services
             }
 
             var interpreter = new Interpreter();
-            interpreter.Interpret(parsedValues);
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    interpreter.Interpret(parsedValues, token);
+                }, token);
+            }
+            catch (TaskCanceledException)
+            {
+                return memoryListener.Data;
+            }
 
             foreach (var runtimeError in interpreter.Errors)
             {

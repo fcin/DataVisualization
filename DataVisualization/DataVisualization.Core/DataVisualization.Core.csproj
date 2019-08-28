@@ -173,6 +173,7 @@
     <Compile Include="Events\NewDataAddedEventArgs.cs" />
     <Compile Include="Events\OutputLogEventArgs.cs" />
     <Compile Include="Events\RunCodeEventArgs.cs" />
+    <Compile Include="Events\StopCodeExecutionEventArgs.cs" />
     <Compile Include="Formatters\Formatter.cs" />
     <Compile Include="Formatters\TooltipTitleFormatter.cs" />
     <Compile Include="ILoadingBarWindow.cs" />

@@ -19,7 +19,7 @@ namespace DataVisualization.Core.ViewModels
 
         public void OnStopCodeExecution()
         {
-            
+            _eventAggregator.PublishOnUIThread(new StopCodeExecutionEventArgs());
         }
     }
 }
