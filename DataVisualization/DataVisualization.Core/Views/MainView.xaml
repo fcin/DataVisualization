@@ -50,12 +50,14 @@
                     </DataTemplate>
                 </ContentControl.ContentTemplate>
             </ContentControl>
-            <TabControl Grid.Column="1" Grid.Row="4" MaxHeight="350">
+            <TabControl Grid.Column="1" Grid.Row="4" MaxHeight="250">
                 <TabItem Header="Console">
                     <ContentControl x:Name="AppConsoleVm"></ContentControl>
                 </TabItem>
                 <TabItem Header="Output">
-                    <ContentControl x:Name="OutputVm"></ContentControl>
+                    <ScrollViewer>
+                        <ContentControl x:Name="OutputVm"></ContentControl>
+                    </ScrollViewer>
                 </TabItem>
             </TabControl>
         </Grid>
