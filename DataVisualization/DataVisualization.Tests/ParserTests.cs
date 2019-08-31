@@ -31,5 +31,17 @@ namespace DataVisualization.Tests
 
             Assert.AreEqual(1, parser.Errors.Count());
         }
+
+        [Test]
+        public void ShouldIgnoreCommentTokens()
+        {
+            const string source = @"var a = 5;//abc";
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+
+            var result = parser.Parse();
+
+            Assert.AreEqual(0, parser.Errors.Count());
+        }
     }
 }

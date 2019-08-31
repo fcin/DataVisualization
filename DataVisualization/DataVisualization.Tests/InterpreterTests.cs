@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using DataVisualization.Services;
 
 namespace DataVisualization.Tests
@@ -33,7 +34,7 @@ namespace DataVisualization.Tests
             var expression = new BinaryExpression(left, @operator, right);
             var interpreter = new Interpreter();
             
-            var result = interpreter.Interpret(new List<Statement> { new ExpressionStatement(expression) });
+            var result = interpreter.Interpret(new List<Statement> { new ExpressionStatement(expression) }, default(CancellationToken));
 
             Assert.IsNull(result);
         }
@@ -51,7 +52,7 @@ namespace DataVisualization.Tests
             var parser = new Parser(lexer.Scan());
             var interpreter = new Interpreter();
             
-            interpreter.Interpret(parser.Parse());
+            interpreter.Interpret(parser.Parse(), default(CancellationToken));
             
             Assert.AreEqual($"one{_newLine}True{_newLine}3{_newLine}", _traceListener.Data);
         }
@@ -69,7 +70,7 @@ namespace DataVisualization.Tests
             var parser = new Parser(lexer.Scan());
             var interpreter = new Interpreter();
 
-            interpreter.Interpret(parser.Parse());
+            interpreter.Interpret(parser.Parse(), default(CancellationToken));
 
             Assert.AreEqual("3" + _newLine, _traceListener.Data);
         }
@@ -96,7 +97,173 @@ namespace DataVisualization.Tests
             var parser = new Parser(lexer.Scan());
             var interpreter = new Interpreter();
 
-            var result = interpreter.Interpret(parser.Parse());
+            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldConcatenateStrings()
+        {
+            const string source = @"
+            var first = ""Hello"";
+            var last = ""World"";
+            print ""Hi, "" + first + "" "" + last + ""!"";
+            ";
+
+            var expectedResult = $"Hi, Hello World!{_newLine}";
+
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+            var interpreter = new Interpreter();
+
+            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldConcatenateStringsInsideFunction()
+        {
+            const string source = @"
+                fun sayHi(first, last) {
+                  print ""Hi, "" + first + "" "" + last + ""!"";
+                }
+
+                sayHi(""Hello"", ""World"");
+            ";
+
+            var expectedResult = $"Hi, Hello World!{_newLine}";
+
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+            var interpreter = new Interpreter();
+
+            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldReturn2()
+        {
+            const string source = @"
+                fun shouldReturn2(val) {
+                  if(val <= 1)
+                    return 1;
+
+                   return 2;
+                }
+
+                print shouldReturn2(2);
+            ";
+
+            var expectedResult = $"2{_newLine}";
+
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+            var interpreter = new Interpreter();
+
+            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldCalculateValueInsideParameter()
+        {
+            const string source = @"
+                fun function(val) {
+                  return val;
+                }
+
+                print function(1 + 1);
+            ";
+
+            var expectedResult = $"2{_newLine}";
+
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+            var interpreter = new Interpreter();
+
+            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldExecuteRecursiveFunction()
+        {
+            const string source = @"
+                fun function(val) {
+                  if(val <= 1)
+                    return 1;
+
+                  return function(val - 1);
+                }
+
+                print function(5);
+            ";
+
+            var expectedResult = $"1{_newLine}";
+
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+            var interpreter = new Interpreter();
+
+            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldCalculateFibonacci()
+        {
+            const string source = @"
+                fun fibonacci(n) {
+                  if (n <= 1) return n;
+                  return fibonacci(n - 2) + fibonacci(n - 1);
+                }
+
+                for (var i = 0; i < 5; i = i + 1) {
+                  print fibonacci(i);
+                }
+            ";
+
+            var expectedResult = "0\r\n1\r\n1\r\n2\r\n3\r\n";
+
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+            var interpreter = new Interpreter();
+
+            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldHandleClosures()
+        {
+            const string source = @"
+                var a = ""global"";
+                {
+                  fun showA() {
+                    print a;
+                  }
+
+                  showA();
+                  var a = ""block"";
+                  showA();
+                }
+            ";
+
+            var expectedResult = $"global{_newLine}global{_newLine}";
+
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+            var interpreter = new Interpreter();
+
+            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
 
             Assert.AreEqual(expectedResult, _traceListener.Data);
         }

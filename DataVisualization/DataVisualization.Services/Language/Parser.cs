@@ -1,8 +1,8 @@
-﻿using System;
-using DataVisualization.Services.Exceptions;
+﻿using DataVisualization.Services.Exceptions;
 using DataVisualization.Services.Language.Expressions;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace DataVisualization.Services.Language
 {
@@ -16,7 +16,7 @@ namespace DataVisualization.Services.Language
 
         public Parser(List<Token> tokens)
         {
-            _tokens = tokens;
+            _tokens = tokens.Where(t => t.Type != TokenType.Comment && t.Type != TokenType.MultilineComment).ToList();
             _errors = new List<string>();
         }
 
@@ -36,6 +36,11 @@ namespace DataVisualization.Services.Language
         {
             try
             {
+                if (Match(TokenType.Fun))
+                {
+                    return FunctionDeclaration();
+                }
+
                 if (Match(TokenType.Var))
                 {
                     return VarDeclaration();
@@ -48,6 +53,30 @@ namespace DataVisualization.Services.Language
                 Synchronize();
                 return null;
             }
+        }
+
+        private Statement FunctionDeclaration()
+        {
+            var name = Consume(TokenType.Identifier, "Expected function name");
+            Consume(TokenType.LeftParenthesis, "Expected '(' after function name.");
+            var parameters = new List<Token>();
+            if (!Check(TokenType.RightParenthesis))
+            {
+                do
+                {
+                    if (parameters.Count >= MaxArgumentsCount)
+                    {
+                        Error(Peek(), "Cannot have more than 255 parameters.");
+                    }
+
+                    parameters.Add(Consume(TokenType.Identifier, "Expect parameter name."));
+                } while (Match(TokenType.Comma));
+            }
+            Consume(TokenType.RightParenthesis, "Expected ')' after parameters.");
+
+            Consume(TokenType.LeftBrace, "Expected '{' after function declaration");
+            var body = (BlockStatement)HandleBlock();
+            return new FunctionStatement(name, parameters, body.Statements);
         }
 
         private Statement VarDeclaration()
@@ -69,6 +98,20 @@ namespace DataVisualization.Services.Language
             if (Match(TokenType.Print))
             {
                 return HandlePrintStatement();
+            }
+
+            if (Match(TokenType.Return))
+            {
+                var keyword = Previous();
+                Expression value = null;
+                if (!Check(TokenType.Semicolon))
+                {
+                    value = Expression();
+                }
+
+                Consume(TokenType.Semicolon, "Expected ';' at the end of return statement");
+
+                return new ReturnStatement(keyword, value);
             }
 
             if (Match(TokenType.While))
@@ -142,16 +185,7 @@ namespace DataVisualization.Services.Language
 
             if (Match(TokenType.LeftBrace))
             {
-                var statements = new List<Statement>();
-
-                while (!Check(TokenType.RightBrace) && !IsEof())
-                {
-                    statements.Add(HandleDeclaration());
-                }
-
-                Consume(TokenType.RightBrace, "Expected '}' after block.");
-
-                return new BlockStatement(statements);
+                return HandleBlock();
             }
 
             if (Match(TokenType.If))
@@ -170,6 +204,20 @@ namespace DataVisualization.Services.Language
             }
 
             return HandleExpressionStatement();
+        }
+
+        private Statement HandleBlock()
+        {
+            var statements = new List<Statement>();
+
+            while (!Check(TokenType.RightBrace) && !IsEof())
+            {
+                statements.Add(HandleDeclaration());
+            }
+
+            Consume(TokenType.RightBrace, "Expected '}' after block.");
+
+            return new BlockStatement(statements);
         }
 
         private Statement HandleExpressionStatement()
@@ -298,6 +346,7 @@ namespace DataVisualization.Services.Language
 
         private Expression Unary()
         {
+
             if (Match(TokenType.Bang, TokenType.Minus))
             {
                 var right = Unary();
@@ -305,12 +354,54 @@ namespace DataVisualization.Services.Language
                 return new UnaryExpression(@operator, right);
             }
 
-            return Primary();
+            return Call();
+        }
+
+        private Expression Call()
+        {
+            var expression = Primary();
+
+            while (true)
+            {
+                if (Match(TokenType.LeftParenthesis))
+                {
+                    expression = FinishCall(expression);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return expression;
+        }
+
+        private const int MaxArgumentsCount = 255;
+
+        private Expression FinishCall(Expression callee)
+        {
+            var arguments = new List<Expression>();
+
+            if (!Check(TokenType.RightParenthesis))
+            {
+                do
+                {
+                    if (arguments.Count > MaxArgumentsCount)
+                    {
+                        Error(Peek(), $"Maximum number of arguments is {MaxArgumentsCount}");
+                    }
+                    arguments.Add(Expression());
+                } while (Match(TokenType.Comma));
+            }
+
+            var token = Consume(TokenType.RightParenthesis, "Expected ')' after function call");
+
+            return new CallExpression(callee, token, arguments);
         }
 
         private Expression Primary()
         {
-            if(Match(TokenType.False))
+            if (Match(TokenType.False))
                 return new LiteralExpression(false);
             if (Match(TokenType.True))
                 return new LiteralExpression(true);

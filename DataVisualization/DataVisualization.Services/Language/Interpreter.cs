@@ -3,6 +3,7 @@ using DataVisualization.Services.Language.Expressions;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using DataVisualization.Services.Language.Native;
 
 namespace DataVisualization.Services.Language
 {
@@ -11,7 +12,15 @@ namespace DataVisualization.Services.Language
 
         public List<string> Errors { get; } = new List<string>();
 
-        private Environment _environment = new Environment();
+        public Environment Globals { get; }
+        private Environment _environment;
+
+        public Interpreter()
+        {
+            Globals = new Environment();
+            _environment = Globals;
+            Globals.Define("time", new DvTime());
+        }
 
         public object Interpret(IEnumerable<Statement> statements, CancellationToken token)
         {
@@ -104,11 +113,18 @@ namespace DataVisualization.Services.Language
 
         public override void VisitBlockStatement(BlockStatement blockStatement)
         {
-            var previous = new Environment(_environment);
+            ExecuteBlock(blockStatement.Statements, _environment);
+        }
+
+        public void ExecuteBlock(IEnumerable<Statement> statements, Environment environment)
+        {
+            var previous = _environment;
 
             try
             {
-                foreach (var statement in blockStatement.Statements)
+                _environment = environment;
+
+                foreach (var statement in statements)
                 {
                     Execute(statement);
                 }
@@ -121,7 +137,7 @@ namespace DataVisualization.Services.Language
 
         public override object VisitIfStatement(IfStatement ifStatement)
         {
-            if (IsTruthy(ifStatement.Condition))
+            if (IsTruthy(Evaluate(ifStatement.Condition)))
             {
                 Execute(ifStatement.ThenStatement);
             }
@@ -159,6 +175,42 @@ namespace DataVisualization.Services.Language
             }
 
             return null;
+        }
+
+        public override object VisitCallExpression(CallExpression callExpression)
+        {
+            var callee = Evaluate(callExpression.Callee);
+            var arguments = new List<object>();
+
+            foreach (var argument in callExpression.Arguments)
+            {
+                arguments.Add(Evaluate(argument));
+            }
+
+            if (callee is ICallable function)
+            {
+                if (arguments.Count != function.Arity())
+                {
+                    throw new RuntimeException(callExpression.RightParenthesis, $"Expected {function.Arity()} arguments, but got {arguments.Count}");
+                }
+
+                return function.Call(this, arguments);
+            }
+
+            throw new RuntimeException(callExpression.RightParenthesis, "Specified object is not callable");
+        }
+
+        public override object VisitFunctionStatement(FunctionStatement functionStatement)
+        {
+            var dvFunction = new DvFunction(functionStatement, _environment);
+            _environment.Define(functionStatement.Name.Lexeme, dvFunction);
+            return null;
+        }
+
+        public override object VisitReturnStatement(ReturnStatement returnStatement)
+        {
+            var value = returnStatement.Value != null ? Evaluate(returnStatement.Value) : null;
+            throw new ReturnException(value);
         }
 
         public override object VisitBinary(BinaryExpression expression)
@@ -208,6 +260,9 @@ namespace DataVisualization.Services.Language
                     {
                         return left.ToString() + right;
                     }
+                    
+                    Debug.WriteLine($"Left was: {left?.GetType()}");
+                    Debug.WriteLine($"Right was: {right?.GetType()}");
 
                     throw new RuntimeException(expression.Operator, "Operands must be two numbers or two strings.");
             }

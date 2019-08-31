@@ -28,15 +28,13 @@ namespace DataVisualization.Services.Language
         public abstract object VisitPrintStatement(Expression expression);
         public abstract object VisitVarStatement(VarStatement statement);
         public abstract object VisitVarExpression(VarExpression expression);
-
         public abstract object VisitAssignExpression(AssignExpression assignExpression);
-
         public abstract void VisitBlockStatement(BlockStatement blockStatement);
-
         public abstract object VisitIfStatement(IfStatement ifStatement);
-
         public abstract object VisitLogicalExpression(LogicalExpression logicalExpression);
-
         public abstract object VisitWhileStatement(WhileStatement whileStatement);
+        public abstract object VisitCallExpression(CallExpression callExpression);
+        public abstract object VisitFunctionStatement(FunctionStatement functionStatement);
+        public abstract object VisitReturnStatement(ReturnStatement returnStatement);
     }
 }

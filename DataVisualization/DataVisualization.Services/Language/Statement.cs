@@ -106,4 +106,40 @@ namespace DataVisualization.Services.Language
             return visitor.VisitWhileStatement(this);
         }
     }
+
+    public class FunctionStatement : Statement
+    {
+        public Token Name { get; }
+        public IReadOnlyList<Token> Parameters { get; }
+        public IEnumerable<Statement> Body { get; }
+
+        public FunctionStatement(Token name, IReadOnlyList<Token> parameters, IEnumerable<Statement> body)
+        {
+            Name = name;
+            Parameters = parameters;
+            Body = body;
+        }
+
+        public override object Accept(ExpressionVisitor visitor)
+        {
+            return visitor.VisitFunctionStatement(this);
+        }
+    }
+
+    public class ReturnStatement : Statement
+    {
+        public Token Keyword { get; }
+        public Expression Value { get; }
+
+        public ReturnStatement(Token keyword, Expression value)
+        {
+            Keyword = keyword;
+            Value = value;
+        }
+
+        public override object Accept(ExpressionVisitor visitor)
+        {
+            return visitor.VisitReturnStatement(this);
+        }
+    }
 }

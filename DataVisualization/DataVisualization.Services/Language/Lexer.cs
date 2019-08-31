@@ -82,7 +82,7 @@ namespace DataVisualization.Services.Language
                         while (PeekNext() != '\n' && !IsEof())
                             Advance();
 
-                        AddToken(TokenType.MultilineComment);
+                        AddToken(TokenType.Comment);
                     }
                     else if (Peek() == '*')
                     {
