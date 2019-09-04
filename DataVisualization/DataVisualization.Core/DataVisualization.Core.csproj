@@ -194,6 +194,7 @@
     <Compile Include="ViewModels\DataBrowserViewModel.cs" />
     <Compile Include="ViewModels\DataLoaderViewModel.cs" />
     <Compile Include="ViewModels\DataPullingSettingsViewModel.cs" />
+    <Compile Include="ViewModels\DvFileLoaderViewModel.cs" />
     <Compile Include="ViewModels\OutputViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerAxisViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\FastVisualizerLabelViewModel.cs" />
@@ -218,6 +219,7 @@
     <Compile Include="ViewModels\TransformationViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\VisualizerViewModel.cs" />
     <Compile Include="ViewModels\Visualizers\VisualizerViewModelBase.cs" />
+    <Compile Include="ViewModels\WizardViewModel.cs" />
     <Compile Include="Views\ActionToolbarView.xaml.cs">
       <DependentUpon>ActionToolbarView.xaml</DependentUpon>
     </Compile>
@@ -238,6 +240,9 @@
     </Compile>
     <Compile Include="Views\DataPullingSettingsView.xaml.cs">
       <DependentUpon>DataPullingSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DvFileLoaderView.xaml.cs">
+      <DependentUpon>DvFileLoaderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OutputView.xaml.cs">
       <DependentUpon>OutputView.xaml</DependentUpon>
@@ -281,6 +286,9 @@
     <Compile Include="Views\Visualizers\VisualizerView.xaml.cs">
       <DependentUpon>VisualizerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\WizardView.xaml.cs">
+      <DependentUpon>WizardView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\BasicTooltip.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -310,6 +318,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DataPullingSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DvFileLoaderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -370,6 +382,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Visualizers\VisualizerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WizardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

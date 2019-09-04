@@ -19,8 +19,8 @@ namespace DataVisualization.Core.ViewModels
 
         public void NewData()
         {
-            var dataLoaderVm = _dataLoaderVmFactory.Get();
-            _windowManager.ShowDialog(dataLoaderVm);
+            var wizardVm = _dataLoaderVmFactory.Get();
+            _windowManager.ShowDialog(wizardVm);
         }
 
         public void OpenSettings()

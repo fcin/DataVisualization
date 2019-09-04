@@ -1,4 +1,4 @@
-﻿<Window x:Class="DataVisualization.Core.Views.DataLoaderView"
+﻿<UserControl x:Class="DataVisualization.Core.Views.DataLoaderView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,9 +8,8 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:trans="clr-namespace:DataVisualization.Core.Translations"
-        mc:Ignorable="d"
-        Title="{x:Static trans:Translation.NewData}" MinHeight="650" MinWidth="600">
-    <Window.Resources>
+        mc:Ignorable="d">
+    <UserControl.Resources>
         <convs:ColumnNameConverter x:Key="ColumnNameConverter"></convs:ColumnNameConverter>
         <convs:ColumnTypesConverter x:Key="ColumnTypesConverter"></convs:ColumnTypesConverter>
         <convs:SelectedComboboxItemConverter x:Key="SelectedComboboxItemConverter"></convs:SelectedComboboxItemConverter>
@@ -21,26 +20,13 @@
             <convs:StringToBoolConverter></convs:StringToBoolConverter>
             <convs:BoolToVisibilityConverter></convs:BoolToVisibilityConverter>
         </convs:ValueConverterGroup>
-    </Window.Resources>
+    </UserControl.Resources>
     <materialDesign:DialogHost CloseOnClickAway="False" Identifier="DataLoaderHost">
         <Grid Margin="15,30,15,15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="6*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" Text="{Binding FilePath}" HorizontalAlignment="Stretch" IsEnabled="False" Foreground="Gray"
-                 cal:Message.Attach="[Event TextChanged] = [Action RecreateGrid()]; [Event TextChanged] = [Action ValidateSubmit()]"
-                 materialDesign:HintAssist.Hint="{x:Static trans:Translation.FilePath}" VerticalAlignment="Center" MinWidth="70"/>
-                    <Button Grid.Column="1" cal:Message.Attach="[Event Click] = [Action OnFileSelectionClicked()]" 
-                HorizontalAlignment="Left" Content="{materialDesign:PackIcon Kind=FileDocument}" Margin="15,0,0,0" ToolTip="{x:Static trans:Translation.SelectFile}"></Button>
-                </Grid>
-            </Grid>
             <Grid Grid.Row="1" Visibility="{Binding FilePath, Converter={StaticResource StringToBoolToVisibilityConverter}}">
                 <Grid IsEnabled="{Binding IsLoaderWindowEnabled}">
                     <Grid.ColumnDefinitions>
@@ -166,4 +152,4 @@
             </Grid>
         </Grid>
     </materialDesign:DialogHost>
-</Window>
+</UserControl>

@@ -45,7 +45,7 @@ namespace DataVisualization.Core.ViewModels
         }
     }
 
-    public class DataLoaderViewModel : Screen, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>
+    public class DataLoaderViewModel : PropertyChangedBase, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>
     {
         private bool _isLoaderWindowEnabled;
         public bool IsLoaderWindowEnabled
@@ -73,13 +73,6 @@ namespace DataVisualization.Core.ViewModels
         {
             get => _isIgnoredList;
             set => SetValue(ref _isIgnoredList, value);
-        }
-
-        private string _filePath;
-        public string FilePath
-        {
-            get => _filePath;
-            set => SetValue(ref _filePath, value);
         }
 
         public IEnumerable<char> AllThousandsSeparators => new List<char> { '.', ',' };
@@ -140,6 +133,8 @@ namespace DataVisualization.Core.ViewModels
         private readonly DataService _dataService;
         private DataTable _sampleData;
         private PullingMethodProperties _pullingMethodProperties;
+
+        private string _filePath;
 
         public DataLoaderViewModel(IEventAggregator eventAggregator, LoadingBarManager loadingBarManager, IWindowManager windowManager,
             DataConfigurationService dataConfigurationService, DataService dataService, DataFileReader dataFileReader)
@@ -209,11 +204,13 @@ namespace DataVisualization.Core.ViewModels
             ValidateSubmit();
         }
 
-        public async Task RecreateGrid()
+        public async Task RecreateGridAsync(string filePath)
         {
+            _filePath = filePath;
+
             ClearAll();
 
-            _sampleData = await _dataFileReader.ReadSampleAsync(FilePath, 30);
+            _sampleData = await _dataFileReader.ReadSampleAsync(_filePath, 30);
 
             var properties = (from DataColumn column in _sampleData.Columns
                               select new Tuple<string, ColumnTypeDef>(column.ColumnName, ColumnTypeDef.Unknown)).ToList();
@@ -361,22 +358,6 @@ namespace DataVisualization.Core.ViewModels
             ValidateSubmit();
         }
 
-        public void OnFileSelectionClicked()
-        {
-            var fileDialog = new OpenFileDialog
-            {
-                CheckFileExists = true,
-                CheckPathExists = true,
-                Multiselect = false,
-                Filter = "CSV Files (.csv) |*.csv"
-            };
-            var dialogResult = fileDialog.ShowDialog();
-            if (dialogResult.HasValue && dialogResult.Value)
-            {
-                FilePath = fileDialog.FileName;
-            }
-        }
-
         public bool CanOnDataLoad
         {
             get
@@ -390,10 +371,10 @@ namespace DataVisualization.Core.ViewModels
         {
             var errors = new List<string>();
 
-            if (string.IsNullOrEmpty(FilePath))
+            if (string.IsNullOrEmpty(_filePath))
                 errors.Add(Translation.LoadError_SelectFile);
-            if (_dataConfigurationService.Exists(Path.GetFileNameWithoutExtension(FilePath)))
-                errors.Add(Translation.LoadError_FileAlreadyLoaded.Replace("{fileName}", Path.GetFileName(FilePath)));
+            if (_dataConfigurationService.Exists(Path.GetFileNameWithoutExtension(_filePath)))
+                errors.Add(Translation.LoadError_FileAlreadyLoaded.Replace("{fileName}", Path.GetFileName(_filePath)));
             var columnsWithoutTypes = DataGridColumnsModel.Columns.Where(col => col.ColumnType.Equals(ColumnTypeDef.Unknown) && !col.IsIgnored);
             foreach (var columnWithoutType in columnsWithoutTypes)
                 errors.Add(Translation.LoadError_ColumnWithoutType.Replace("{columnName}", columnWithoutType.Name));
@@ -417,14 +398,14 @@ namespace DataVisualization.Core.ViewModels
                 _pullingMethodProperties = new PullingMethodProperties
                 {
                     Method = PullingMethods.LocalFile,
-                    EndpointUrl = FilePath
+                    EndpointUrl = _filePath
                 };
             }
 
             var config = new DataConfiguration
             {
-                DataName = Path.GetFileNameWithoutExtension(FilePath),
-                FilePath = FilePath,
+                DataName = Path.GetFileNameWithoutExtension(_filePath),
+                FilePath = _filePath,
                 ThousandsSeparator = SelectedThousandsSeparator.ToString(),
                 DecimalSeparator = SelectedDecimalSeparator.ToString(),
                 RefreshRate = TimeSpan.FromSeconds(SelectedRefreshTime.Value),
@@ -462,7 +443,6 @@ namespace DataVisualization.Core.ViewModels
                 }
 
                 _eventAggregator.PublishOnUIThread(new NewDataAddedEventArgs());
-                TryClose();
             }
             catch (Exception ex)
             {
@@ -477,7 +457,7 @@ namespace DataVisualization.Core.ViewModels
 
         public void ShowDataPullingSettings()
         {
-            var vm = new DataPullingSettingsViewModel(FilePath);
+            var vm = new DataPullingSettingsViewModel(_filePath);
             vm.OnSubmit += (_, pullingMethod) => _pullingMethodProperties = pullingMethod;
             _windowManager.ShowDialog(vm);
         }

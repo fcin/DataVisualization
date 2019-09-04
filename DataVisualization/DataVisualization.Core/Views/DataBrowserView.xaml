@@ -12,41 +12,43 @@
              d:DesignHeight="450" d:DesignWidth="200" MinWidth="120">
     <Grid>
         <DockPanel>
-            <Label Content="{x:Static trans:Translation.AllData}" DockPanel.Dock="Top"></Label>
 
-            <ListView Name="DataConfigs" DockPanel.Dock="Top" ItemsSource="{Binding AllDataConfigurations}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                        <EventSetter Event="MouseDoubleClick" Handler="OpenConfig"/>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="{materialDesign:PackIcon Kind=Database}"></Label>
-                            <Label Content="{Binding DataName, FallbackValue='Lorem ipsum'}"></Label>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="{x:Static trans:Translation.Open}" 
-                            Click="OnOpenConfiguration"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" >
-                            <MenuItem.Icon>
-                                <materialDesign:PackIcon Kind="BookOpen" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{x:Static trans:Translation.Delete}" 
-                            Click="OnDeleteConfiguration"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" >
-                            <MenuItem.Icon>
-                                <materialDesign:PackIcon Kind="Delete" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </ListView.ContextMenu>
-            </ListView>
+            <Expander ExpandDirection="Down" DockPanel.Dock="Top" IsExpanded="True" Header="{x:Static trans:Translation.AllData}">
+                <ListView Name="DataConfigs" ItemsSource="{Binding AllDataConfigurations}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                            <EventSetter Event="MouseDoubleClick" Handler="OpenConfig"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="{materialDesign:PackIcon Kind=Database}"></Label>
+                                <Label Content="{Binding DataName, FallbackValue='Lorem ipsum'}"></Label>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{x:Static trans:Translation.Open}" 
+                                      Click="OnOpenConfiguration"
+                                      CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" >
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="BookOpen" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="{x:Static trans:Translation.Delete}" 
+                                      Click="OnDeleteConfiguration"
+                                      CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" >
+                                <MenuItem.Icon>
+                                    <materialDesign:PackIcon Kind="Delete" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
+            </Expander>
+            <Expander ExpandDirection="Down" Header="Files" IsExpanded="True"></Expander>
         </DockPanel>
     </Grid>
 </UserControl>

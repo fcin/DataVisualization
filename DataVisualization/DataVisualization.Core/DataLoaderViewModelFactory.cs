@@ -24,9 +24,11 @@ namespace DataVisualization.Core
             _dataFileReader = dataFileReader;
         }
 
-        public DataLoaderViewModel Get()
+        public WizardViewModel Get()
         {
-            return new DataLoaderViewModel(_eventAggregator, _loadingBarManager, _windowManager, _dataConfigurationService, _dataService, _dataFileReader);
+            var dataLoaderVm = new DataLoaderViewModel(_eventAggregator, _loadingBarManager, _windowManager, _dataConfigurationService, 
+                _dataService, _dataFileReader);
+            return new WizardViewModel(dataLoaderVm);
         }
     }
 }

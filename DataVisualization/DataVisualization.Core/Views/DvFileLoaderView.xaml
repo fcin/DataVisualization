@@ -1,14 +1,12 @@
-﻿<UserControl x:Class="DataVisualization.Core.Views.CodeEditorView"
+﻿<UserControl x:Class="DataVisualization.Core.Views.DvFileLoaderView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DataVisualization.Core.Views"
-             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <DockPanel>
-        <ContentControl DockPanel.Dock="Top" x:Name="ActionToolbarVm"></ContentControl>
-        <avalonedit:TextEditor Name="Editor" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ShowLineNumbers="True"></avalonedit:TextEditor>
-    </DockPanel>
+    <Grid>
+            
+    </Grid>
 </UserControl>
