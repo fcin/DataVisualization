@@ -177,6 +177,7 @@
     <Compile Include="Formatters\Formatter.cs" />
     <Compile Include="Formatters\TooltipTitleFormatter.cs" />
     <Compile Include="ILoadingBarWindow.cs" />
+    <Compile Include="LoaderViewModelBase.cs" />
     <Compile Include="ModelCreator.cs" />
     <Compile Include="LoadingBarManager.cs" />
     <Compile Include="Properties\Annotations.cs" />

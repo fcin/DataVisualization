@@ -4,11 +4,15 @@ using System.Linq;
 
 namespace DataVisualization.Models
 {
-    public class Data
+    public abstract class Data
     {
         [BsonId]
         public int DataId { get; set; }
         public string Name { get; set; }
+    }
+
+    public class ChartData : Data
+    {
         [BsonRef("Series")]
         public List<Series> Series { get; set; }
         public int FileLinesRead { get; set; }
@@ -27,5 +31,10 @@ namespace DataVisualization.Models
                 serie.ApplyTransformations();
             }
         }
+    }
+
+    public class ScriptData : Data
+    {
+        public string Data { get; set; }
     }
 }

@@ -7,6 +7,6 @@ namespace DataVisualization.Services.DataPulling
 {
     public interface IDataPuller : IDisposable
     {
-        Task<(List<Series> latest, int readLines)> PullAsync(DataConfiguration config, int startFromLine);
+        Task<(List<Series> latest, int readLines)> PullAsync(LineChartDataConfiguration config, int startFromLine);
     }
 }

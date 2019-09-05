@@ -17,7 +17,7 @@ namespace DataVisualization.Services
 
         public void Add(DataConfiguration configuration)
         {
-            if (string.IsNullOrWhiteSpace(configuration.DataName) || configuration.Columns.Count == 0)
+            if (string.IsNullOrWhiteSpace(configuration.DataName))
             {
                 throw new ArgumentException("Configuration contains invalid values.");
             }
@@ -67,12 +67,12 @@ namespace DataVisualization.Services
             }
         }
 
-        public DataConfiguration GetByName(string name)
+        public T GetByName<T>(string name) where T : DataConfiguration
         {
             using (var db = new LiteDatabase(_dbPath))
             {
                 var collection = db.GetCollection<DataConfiguration>("DataConfiguration");
-                return collection.Find(Query.EQ(nameof(DataConfiguration.DataName), name)).FirstOrDefault();
+                return (T)collection.Find(Query.EQ(nameof(DataConfiguration.DataName), name)).FirstOrDefault();
             }
         }
 

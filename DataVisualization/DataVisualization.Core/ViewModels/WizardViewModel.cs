@@ -11,7 +11,13 @@ namespace DataVisualization.Core.ViewModels
 {
     public class WizardViewModel : Screen
     {
-        public DataLoaderViewModel LoaderVm { get; set; }
+        private LoaderViewModelBase _loaderVm;
+
+        public LoaderViewModelBase LoaderVm
+        {
+            get => _loaderVm;
+            set => Set(ref _loaderVm, value);
+        }
 
         private string _filePath;
         public string FilePath
@@ -20,9 +26,13 @@ namespace DataVisualization.Core.ViewModels
             set => Set(ref _filePath, value);
         }
 
-        public WizardViewModel(DataLoaderViewModel loaderVm)
+        private DataLoaderViewModel _dataLoaderVm;
+        private readonly DvFileLoaderViewModel _dvFileLoaderVm;
+
+        public WizardViewModel(DataLoaderViewModel loaderVm, DvFileLoaderViewModel dvFileLoaderVm)
         {
-            LoaderVm = loaderVm;
+            _dataLoaderVm = loaderVm;
+            _dvFileLoaderVm = dvFileLoaderVm;
         }
 
         public void OnFileSelectionClicked()
@@ -32,7 +42,7 @@ namespace DataVisualization.Core.ViewModels
                 CheckFileExists = true,
                 CheckPathExists = true,
                 Multiselect = false,
-                Filter = "CSV Files (.csv) |*.csv"
+                Filter = "CSV Files (.csv)|*.csv|DV Files (.dv)|*.dv"
             };
             var dialogResult = fileDialog.ShowDialog();
             if (dialogResult.HasValue && dialogResult.Value)
@@ -43,8 +53,19 @@ namespace DataVisualization.Core.ViewModels
 
         public async void RunLoader()
         {
-            if (Path.GetExtension(FilePath) == ".csv")
-                await LoaderVm.RecreateGridAsync(FilePath);
+            switch (Path.GetExtension(FilePath))
+            {
+                case ".csv":
+                    LoaderVm = _dataLoaderVm;
+                    break;
+                case ".dv":
+                    LoaderVm = _dvFileLoaderVm;
+                    break;
+                default:
+                    throw new ArgumentException(nameof(FilePath));
+            }
+
+            await LoaderVm.InitializeAsync(FilePath);
         }
     }
 }

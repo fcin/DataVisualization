@@ -31,14 +31,14 @@ namespace DataVisualization.Core.Views
 
         private readonly IWindowManager _windowManager;
         private readonly DataService _dataService;
-        private readonly Data _data;
+        private readonly ChartData _chartData;
         private Action<Series> _onSeriesChanged;
 
-        public BasicChartLegendView(IWindowManager windowManager, DataService dataService, Data data, Action<Series> onSeriesChanged)
+        public BasicChartLegendView(IWindowManager windowManager, DataService dataService, ChartData chartData, Action<Series> onSeriesChanged)
         {
             _windowManager = windowManager;
             _dataService = dataService;
-            _data = data;
+            _chartData = chartData;
             _onSeriesChanged = onSeriesChanged;
 
             InitializeComponent();
@@ -59,7 +59,7 @@ namespace DataVisualization.Core.Views
                 return;
 
             var border = (Border)sender;
-            var series = _data.Series.First(d => d.Name == border.Tag.ToString());
+            var series = _chartData.Series.First(d => d.Name == border.Tag.ToString());
 
             var result = _windowManager.ShowDialog(new SeriesPropertiesViewModel(series, _dataService));
             if(result.HasValue && result.Value)

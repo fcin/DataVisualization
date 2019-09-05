@@ -9,26 +9,26 @@ namespace DataVisualization.Services
     public class DataService
     {
         private readonly string _dbPath;
-        private static Dictionary<string, Data> _cache;
+        private static Dictionary<string, ChartData> _cache;
 
         public DataService()
         {
             _dbPath = GlobalSettings.DbPath;
-            _cache = new Dictionary<string, Data>();
+            _cache = new Dictionary<string, ChartData>();
         }
 
-        public void AddData(Data data)
+        public void AddData(ChartData chartData)
         {
             using (var db = new LiteDatabase(_dbPath))
             {
-                var collection = db.GetCollection<Data>("Data");
-                if (Exists(data.Name))
+                var collection = db.GetCollection<ChartData>("Data");
+                if (Exists(chartData.Name))
                     return;
 
                 var seriesColl = db.GetCollection<Series>("Series");
                 var chunkColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
 
-                foreach (var series in data.Series)
+                foreach (var series in chartData.Series)
                 {
                     foreach (var chunk in series.Chunks)
                     {
@@ -38,8 +38,21 @@ namespace DataVisualization.Services
                     series.SeriesId = seriesColl.Insert(series);
                 }
 
-                collection.EnsureIndex(nameof(Data.Name));
-                collection.Insert(data);
+                collection.EnsureIndex(nameof(ChartData.Name));
+                collection.Insert(chartData);
+            }
+        }
+
+        public void AddData(ScriptData chartData)
+        {
+            using (var db = new LiteDatabase(_dbPath))
+            {
+                var collection = db.GetCollection<ScriptData>();
+                if (Exists(chartData.Name))
+                    return;
+
+                collection.EnsureIndex(nameof(ScriptData.Name));
+                collection.Insert(chartData);
             }
         }
 
@@ -51,21 +64,21 @@ namespace DataVisualization.Services
                     return false;
 
                 var collection = db.GetCollection("Data");
-                return collection.Exists(Query.EQ(nameof(Data.Name), name));
+                return collection.Exists(Query.EQ(nameof(ChartData.Name), name));
             }
         }
 
-        public Data GetData(string name)
+        public ChartData GetData(string name)
         {
             if (_cache.ContainsKey(name))
                 return _cache[name];
 
             using (var db = new LiteDatabase(_dbPath))
             {
-                var collection = db.GetCollection<Data>("Data");
+                var collection = db.GetCollection<ChartData>("Data");
                 var chunksColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
 
-                var data = collection.Include(d => d.Series).FindOne(Query.EQ(nameof(Data.Name), name));
+                var data = collection.Include(d => d.Series).FindOne(Query.EQ(nameof(ChartData.Name), name));
                 foreach (var series in data.Series)
                 {
                     for (int index = 0; index < series.Chunks.Count; index++)
@@ -84,11 +97,11 @@ namespace DataVisualization.Services
         {
             using (var db = new LiteDatabase(_dbPath))
             {
-                var collection = db.GetCollection<Data>(nameof(Data));
+                var collection = db.GetCollection<ChartData>(nameof(ChartData));
                 var seriesColl = db.GetCollection<Series>(nameof(Series));
                 var chunksColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
 
-                var data = collection.Include(d => d.Series).FindOne(Query.EQ(nameof(Data.Name), dataName));
+                var data = collection.Include(d => d.Series).FindOne(Query.EQ(nameof(ChartData.Name), dataName));
                 var interval = 100d / data.Series.Sum(s => s.Chunks.Count);
                 var elapsed = 0d;
                 foreach (var series in data.Series)
@@ -102,23 +115,23 @@ namespace DataVisualization.Services
                     seriesColl.Delete(Query.EQ(nameof(Series.SeriesId), series.SeriesId));
                 }
 
-                collection.Delete(Query.EQ(nameof(Data.Name), dataName));
+                collection.Delete(Query.EQ(nameof(ChartData.Name), dataName));
             }
         }
 
-        public void UpdateData(Data data)
+        public void UpdateData(ChartData chartData)
         {
             using (var db = new LiteDatabase(_dbPath))
             {
-                var collection = db.GetCollection<Data>("Data");
+                var collection = db.GetCollection<ChartData>("Data");
                 var serieColl = db.GetCollection<Series>(nameof(Series));
                 var chunkColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
 
-                var existsInCollection = collection.Update(data);
+                var existsInCollection = collection.Update(chartData);
                 if(!existsInCollection)
-                    throw new ArgumentException(nameof(data.Name));
+                    throw new ArgumentException(nameof(chartData.Name));
 
-                foreach (var serie in data.Series)
+                foreach (var serie in chartData.Series)
                 {
                     foreach (var chunk in serie.Chunks)
                     {

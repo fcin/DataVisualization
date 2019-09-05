@@ -49,6 +49,7 @@ namespace DataVisualization.Core
             _container.PerRequest<DataPullerFactory, DataPullerFactory>();
             _container.PerRequest<AppConsoleViewModel, AppConsoleViewModel>();
             _container.PerRequest<FastVisualizerLegendViewModel, FastVisualizerLegendViewModel>();
+            _container.PerRequest<DvFileLoaderViewModel, DvFileLoaderViewModel>();
             _container.Singleton<CodeEditorViewModel>();
             _container.Singleton<ActionToolbarViewModel>();
             _container.Singleton<OutputViewModel>();

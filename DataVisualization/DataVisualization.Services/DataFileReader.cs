@@ -15,7 +15,7 @@ namespace DataVisualization.Services
     public class DataFileReader : IDataFileReader
     {
 
-        public async Task<Data> ReadDataAsync(DataConfiguration config, IProgress<LoadingBarStatus> progress = null)
+        public async Task<ChartData> ReadDataAsync(LineChartDataConfiguration config, IProgress<LoadingBarStatus> progress = null)
         {
             var path = config.FilePath;
             var linesRead = 0;
@@ -78,7 +78,7 @@ namespace DataVisualization.Services
 
                 var rand = new Random();
                 
-                return new Data
+                return new ChartData
                 {
                     Name = config.DataName,
                     FileLinesRead = linesRead,
@@ -135,6 +135,20 @@ namespace DataVisualization.Services
             }
 
             return data;
+        }
+
+        public async Task<ScriptData> ReadDataAsync(ScriptDataConfiguration config)
+        {
+            using (var stream = File.OpenRead(config.FilePath))
+            using (var file = new StreamReader(stream))
+            {
+                var data = await file.ReadToEndAsync();
+
+                return new ScriptData
+                {
+                    Data = data
+                };
+            }
         }
 
         private class DataType

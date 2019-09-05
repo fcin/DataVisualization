@@ -12,7 +12,7 @@ namespace DataVisualization.Services.DataPulling
 {
     public class LocalFileDataPuller : IDataPuller
     {
-        public async Task<(List<Series> latest, int readLines)> PullAsync(DataConfiguration config, int startFromLine)
+        public async Task<(List<Series> latest, int readLines)> PullAsync(LineChartDataConfiguration config, int startFromLine)
         {
             var path = config.FilePath;
             var countLines = 0;

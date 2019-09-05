@@ -7,7 +7,8 @@ namespace DataVisualization.Services
 {
     public interface IDataFileReader
     {
-        Task<Data> ReadDataAsync(DataConfiguration config, IProgress<LoadingBarStatus> progress);
+        Task<ChartData> ReadDataAsync(LineChartDataConfiguration config, IProgress<LoadingBarStatus> progress);
         Task<DataTable> ReadSampleAsync(string filePath, int sampleSize);
+        Task<ScriptData> ReadDataAsync(ScriptDataConfiguration config);
     }
 }

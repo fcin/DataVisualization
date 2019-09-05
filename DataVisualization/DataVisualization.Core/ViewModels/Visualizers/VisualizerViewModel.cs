@@ -42,7 +42,7 @@ namespace DataVisualization.Core.ViewModels.Visualizers
         {
             get
             {
-                var xLineType = _data.Series.First(d => d.Axis == Axes.X1).InternalType;
+                var xLineType = _chartData.Series.First(d => d.Axis == Axes.X1).InternalType;
                 var xValues = SeriesCollection.First().Values.OfType<DateModel>().Select(val => val.HorizontalAxis);
                 return _formatter.GetFormat(xLineType, xValues);
             }
@@ -125,9 +125,9 @@ namespace DataVisualization.Core.ViewModels.Visualizers
         private readonly DataPullerFactory _dataPullerFactory;
         private readonly DataService _dataService;
         private readonly DataConfigurationService _dataConfigurationService;
-        private DataConfiguration _config;
+        private LineChartDataConfiguration _config;
         private IDataPuller _puller;
-        private Data _data;
+        private ChartData _chartData;
         private CancellationTokenSource _cts;
 
         public VisualizerViewModel(ISeriesFactory seriesFactory, IWindowManager windowManager, IEventAggregator eventAggregator,
@@ -158,7 +158,7 @@ namespace DataVisualization.Core.ViewModels.Visualizers
                 _cts = new CancellationTokenSource();
             }
 
-            _config = _dataConfigurationService.GetByName(message.Opened.DataName);
+            _config = _dataConfigurationService.GetByName<LineChartDataConfiguration>(message.Opened.DataName);
             _puller = _dataPullerFactory.Create(_config.PullingMethod.Method);
 
             if (_config == null)
@@ -168,28 +168,28 @@ namespace DataVisualization.Core.ViewModels.Visualizers
             var tooltipFormat = TooltipTitleFormatter.GetFormat(_config.Columns.First(c => c.Axis == Axes.X1).ColumnType);
             Tooltip = new BasicTooltip(tooltipFormat);
 
-            _data = _dataService.GetData(_config.DataName);
-            _data.ApplyTransformations();
+            _chartData = _dataService.GetData(_config.DataName);
+            _chartData.ApplyTransformations();
 
-            Legend = new BasicChartLegendView(_windowManager, _dataService, _data, currentSeries =>
+            Legend = new BasicChartLegendView(_windowManager, _dataService, _chartData, currentSeries =>
             {
-                _data = _dataService.GetData(_config.DataName);
+                _chartData = _dataService.GetData(_config.DataName);
                 SeriesCollection.Clear();
                 RecreateSeries();
             });
 
             var keepPullingTask = KeepPulling(_cts.Token);
 
-            var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
+            var horizontalAxis = _chartData.Series.First(d => d.Axis == Axes.X1);
 
             MinX = horizontalAxis.Values.First(val => !double.IsNaN(val));
             MaxX = horizontalAxis.Values.Last(val => !double.IsNaN(val));
 
-            var hasSecondary = _data.Series.Any(d => d.Axis == Axes.X2 || d.Axis == Axes.Y2);
+            var hasSecondary = _chartData.Series.Any(d => d.Axis == Axes.X2 || d.Axis == Axes.Y2);
             if (hasSecondary)
             {
                 HasSecondaryAxis = true;
-                var secondaryHorizontalAxis = _data.Series.FirstOrDefault(d => d.Axis == Axes.X2) ?? _data.Series.First(d => d.Axis == Axes.X1);
+                var secondaryHorizontalAxis = _chartData.Series.FirstOrDefault(d => d.Axis == Axes.X2) ?? _chartData.Series.First(d => d.Axis == Axes.X1);
                 MinX2 = secondaryHorizontalAxis.Values.First(val => !double.IsNaN(val));
                 MaxX2 = secondaryHorizontalAxis.Values.Last(val => !double.IsNaN(val));
             }
@@ -240,7 +240,7 @@ namespace DataVisualization.Core.ViewModels.Visualizers
 
                 try
                 {
-                    (series, readLines) = await _puller.PullAsync(_config, _data.FileLinesRead);
+                    (series, readLines) = await _puller.PullAsync(_config, _chartData.FileLinesRead);
                 }
                 catch (DataPullingException ex)
                 {
@@ -261,11 +261,11 @@ namespace DataVisualization.Core.ViewModels.Visualizers
                     if (result == MessageBoxResult.Yes)
                     {
                         var loadedData = await _dataFileReader.ReadDataAsync(_config);
-                        _data.Series = loadedData.Series;
-                        _data.FileLinesRead = loadedData.FileLinesRead;
-                        _dataService.UpdateData(_data);
+                        _chartData.Series = loadedData.Series;
+                        _chartData.FileLinesRead = loadedData.FileLinesRead;
+                        _dataService.UpdateData(_chartData);
 
-                        var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
+                        var horizontalAxis = _chartData.Series.First(d => d.Axis == Axes.X1);
 
                         MinX = horizontalAxis.Values.First(val => !double.IsNaN(val));
                         MaxX = horizontalAxis.Values.Last(val => !double.IsNaN(val));
@@ -279,19 +279,19 @@ namespace DataVisualization.Core.ViewModels.Visualizers
                 {
                     foreach (var serie in series)
                     {
-                        var index = _data.Series.Select((s, i) => new { item = s, index = i })
+                        var index = _chartData.Series.Select((s, i) => new { item = s, index = i })
                                                 .First(s => s.item.Name.Equals(serie.Name)).index;
 
                         foreach (var chunk in serie.Chunks)
                         {
-                            _data.Series[index].AddToChunks(chunk.Chunk, GlobalSettings.PointsCount);
+                            _chartData.Series[index].AddToChunks(chunk.Chunk, GlobalSettings.PointsCount);
                         }
                     }
 
-                    _data.FileLinesRead += readLines;
-                    _dataService.UpdateData(_data);
+                    _chartData.FileLinesRead += readLines;
+                    _dataService.UpdateData(_chartData);
 
-                    var horizontalAxis = _data.Series.First(d => d.Axis == Axes.X1);
+                    var horizontalAxis = _chartData.Series.First(d => d.Axis == Axes.X1);
 
                     MaxX = horizontalAxis.Values.Last(val => !double.IsNaN(val));
 
@@ -302,11 +302,11 @@ namespace DataVisualization.Core.ViewModels.Visualizers
 
         private void RecreateSeries()
         {
-            var horizontalAxisSeries = _data.Series.First(d => d.Axis == Axes.X1);
-            var allPrimarySeries = _data.Series.Where(s => s.Axis == Axes.Y1).ToList();
+            var horizontalAxisSeries = _chartData.Series.First(d => d.Axis == Axes.X1);
+            var allPrimarySeries = _chartData.Series.Where(s => s.Axis == Axes.Y1).ToList();
 
-            var secondaryXseries = _data.Series.FirstOrDefault(d => d.Axis == Axes.X2) ?? _data.Series.First(d => d.Axis == Axes.X1);
-            var allSecondarySeries = _data.Series.Where(s => s.Axis == Axes.Y2).ToList();
+            var secondaryXseries = _chartData.Series.FirstOrDefault(d => d.Axis == Axes.X2) ?? _chartData.Series.First(d => d.Axis == Axes.X1);
+            var allSecondarySeries = _chartData.Series.Where(s => s.Axis == Axes.Y2).ToList();
 
             var allPrimarySeriesViews = _seriesFactory.CreateSeriesViews(horizontalAxisSeries, allPrimarySeries, MinX, MaxX);
             var allSecondarySeriesViews = _seriesFactory.CreateSeriesViews(secondaryXseries, allSecondarySeries, MinX, MaxX);
@@ -379,7 +379,7 @@ namespace DataVisualization.Core.ViewModels.Visualizers
 
         public void OnCenterScreen()
         {
-            var xAxisValues = _data.Series.First(s => s.Axis == Axes.X1).Values;
+            var xAxisValues = _chartData.Series.First(s => s.Axis == Axes.X1).Values;
             MinX = xAxisValues.First(val => !double.IsNaN(val));
             MaxX = xAxisValues.Last(val => !double.IsNaN(val));
             RecreateSeries();
@@ -390,7 +390,7 @@ namespace DataVisualization.Core.ViewModels.Visualizers
             if (MinX == null || MaxX == null)
                 return;
 
-            var xAxisValues = _data.Series.First(s => s.Axis == Axes.X1).Values;
+            var xAxisValues = _chartData.Series.First(s => s.Axis == Axes.X1).Values;
             MinX = xAxisValues.Skip(xAxisValues.Count - GlobalSettings.PointsCount).First(val => !double.IsNaN(val));
             MaxX = xAxisValues.Last(val => !double.IsNaN(val));
             RecreateSeries();

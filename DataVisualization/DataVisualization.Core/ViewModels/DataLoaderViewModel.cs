@@ -45,7 +45,7 @@ namespace DataVisualization.Core.ViewModels
         }
     }
 
-    public class DataLoaderViewModel : PropertyChangedBase, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>
+    public class DataLoaderViewModel : LoaderViewModelBase, IHandle<LoadingBarOpenedEventArgs>, IHandle<LoadingBarClosedEventArgs>
     {
         private bool _isLoaderWindowEnabled;
         public bool IsLoaderWindowEnabled
@@ -204,7 +204,7 @@ namespace DataVisualization.Core.ViewModels
             ValidateSubmit();
         }
 
-        public async Task RecreateGridAsync(string filePath)
+        public override async Task InitializeAsync(string filePath)
         {
             _filePath = filePath;
 
@@ -402,7 +402,7 @@ namespace DataVisualization.Core.ViewModels
                 };
             }
 
-            var config = new DataConfiguration
+            var config = new LineChartDataConfiguration
             {
                 DataName = Path.GetFileNameWithoutExtension(_filePath),
                 FilePath = _filePath,

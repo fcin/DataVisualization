@@ -13,14 +13,14 @@ namespace DataVisualization.Services.DataPulling
 {
     public class HttpDataPuller : IDataPuller
     {
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         public HttpDataPuller()
         {
             _httpClient = new HttpClient();
         }
 
-        public async Task<(List<Series> latest, int readLines)> PullAsync(DataConfiguration config, int startFromLine)
+        public async Task<(List<Series> latest, int readLines)> PullAsync(LineChartDataConfiguration config, int startFromLine)
         {
 
             try
