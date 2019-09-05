@@ -146,6 +146,7 @@ namespace DataVisualization.Services
 
                 return new ScriptData
                 {
+                    Name = config.DataName,
                     Data = data
                 };
             }

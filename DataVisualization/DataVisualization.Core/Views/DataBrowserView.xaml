@@ -14,7 +14,7 @@
         <DockPanel>
 
             <Expander ExpandDirection="Down" DockPanel.Dock="Top" IsExpanded="True" Header="{x:Static trans:Translation.AllData}">
-                <ListView Name="DataConfigs" ItemsSource="{Binding AllDataConfigurations}">
+                <ListView Name="DataConfigs" ItemsSource="{Binding ChartConfigurations}">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                             <EventSetter Event="MouseDoubleClick" Handler="OpenConfig"/>
@@ -48,7 +48,23 @@
                     </ListView.ContextMenu>
                 </ListView>
             </Expander>
-            <Expander ExpandDirection="Down" Header="Files" IsExpanded="True"></Expander>
+            <Expander ExpandDirection="Down" Header="Files" IsExpanded="True">
+                <ListView ItemsSource="{Binding ScriptConfigurations}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                            <EventSetter Event="MouseDoubleClick" Handler="OpenConfig"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="{materialDesign:PackIcon Kind=Database}"></Label>
+                                <Label Content="{Binding DataName, FallbackValue='Lorem ipsum'}"></Label>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Expander>
         </DockPanel>
     </Grid>
 </UserControl>

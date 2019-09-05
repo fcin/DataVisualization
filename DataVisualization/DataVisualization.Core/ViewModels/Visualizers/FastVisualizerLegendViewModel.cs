@@ -32,8 +32,11 @@ namespace DataVisualization.Core.ViewModels.Visualizers
 
         public void Handle(DataConfigurationOpenedEventArgs message)
         {
+            if (!(message.Opened is LineChartDataConfiguration))
+                return;
+
             _dataConfiguration = message.Opened;
-            var data = _dataService.GetData(message.Opened.DataName);
+            var data = _dataService.GetData<ChartData>(message.Opened.DataName);
 
             Series = data.Series.Where(s => s.Axis != Axes.X1 && s.Axis != Axes.X2);
         }

@@ -9,87 +9,90 @@ namespace DataVisualization.Services
     public class DataService
     {
         private readonly string _dbPath;
-        private static Dictionary<string, ChartData> _cache;
+        private static Dictionary<string, Data> _cache;
 
         public DataService()
         {
             _dbPath = GlobalSettings.DbPath;
-            _cache = new Dictionary<string, ChartData>();
+            _cache = new Dictionary<string, Data>();
         }
 
-        public void AddData(ChartData chartData)
+        public void AddData<T>(T data) where T : Data
         {
             using (var db = new LiteDatabase(_dbPath))
             {
-                var collection = db.GetCollection<ChartData>("Data");
-                if (Exists(chartData.Name))
-                    return;
-
-                var seriesColl = db.GetCollection<Series>("Series");
-                var chunkColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
-
-                foreach (var series in chartData.Series)
+                if (typeof(T) == typeof(ChartData))
                 {
-                    foreach (var chunk in series.Chunks)
+                    var chartData = data as ChartData;
+
+                    var collection = db.GetCollection<ChartData>("Data");
+                    if (Exists<T>(chartData.Name))
+                        return;
+
+                    var seriesColl = db.GetCollection<Series>("Series");
+                    var chunkColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
+
+                    foreach (var series in chartData.Series)
                     {
-                        chunk.ChunkId = chunkColl.Insert(chunk);
+                        foreach (var chunk in series.Chunks)
+                        {
+                            chunk.ChunkId = chunkColl.Insert(chunk);
+                        }
+
+                        series.SeriesId = seriesColl.Insert(series);
                     }
 
-                    series.SeriesId = seriesColl.Insert(series);
+                    collection.EnsureIndex(nameof(ChartData.Name));
+                    collection.Insert(chartData);
                 }
-
-                collection.EnsureIndex(nameof(ChartData.Name));
-                collection.Insert(chartData);
+                else
+                {
+                    var collection = db.GetCollection<T>();
+                    collection.EnsureIndex(nameof(Data.Name));
+                    collection.Insert(data);
+                }
             }
         }
 
-        public void AddData(ScriptData chartData)
+        public bool Exists<T>(string name) where T : Data
         {
             using (var db = new LiteDatabase(_dbPath))
             {
-                var collection = db.GetCollection<ScriptData>();
-                if (Exists(chartData.Name))
-                    return;
-
-                collection.EnsureIndex(nameof(ScriptData.Name));
-                collection.Insert(chartData);
-            }
-        }
-
-        public bool Exists(string name)
-        {
-            using (var db = new LiteDatabase(_dbPath))
-            {
-                if (!db.CollectionExists("Data"))
-                    return false;
-
-                var collection = db.GetCollection("Data");
+                var collection = db.GetCollection<T>();
                 return collection.Exists(Query.EQ(nameof(ChartData.Name), name));
             }
         }
 
-        public ChartData GetData(string name)
+        public T GetData<T>(string name) where T : Data
         {
             if (_cache.ContainsKey(name))
-                return _cache[name];
+                return (T)_cache[name];
 
             using (var db = new LiteDatabase(_dbPath))
             {
-                var collection = db.GetCollection<ChartData>("Data");
-                var chunksColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
-
-                var data = collection.Include(d => d.Series).FindOne(Query.EQ(nameof(ChartData.Name), name));
-                foreach (var series in data.Series)
+                if (typeof(T) == typeof(ChartData))
                 {
-                    for (int index = 0; index < series.Chunks.Count; index++)
-                    {
-                        var chunk = chunksColl.FindById(series.Chunks[index].ChunkId);
-                        series.ChangeChunk(index, chunk);
-                    }
-                }
+                    var collection = db.GetCollection<ChartData>("Data");
+                    var chunksColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
 
-                _cache.Add(name, data);
-                return data;
+                    var data = collection.Include(d => d.Series).FindOne(Query.EQ(nameof(ChartData.Name), name));
+                    foreach (var series in data.Series)
+                    {
+                        for (int index = 0; index < series.Chunks.Count; index++)
+                        {
+                            var chunk = chunksColl.FindById(series.Chunks[index].ChunkId);
+                            series.ChangeChunk(index, chunk);
+                        }
+                    }
+
+                    _cache.Add(name, data);
+                    return data as T;
+                }
+                else
+                {
+                    var collection = db.GetCollection<T>();
+                    return collection.FindOne(Query.EQ(nameof(Data.Name), name));
+                }
             }
         }
 
@@ -166,11 +169,12 @@ namespace DataVisualization.Services
                 collection.Update(series);
             }
 
-            var keyToUpdate = _cache.FirstOrDefault(s => s.Value.Series.Any(a => a.SeriesId == series.SeriesId)).Key;
+            var keyToUpdate = _cache.OfType<KeyValuePair<string, ChartData>>().FirstOrDefault(s => s.Value.Series.Any(a => a.SeriesId == series.SeriesId)).Key;
             if (keyToUpdate != null)
             {
-                var index = _cache[keyToUpdate].Series.FindIndex(s => s.SeriesId == series.SeriesId);
-                _cache[keyToUpdate].Series[index] = series;
+                var data = (ChartData)_cache[keyToUpdate];
+                var index = data.Series.FindIndex(s => s.SeriesId == series.SeriesId);
+                data.Series[index] = series;
             }
         }
 

@@ -151,6 +151,9 @@ namespace DataVisualization.Core.ViewModels.Visualizers
             if (_config != null && _config.DataName == message.Opened.DataName)
                 return;
 
+            if (!(message.Opened is LineChartDataConfiguration))
+                return;
+
             if (_config != null)
             {
                 SeriesCollection.Clear();
@@ -168,12 +171,12 @@ namespace DataVisualization.Core.ViewModels.Visualizers
             var tooltipFormat = TooltipTitleFormatter.GetFormat(_config.Columns.First(c => c.Axis == Axes.X1).ColumnType);
             Tooltip = new BasicTooltip(tooltipFormat);
 
-            _chartData = _dataService.GetData(_config.DataName);
+            _chartData = _dataService.GetData<ChartData>(_config.DataName);
             _chartData.ApplyTransformations();
 
             Legend = new BasicChartLegendView(_windowManager, _dataService, _chartData, currentSeries =>
             {
-                _chartData = _dataService.GetData(_config.DataName);
+                _chartData = _dataService.GetData<ChartData>(_config.DataName);
                 SeriesCollection.Clear();
                 RecreateSeries();
             });

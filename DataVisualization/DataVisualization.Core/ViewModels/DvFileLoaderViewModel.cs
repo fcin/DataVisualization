@@ -50,7 +50,7 @@ namespace DataVisualization.Core.ViewModels
             {
                 _dataConfigurationService.Add(config);
 
-                if (!_dataService.Exists(config.DataName))
+                if (!_dataService.Exists<ScriptData>(config.DataName))
                 {
                     var loadedData = await _dataFileReader.ReadDataAsync(config);
                     _dataService.AddData(loadedData);

@@ -74,9 +74,12 @@ namespace DataVisualization.Core.ViewModels.Visualizers
 
         public void Handle(DataConfigurationOpenedEventArgs message)
         {
+            if (!(message.Opened is LineChartDataConfiguration))
+                return;
+
             SeriesVms = new BindableCollection<FastVisualizerSeriesViewModel>();
 
-            var data = _dataService.GetData(message.Opened.DataName);
+            var data = _dataService.GetData<ChartData>(message.Opened.DataName);
 
             foreach (var dataSeries in data.Series.Where(s => s.Axis != Axes.X1 && s.Axis != Axes.X2))
             {

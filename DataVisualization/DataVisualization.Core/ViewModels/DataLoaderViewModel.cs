@@ -427,7 +427,7 @@ namespace DataVisualization.Core.ViewModels
             {
                 _dataConfigurationService.Add(config);
 
-                if (!_dataService.Exists(config.DataName))
+                if (!_dataService.Exists<ChartData>(config.DataName) && !_dataService.Exists<ScriptData>(config.DataName))
                 {
                     var loadingBarWindow = _loadingBarManager.ShowLoadingBar();
                     var readDataProgress = new Progress<LoadingBarStatus>(result =>
