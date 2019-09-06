@@ -31,5 +31,13 @@ namespace DataVisualization.Core.Views
         {
             ((CodeEditorViewModel)DataContext).TextEditor = Editor;
         }
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if(Keyboard.PrimaryDevice.IsKeyDown(Key.LeftCtrl) && Keyboard.PrimaryDevice.IsKeyDown(Key.S))
+            {
+                ((CodeEditorViewModel) DataContext).OnSave();
+            }
+        }
     }
 }

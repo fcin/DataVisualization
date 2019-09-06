@@ -122,32 +122,42 @@ namespace DataVisualization.Services
             }
         }
 
-        public void UpdateData(ChartData chartData)
+        public void UpdateData<T>(T data) where T : Data
         {
             using (var db = new LiteDatabase(_dbPath))
             {
-                var collection = db.GetCollection<ChartData>("Data");
-                var serieColl = db.GetCollection<Series>(nameof(Series));
-                var chunkColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
-
-                var existsInCollection = collection.Update(chartData);
-                if(!existsInCollection)
-                    throw new ArgumentException(nameof(chartData.Name));
-
-                foreach (var serie in chartData.Series)
+                if (typeof(T) == typeof(ChartData))
                 {
-                    foreach (var chunk in serie.Chunks)
+                    var chartData = data as ChartData;
+                
+                    var collection = db.GetCollection<ChartData>("Data");
+                    var serieColl = db.GetCollection<Series>(nameof(Series));
+                    var chunkColl = db.GetCollection<ValuesChunk>(nameof(ValuesChunk));
+
+                    var existsInCollection = collection.Update(chartData);
+                    if(!existsInCollection)
+                        throw new ArgumentException(nameof(chartData.Name));
+
+                    foreach (var serie in chartData.Series)
                     {
-                        if (chunk.ChunkId == 0)
+                        foreach (var chunk in serie.Chunks)
                         {
-                            chunk.ChunkId = chunkColl.Insert(chunk);
+                            if (chunk.ChunkId == 0)
+                            {
+                                chunk.ChunkId = chunkColl.Insert(chunk);
+                            }
+                            else
+                            {
+                                chunkColl.Update(chunk);
+                            }
                         }
-                        else
-                        {
-                            chunkColl.Update(chunk);
-                        }
+                        serieColl.Update(serie);
                     }
-                    serieColl.Update(serie);
+                }
+                else
+                {
+                    var collection = db.GetCollection<T>();
+                    collection.Update(data);
                 }
             }
         }

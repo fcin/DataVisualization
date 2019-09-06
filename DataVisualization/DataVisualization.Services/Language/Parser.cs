@@ -436,7 +436,10 @@ namespace DataVisualization.Services.Language
                     Advance();
 
                 if (Previous().Type == TokenType.Semicolon)
+                {
+                    Advance();
                     return;
+                }
 
                 switch (Peek().Type)
                 {
@@ -448,6 +451,7 @@ namespace DataVisualization.Services.Language
                     case TokenType.While:
                     case TokenType.Print:
                     case TokenType.Return:
+                        Advance();
                         return;
                 }
 
