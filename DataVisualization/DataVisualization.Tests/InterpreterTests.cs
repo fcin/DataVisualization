@@ -218,12 +218,7 @@ namespace DataVisualization.Tests
 
             var expectedResult = "0\r\n1\r\n1\r\n2\r\n3\r\n";
 
-            var lexer = new Lexer(source);
-            var parser = new Parser(lexer.Scan());
-            var interpreter = new Interpreter();
-            var resolver = new Resolver(interpreter);
-            var statements = parser.Parse();
-            resolver.Resolve(statements);
+            var (parser, resolver, interpreter, statements) = Prepare(source);
 
             var result = interpreter.Interpret(statements, default(CancellationToken));
 
@@ -248,11 +243,9 @@ namespace DataVisualization.Tests
 
             var expectedResult = $"global{_newLine}global{_newLine}";
 
-            var lexer = new Lexer(source);
-            var parser = new Parser(lexer.Scan());
-            var interpreter = new Interpreter();
+            var (parser, resolver, interpreter, statements) = Prepare(source);
 
-            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+            var result = interpreter.Interpret(statements, default(CancellationToken));
 
             Assert.AreEqual(expectedResult, _traceListener.Data);
         }

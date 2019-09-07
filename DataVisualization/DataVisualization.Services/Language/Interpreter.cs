@@ -323,6 +323,12 @@ namespace DataVisualization.Services.Language
 
         public void Resolve(Expression expression, int index)
         {
+            if (_locals.ContainsKey(expression))
+            {
+                _locals[expression] = index;
+                return;
+            }
+
             _locals.Add(expression, index);
         }
     }

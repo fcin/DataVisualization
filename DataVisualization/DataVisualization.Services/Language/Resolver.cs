@@ -73,7 +73,7 @@ namespace DataVisualization.Services.Language
 
         public override object VisitVarExpression(VarExpression expression)
         {
-            if (_scopes.Count != 0 && !_scopes.Peek()[expression.Name.Lexeme])
+            if (_scopes.Count != 0 && _scopes.Peek().ContainsKey(expression.Name.Lexeme) && !_scopes.Peek()[expression.Name.Lexeme])
             {
                 _errors.Add($"Cannot read local variable '{expression.Name.Lexeme}' in its own initializer.");
             }
