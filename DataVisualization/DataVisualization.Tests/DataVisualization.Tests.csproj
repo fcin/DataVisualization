@@ -58,6 +58,7 @@
     <Compile Include="LexerTests.cs" />
     <Compile Include="ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResolverTests.cs" />
     <Compile Include="SeriesExtensionsTests.cs" />
     <Compile Include="SeriesFactoryTests.cs" />
   </ItemGroup>

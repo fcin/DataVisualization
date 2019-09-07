@@ -60,5 +60,26 @@ namespace DataVisualization.Services.Language
                 throw new RuntimeException($"Undefined variable {name}");
             }
         }
+
+        public object GetAt(int distance, string lexeme)
+        {
+            return Ancestor(distance)._values[lexeme];
+        }
+
+        private Environment Ancestor(int distance)
+        {
+            var environment = this;
+            for (var index = 0; index < distance; index++)
+            {
+                environment = environment.Enclosing;
+            }
+
+            return environment;
+        }
+
+        public void AssignAt(int distance, Token name, object value)
+        {
+            Ancestor(distance)._values.Add(name.Lexeme, value);
+        }
     }
 }

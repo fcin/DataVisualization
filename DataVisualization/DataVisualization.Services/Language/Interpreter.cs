@@ -2,6 +2,7 @@
 using DataVisualization.Services.Language.Expressions;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using DataVisualization.Services.Language.Native;
 
@@ -14,6 +15,8 @@ namespace DataVisualization.Services.Language
 
         public Environment Globals { get; }
         private Environment _environment;
+
+        private Dictionary<Expression, int> _locals = new Dictionary<Expression, int>();
 
         public Interpreter()
         {
@@ -99,14 +102,31 @@ namespace DataVisualization.Services.Language
 
         public override object VisitVarExpression(VarExpression expression)
         {
-            return _environment.Get(expression.Name);
+            return LookupVariable(expression);
+        }
+
+        private object LookupVariable(VarExpression expression)
+        {
+            if (_locals.TryGetValue(expression, out var distance))
+            {
+                return _environment.GetAt(distance, expression.Name.Lexeme);
+            }
+
+            return Globals.Get(expression.Name);
         }
 
         public override object VisitAssignExpression(AssignExpression assignExpression)
         {
             var value = Evaluate(assignExpression.Value);
 
-            _environment.Assign(assignExpression.Identifier.Lexeme, value);
+            if (_locals.TryGetValue(assignExpression.Value, out var distance))
+            {
+                _environment.AssignAt(distance, assignExpression.Identifier, value);
+            }
+            else
+            {
+                _environment.Assign(assignExpression.Identifier.Lexeme, value);
+            }
 
             return value;
         }
@@ -299,6 +319,11 @@ namespace DataVisualization.Services.Language
         private object Evaluate(Expression expression)
         {
             return expression.Accept(this);
+        }
+
+        public void Resolve(Expression expression, int index)
+        {
+            _locals.Add(expression, index);
         }
     }
 }

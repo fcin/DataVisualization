@@ -95,11 +95,13 @@
     <Compile Include="Language\Expressions\GroupingExpression.cs" />
     <Compile Include="Language\Expressions\LiteralExpression.cs" />
     <Compile Include="Language\Expressions\UnaryExpression.cs" />
+    <Compile Include="Language\FunctionType.cs" />
     <Compile Include="Language\ICallable.cs" />
     <Compile Include="Language\Interpreter.cs" />
     <Compile Include="Language\Lexer.cs" />
     <Compile Include="Language\Native\DvTime.cs" />
     <Compile Include="Language\Parser.cs" />
+    <Compile Include="Language\Resolver.cs" />
     <Compile Include="Language\Statement.cs" />
     <Compile Include="Language\Token.cs" />
     <Compile Include="Language\TokenType.cs" />

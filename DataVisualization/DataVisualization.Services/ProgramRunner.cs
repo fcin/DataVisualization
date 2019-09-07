@@ -35,18 +35,26 @@ namespace DataVisualization.Services
             }
 
             var parser = new Parser(scans);
-            var parsedValues = parser.Parse();
+            var parsedValues = parser.Parse().ToList();
             foreach (var parserError in parser.Errors)
             {
                 memoryListener.WriteLine(parserError);
             }
 
-            if (lexer.Errors.Any() || parser.Errors.Any())
+            var interpreter = new Interpreter();
+
+            var resolver = new Resolver(interpreter);
+            resolver.Resolve(parsedValues);
+
+            foreach (var resolverError in resolver.Errors)
+            {
+                memoryListener.WriteLine(resolverError);
+            }
+
+            if (lexer.Errors.Any() || parser.Errors.Any() || resolver.Errors.Any())
             {
                 return memoryListener.Data;
             }
-
-            var interpreter = new Interpreter();
 
             try
             {

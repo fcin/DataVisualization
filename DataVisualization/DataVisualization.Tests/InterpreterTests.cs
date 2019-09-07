@@ -1,9 +1,11 @@
-﻿using DataVisualization.Services.Language;
+﻿using System;
+using DataVisualization.Services.Language;
 using DataVisualization.Services.Language.Expressions;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using DataVisualization.Services;
 
@@ -48,11 +50,9 @@ namespace DataVisualization.Tests
             print 2 + 1;
             ";
 
-            var lexer = new Lexer(source);
-            var parser = new Parser(lexer.Scan());
-            var interpreter = new Interpreter();
-            
-            interpreter.Interpret(parser.Parse(), default(CancellationToken));
+            var (parser, resolver, interpreter, statements) = Prepare(source);
+
+            interpreter.Interpret(statements, default(CancellationToken));
             
             Assert.AreEqual($"one{_newLine}True{_newLine}3{_newLine}", _traceListener.Data);
         }
@@ -66,11 +66,9 @@ namespace DataVisualization.Tests
             print a + b;
             ";
 
-            var lexer = new Lexer(source);
-            var parser = new Parser(lexer.Scan());
-            var interpreter = new Interpreter();
+            var (parser, resolver, interpreter, statements) = Prepare(source);
 
-            interpreter.Interpret(parser.Parse(), default(CancellationToken));
+            interpreter.Interpret(statements, default(CancellationToken));
 
             Assert.AreEqual("3" + _newLine, _traceListener.Data);
         }
@@ -93,11 +91,9 @@ namespace DataVisualization.Tests
 
             var expectedResult = $"inner a{_newLine}inner a{_newLine}inner a{_newLine}";
 
-            var lexer = new Lexer(source);
-            var parser = new Parser(lexer.Scan());
-            var interpreter = new Interpreter();
+            var (parser, resolver, interpreter, statements) = Prepare(source);
 
-            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+            var result = interpreter.Interpret(statements, default(CancellationToken));
 
             Assert.AreEqual(expectedResult, _traceListener.Data);
         }
@@ -113,11 +109,9 @@ namespace DataVisualization.Tests
 
             var expectedResult = $"Hi, Hello World!{_newLine}";
 
-            var lexer = new Lexer(source);
-            var parser = new Parser(lexer.Scan());
-            var interpreter = new Interpreter();
+            var (parser, resolver, interpreter, statements) = Prepare(source);
 
-            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+            var result = interpreter.Interpret(statements, default(CancellationToken));
 
             Assert.AreEqual(expectedResult, _traceListener.Data);
         }
@@ -135,11 +129,9 @@ namespace DataVisualization.Tests
 
             var expectedResult = $"Hi, Hello World!{_newLine}";
 
-            var lexer = new Lexer(source);
-            var parser = new Parser(lexer.Scan());
-            var interpreter = new Interpreter();
+            var (parser, resolver, interpreter, statements) = Prepare(source);
 
-            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+            var result = interpreter.Interpret(statements, default(CancellationToken));
 
             Assert.AreEqual(expectedResult, _traceListener.Data);
         }
@@ -160,11 +152,9 @@ namespace DataVisualization.Tests
 
             var expectedResult = $"2{_newLine}";
 
-            var lexer = new Lexer(source);
-            var parser = new Parser(lexer.Scan());
-            var interpreter = new Interpreter();
+            var (parser, resolver, interpreter, statements) = Prepare(source);
 
-            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+            var result = interpreter.Interpret(statements, default(CancellationToken));
 
             Assert.AreEqual(expectedResult, _traceListener.Data);
         }
@@ -182,11 +172,9 @@ namespace DataVisualization.Tests
 
             var expectedResult = $"2{_newLine}";
 
-            var lexer = new Lexer(source);
-            var parser = new Parser(lexer.Scan());
-            var interpreter = new Interpreter();
+            var (parser, resolver, interpreter, statements) = Prepare(source);
 
-            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+            var result = interpreter.Interpret(statements, default(CancellationToken));
 
             Assert.AreEqual(expectedResult, _traceListener.Data);
         }
@@ -207,11 +195,9 @@ namespace DataVisualization.Tests
 
             var expectedResult = $"1{_newLine}";
 
-            var lexer = new Lexer(source);
-            var parser = new Parser(lexer.Scan());
-            var interpreter = new Interpreter();
+            var (parser, resolver, interpreter, statements) = Prepare(source);
 
-            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+            var result = interpreter.Interpret(statements, default(CancellationToken));
 
             Assert.AreEqual(expectedResult, _traceListener.Data);
         }
@@ -235,8 +221,11 @@ namespace DataVisualization.Tests
             var lexer = new Lexer(source);
             var parser = new Parser(lexer.Scan());
             var interpreter = new Interpreter();
+            var resolver = new Resolver(interpreter);
+            var statements = parser.Parse();
+            resolver.Resolve(statements);
 
-            var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
+            var result = interpreter.Interpret(statements, default(CancellationToken));
 
             Assert.AreEqual(expectedResult, _traceListener.Data);
         }
@@ -266,6 +255,18 @@ namespace DataVisualization.Tests
             var result = interpreter.Interpret(parser.Parse(), default(CancellationToken));
 
             Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        private (Parser, Resolver, Interpreter, IEnumerable<Statement>) Prepare(string source)
+        {
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+            var interpreter = new Interpreter();
+            var resolver = new Resolver(interpreter);
+            var statements = parser.Parse().ToList();
+            resolver.Resolve(statements);
+
+            return (parser, resolver, interpreter, statements);
         }
     }
 }
