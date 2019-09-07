@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using DataVisualization.Services.Exceptions;
 using DataVisualization.Services.Extensions;
 
 namespace DataVisualization.Services
@@ -139,16 +140,31 @@ namespace DataVisualization.Services
 
         public async Task<ScriptData> ReadDataAsync(ScriptDataConfiguration config)
         {
-            using (var stream = File.OpenRead(config.FilePath))
-            using (var file = new StreamReader(stream))
+            try
             {
-                var data = await file.ReadToEndAsync();
-
-                return new ScriptData
+                using (var stream = File.OpenRead(config.FilePath))
+                using (var file = new StreamReader(stream))
                 {
-                    Name = config.DataName,
-                    Data = data
-                };
+                    var data = await file.ReadToEndAsync();
+
+                    return new ScriptData
+                    {
+                        Name = config.DataName,
+                        Data = data
+                    };
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                throw new DataIOException("You dont have access to this file", ex);
+            }
+            catch (PathTooLongException ex)
+            {
+                throw new DataIOException("Path to your file is too long for your operating system", ex);
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                throw new DataIOException("Path to your file does not exist", ex);
             }
         }
 

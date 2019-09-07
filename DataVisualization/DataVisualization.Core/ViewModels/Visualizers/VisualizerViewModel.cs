@@ -148,10 +148,10 @@ namespace DataVisualization.Core.ViewModels.Visualizers
 
         public async void Handle(DataConfigurationOpenedEventArgs message)
         {
-            if (_config != null && _config.DataName == message.Opened.DataName)
+            if (_config != null && _config.DataName == message?.Opened.DataName)
                 return;
 
-            if (!(message.Opened is LineChartDataConfiguration))
+            if (!(message?.Opened is LineChartDataConfiguration))
                 return;
 
             if (_config != null)

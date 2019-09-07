@@ -74,7 +74,7 @@ namespace DataVisualization.Core.ViewModels.Visualizers
 
         public void Handle(DataConfigurationOpenedEventArgs message)
         {
-            if (!(message.Opened is LineChartDataConfiguration))
+            if (!(message?.Opened is LineChartDataConfiguration))
                 return;
 
             SeriesVms = new BindableCollection<FastVisualizerSeriesViewModel>();

@@ -4,6 +4,7 @@ using DataVisualization.Models;
 using DataVisualization.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Threading;
 
 namespace DataVisualization.Core.ViewModels.Visualizers
 {
@@ -13,7 +14,7 @@ namespace DataVisualization.Core.ViewModels.Visualizers
         private readonly IWindowManager _windowManager;
 
         private IEnumerable<Series> _series;
-        private IEventAggregator _eventAggregator;
+        private readonly IEventAggregator _eventAggregator;
         private DataConfiguration _dataConfiguration;
 
         public IEnumerable<Series> Series
@@ -32,13 +33,16 @@ namespace DataVisualization.Core.ViewModels.Visualizers
 
         public void Handle(DataConfigurationOpenedEventArgs message)
         {
-            if (!(message.Opened is LineChartDataConfiguration))
+            if (!(message?.Opened is LineChartDataConfiguration))
                 return;
 
             _dataConfiguration = message.Opened;
             var data = _dataService.GetData<ChartData>(message.Opened.DataName);
 
-            Series = data.Series.Where(s => s.Axis != Axes.X1 && s.Axis != Axes.X2);
+            Dispatcher.CurrentDispatcher.Invoke(() =>
+            {
+                Series = data.Series.Where(s => s.Axis != Axes.X1 && s.Axis != Axes.X2);
+            });
         }
 
         public void OpenSeriesProperties(Series series)

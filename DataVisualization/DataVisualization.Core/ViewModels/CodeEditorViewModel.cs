@@ -1,4 +1,6 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using Caliburn.Micro;
 using DataVisualization.Core.Events;
 using DataVisualization.Models;
@@ -14,14 +16,14 @@ namespace DataVisualization.Core.ViewModels
         public ActionToolbarViewModel ActionToolbarVm { get; set; }
 
         private CancellationTokenSource _cts;
-        private readonly DataService _dataService;
         private ScriptDataConfiguration _config;
+        private readonly ScriptDataService _scriptDataService;
 
-        public CodeEditorViewModel(ActionToolbarViewModel actionToolbarVm, IEventAggregator eventAggregator, DataService dataService)
+        public CodeEditorViewModel(ActionToolbarViewModel actionToolbarVm, IEventAggregator eventAggregator, ScriptDataService scriptDataService)
         {
             ActionToolbarVm = actionToolbarVm;
             _eventAggregator = eventAggregator;
-            _dataService = dataService;
+            _scriptDataService = scriptDataService;
             _cts = new CancellationTokenSource();
             _eventAggregator.Subscribe(this);
         }
@@ -39,23 +41,26 @@ namespace DataVisualization.Core.ViewModels
             _cts = new CancellationTokenSource();
         }
 
-        public void Handle(DataConfigurationOpenedEventArgs message)
+        public async void Handle(DataConfigurationOpenedEventArgs message)
         {
-            if (!(message.Opened is ScriptDataConfiguration config))
+            if (!(message?.Opened is ScriptDataConfiguration config) || message?.Publisher == this)
                 return;
 
             _config = config;
 
-            var data = _dataService.GetData<ScriptData>(config.DataName);
-            TextEditor.Document.Text = data.Data;
+            var data = await _scriptDataService.GetDataAsync(_config.DataName);
+            Dispatcher.CurrentDispatcher.Invoke(() =>
+            {
+                TextEditor.Document.Text = data.Data;
+            });
+
+            _eventAggregator.PublishOnUIThread(new DataConfigurationOpenedEventArgs(this, _config));
         }
 
-        public void OnSave()
+        public async void OnSave()
         {
-            var data = _dataService.GetData<ScriptData>(_config.DataName);
-            data.Data = TextEditor.Document.Text;
-
-            _dataService.UpdateData(data);
+            var content = TextEditor.Document.Text;
+            await _scriptDataService.SaveAsync(_config.DataName, content);
         }
     }
 }
