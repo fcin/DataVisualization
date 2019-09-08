@@ -446,6 +446,11 @@ namespace DataVisualization.Services.Language
                 return new LiteralExpression(Previous().Literal);
             }
 
+            if (Match(TokenType.This))
+            {
+                return new ThisExpression(Previous());
+            }
+
             if (Match(TokenType.Identifier))
             {
                 return new VarExpression(Previous());

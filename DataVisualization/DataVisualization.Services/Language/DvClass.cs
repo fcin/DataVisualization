@@ -16,15 +16,23 @@ namespace DataVisualization.Services.Language
 
         public int Arity()
         {
-            return 0;
+            var initializer = FindMethod("init");
+
+            return initializer?.Arity() ?? 0;
         }
 
         public object Call(Interpreter interpreter, IReadOnlyList<object> arguments)
         {
-            return new DvInstance(this);
+            var instance = new DvInstance(this);
+            
+            var initializer = FindMethod("init");
+
+            initializer?.Bind(instance).Call(interpreter, arguments);
+
+            return instance;
         }
 
-        public object FindMethod(string name)
+        public DvFunction FindMethod(string name)
         {
             _methods.TryGetValue(name, out var value);
             return value;

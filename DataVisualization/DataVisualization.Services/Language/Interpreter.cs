@@ -1,12 +1,9 @@
-﻿using System;
-using DataVisualization.Services.Exceptions;
+﻿using DataVisualization.Services.Exceptions;
 using DataVisualization.Services.Language.Expressions;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Threading;
 using DataVisualization.Services.Language.Native;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 
 namespace DataVisualization.Services.Language
 {
@@ -104,17 +101,17 @@ namespace DataVisualization.Services.Language
 
         public override object VisitVarExpression(VarExpression expression)
         {
-            return LookupVariable(expression);
+            return LookupVariable(expression, expression.Name);
         }
 
-        private object LookupVariable(VarExpression expression)
+        private object LookupVariable(Expression expression, Token name)
         {
             if (_locals.TryGetValue(expression, out var distance))
             {
-                return _environment.GetAt(distance, expression.Name.Lexeme);
+                return _environment.GetAt(distance, name.Lexeme);
             }
 
-            return Globals.Get(expression.Name);
+            return Globals.Get(name);
         }
 
         public override object VisitAssignExpression(AssignExpression assignExpression)
@@ -224,7 +221,7 @@ namespace DataVisualization.Services.Language
 
         public override object VisitFunctionStatement(FunctionStatement functionStatement)
         {
-            var dvFunction = new DvFunction(functionStatement, _environment);
+            var dvFunction = new DvFunction(functionStatement, _environment, false);
             _environment.Define(functionStatement.Name.Lexeme, dvFunction);
             return null;
         }
@@ -242,7 +239,7 @@ namespace DataVisualization.Services.Language
             var methods = new Dictionary<string, DvFunction>();
             foreach (var method in classStatement.Methods)
             {
-                var function = new DvFunction(method, _environment);
+                var function = new DvFunction(method, _environment, method.Name.Lexeme.Equals("init"));
                 methods.Add(method.Name.Lexeme, function);
             }
 
@@ -275,6 +272,11 @@ namespace DataVisualization.Services.Language
             instance.Set(setExpression.Name, value);
 
             return value;
+        }
+
+        public override object VisitThisExpression(ThisExpression thisExpression)
+        {
+            return LookupVariable(thisExpression, thisExpression.Keyword);
         }
 
         public override object VisitBinary(BinaryExpression expression)

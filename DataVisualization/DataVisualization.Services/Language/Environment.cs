@@ -63,7 +63,8 @@ namespace DataVisualization.Services.Language
 
         public object GetAt(int distance, string lexeme)
         {
-            return Ancestor(distance)._values[lexeme];
+            var ancestor = Ancestor(distance);
+            return ancestor._values[lexeme];
         }
 
         private Environment Ancestor(int distance)

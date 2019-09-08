@@ -4,6 +4,7 @@
     {
         None,
         Function,
-        Method
+        Method,
+        Initializer
     }
 }

@@ -1,7 +1,5 @@
-﻿using System;
+﻿using DataVisualization.Services.Language.Expressions;
 using System.Collections.Generic;
-using DataVisualization.Services.Language.Expressions;
-using NLog;
 
 namespace DataVisualization.Services.Language
 {
@@ -217,6 +215,12 @@ namespace DataVisualization.Services.Language
 
             if (returnStatement.Value != null)
             {
+                if (_currentFunction == FunctionType.Initializer)
+                {
+                    _errors.Add("Cannot return from initializer");
+                    return null;
+                }
+
                 Resolve(returnStatement.Value);
             }
 
@@ -228,11 +232,18 @@ namespace DataVisualization.Services.Language
             Declare(classStatement.Name);
             Define(classStatement.Name);
 
+            BeginScope();
+
+            var scope = _scopes.Peek();
+            scope.Add("this", true);
+
             foreach (var method in classStatement.Methods)
             {
                 const FunctionType declaration = FunctionType.Method;
                 ResolveFunction(method, declaration);
             }
+
+            EndScope();
 
             return null;
         }
@@ -247,6 +258,13 @@ namespace DataVisualization.Services.Language
         {
             Resolve(setExpression.Value);
             Resolve(setExpression.Object);
+
+            return null;
+        }
+
+        public override object VisitThisExpression(ThisExpression thisExpression)
+        {
+            ResolveLocal(thisExpression, thisExpression.Keyword);
 
             return null;
         }

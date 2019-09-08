@@ -94,6 +94,7 @@
     <Compile Include="Language\Expressions\GetExpression.cs" />
     <Compile Include="Language\Expressions\LogicalExpression.cs" />
     <Compile Include="Language\Expressions\SetExpression.cs" />
+    <Compile Include="Language\Expressions\ThisExpression.cs" />
     <Compile Include="Language\Expressions\VarExpression.cs" />
     <Compile Include="Language\ExpressionVisitor.cs" />
     <Compile Include="Language\Expressions\GroupingExpression.cs" />

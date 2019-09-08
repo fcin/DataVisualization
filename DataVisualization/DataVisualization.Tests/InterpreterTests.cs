@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using DataVisualization.Core.Annotations;
 
 namespace DataVisualization.Tests
 {
@@ -303,6 +304,84 @@ namespace DataVisualization.Tests
             ";
 
             var expectedResult = $"executed{_newLine}";
+
+            var (parser, resolver, interpreter, statements) = Prepare(source);
+
+            var result = interpreter.Interpret(statements, default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldHandleLocalFunction()
+        {
+            const string source = @"
+                class Thing {
+
+                  getCallback() {
+
+                    fun localFunction() {
+                      print ""Test"";
+                    }
+                  }
+                }
+
+                var thingObject = Thing();
+                var cb = thingObject.getCallback();
+                cb();
+            ";
+
+            var (parser, resolver, interpreter, statements) = Prepare(source);
+
+            var result = interpreter.Interpret(statements, default(CancellationToken));
+
+            Assert.AreEqual(0, resolver.Errors.Count());
+            Assert.AreEqual(0, interpreter.Errors.Count());
+            Assert.AreEqual($"test{_newLine}", _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldHandleMethodInvocationWithClosure()
+        {
+            const string source = @"
+                class Thing {
+                  getCallback() {
+                    fun localFunction() {
+                      print this;
+                    }
+
+                    return localFunction;
+                  }
+                }
+
+                var callback = Thing().getCallback();
+                callback();
+            ";
+
+            var expectedResult = $"executed{_newLine}";
+
+            var (parser, resolver, interpreter, statements) = Prepare(source);
+
+            var result = interpreter.Interpret(statements, default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldSupportInitializer()
+        {
+            const string source = @"
+                class Thing {
+                  
+                    init()
+                    {
+                        print ""Intializer"";
+                    }
+                }
+                Thing();
+            ";
+
+            var expectedResult = $"Intializer{_newLine}";
 
             var (parser, resolver, interpreter, statements) = Prepare(source);
 

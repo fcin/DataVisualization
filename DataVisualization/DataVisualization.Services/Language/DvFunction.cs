@@ -9,11 +9,13 @@ namespace DataVisualization.Services.Language
     {
         public FunctionStatement Declaration { get; }
         private readonly Environment _closure;
+        private readonly bool _isInitializer;
 
-        public DvFunction(FunctionStatement declaration, Environment environment)
+        public DvFunction(FunctionStatement declaration, Environment environment, bool isInitializer)
         {
             Declaration = declaration;
             _closure = environment;
+            _isInitializer = isInitializer;
         }
 
         public int Arity()
@@ -39,7 +41,20 @@ namespace DataVisualization.Services.Language
                 return e.Value;
             }
 
+            if (_isInitializer)
+            {
+                return _closure.GetAt(0, "this");
+            }
+
             return null;
+        }
+
+        public DvFunction Bind(DvInstance dvInstance)
+        {
+            var environment = new Environment(_closure);
+            environment.Define("this", dvInstance);
+
+            return new DvFunction(Declaration, environment, _isInitializer);
         }
     }
 }
