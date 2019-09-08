@@ -20,5 +20,8 @@ namespace DataVisualization.Services.Language
         public abstract object VisitCallExpression(CallExpression callExpression);
         public abstract object VisitFunctionStatement(FunctionStatement functionStatement);
         public abstract object VisitReturnStatement(ReturnStatement returnStatement);
+        public abstract object VisitClassStatement(ClassStatement classStatement);
+        public abstract object VisitGetExpression(GetExpression getExpression);
+        public abstract object VisitSetExpression(SetExpression setExpression);
     }
 }

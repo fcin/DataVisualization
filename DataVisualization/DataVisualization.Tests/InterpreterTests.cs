@@ -1,4 +1,4 @@
-﻿using System;
+﻿using DataVisualization.Services;
 using DataVisualization.Services.Language;
 using DataVisualization.Services.Language.Expressions;
 using NUnit.Framework;
@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using DataVisualization.Services;
 
 namespace DataVisualization.Tests
 {
@@ -242,6 +241,68 @@ namespace DataVisualization.Tests
             ";
 
             var expectedResult = $"global{_newLine}global{_newLine}";
+
+            var (parser, resolver, interpreter, statements) = Prepare(source);
+
+            var result = interpreter.Interpret(statements, default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldCreateInstanceOfClass()
+        {
+            const string source = @"
+                class Foo { }
+                var a = Foo();
+                print a;
+            ";
+
+            var expectedResult = $"Foo instance{_newLine}";
+
+            var (parser, resolver, interpreter, statements) = Prepare(source);
+
+            var result = interpreter.Interpret(statements, default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldHandleFieldAssignment()
+        {
+            const string source = @"
+                class Foo {}
+
+                var foo = Foo();
+
+                foo.bar = ""bar value"";
+
+                print foo.bar;
+            ";
+
+            var expectedResult = $"bar value{_newLine}";
+
+            var (parser, resolver, interpreter, statements) = Prepare(source);
+
+            var result = interpreter.Interpret(statements, default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldHandleMethodInvocation()
+        {
+            const string source = @"
+                class Test {
+                  execute() {
+                    print ""executed"";
+                  }
+                }
+
+                Test().execute();
+            ";
+
+            var expectedResult = $"executed{_newLine}";
 
             var (parser, resolver, interpreter, statements) = Prepare(source);
 

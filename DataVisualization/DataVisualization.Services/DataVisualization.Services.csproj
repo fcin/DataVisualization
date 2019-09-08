@@ -83,13 +83,17 @@
     <Compile Include="Extensions\SeriesExtensions.cs" />
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="IDataFileReader.cs" />
+    <Compile Include="Language\DvClass.cs" />
     <Compile Include="Language\DvFunction.cs" />
+    <Compile Include="Language\DvInstance.cs" />
     <Compile Include="Language\Environment.cs" />
     <Compile Include="Language\Expressions\AssignExpression.cs" />
     <Compile Include="Language\Expressions\BinaryExpression.cs" />
     <Compile Include="Language\Expressions\CallExpression.cs" />
     <Compile Include="Language\Expressions\Expression.cs" />
+    <Compile Include="Language\Expressions\GetExpression.cs" />
     <Compile Include="Language\Expressions\LogicalExpression.cs" />
+    <Compile Include="Language\Expressions\SetExpression.cs" />
     <Compile Include="Language\Expressions\VarExpression.cs" />
     <Compile Include="Language\ExpressionVisitor.cs" />
     <Compile Include="Language\Expressions\GroupingExpression.cs" />

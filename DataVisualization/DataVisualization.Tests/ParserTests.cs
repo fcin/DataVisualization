@@ -1,7 +1,6 @@
 ﻿using DataVisualization.Services.Language;
 using NUnit.Framework;
 using System.Linq;
-using DataVisualization.Services.Exceptions;
 
 namespace DataVisualization.Tests
 {
@@ -36,6 +35,21 @@ namespace DataVisualization.Tests
         public void ShouldIgnoreCommentTokens()
         {
             const string source = @"var a = 5;//abc";
+            var lexer = new Lexer(source);
+            var parser = new Parser(lexer.Scan());
+
+            var result = parser.Parse();
+
+            Assert.AreEqual(0, parser.Errors.Count());
+        }
+
+        [Test]
+        public void ShouldParseClassDeclaration()
+        {
+            const string source = @"
+                class Test {
+                }
+            ";
             var lexer = new Lexer(source);
             var parser = new Parser(lexer.Scan());
 

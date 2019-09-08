@@ -36,6 +36,11 @@ namespace DataVisualization.Services.Language
         {
             try
             {
+                if (Match(TokenType.Class))
+                {
+                    return ClassDeclaration();
+                }
+
                 if (Match(TokenType.Fun))
                 {
                     return FunctionDeclaration();
@@ -53,6 +58,24 @@ namespace DataVisualization.Services.Language
                 Synchronize();
                 return null;
             }
+        }
+
+        private Statement ClassDeclaration()
+        {
+            var name = Consume(TokenType.Identifier, "Expected class name");
+            Consume(TokenType.LeftBrace, "Expected '{' after class declaration");
+            
+            var methods = new List<FunctionStatement>();
+
+            while (!Check(TokenType.RightBrace) && !IsEof())
+            {
+                var method = (FunctionStatement)FunctionDeclaration();
+                methods.Add(method);
+            }
+
+            Consume(TokenType.RightBrace, "Expected '}' at the end of class declaration");
+
+            return new ClassStatement(name, null, methods);
         }
 
         private Statement FunctionDeclaration()
@@ -254,6 +277,11 @@ namespace DataVisualization.Services.Language
                     return new AssignExpression(name, value);
                 }
 
+                if (expression is GetExpression getExpression)
+                {
+                    return new SetExpression(getExpression.Object, getExpression.Name, value);
+                }
+
                 throw Error(equals, "Invalid assignment");
             }
 
@@ -366,6 +394,11 @@ namespace DataVisualization.Services.Language
                 if (Match(TokenType.LeftParenthesis))
                 {
                     expression = FinishCall(expression);
+                }
+                else if (Match(TokenType.Dot))
+                {
+                    var name = Consume(TokenType.Identifier, "Expected property name after '.' identifier");
+                    expression = new GetExpression(expression, name);
                 }
                 else
                 {

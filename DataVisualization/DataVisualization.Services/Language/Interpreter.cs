@@ -1,6 +1,8 @@
-﻿using DataVisualization.Services.Exceptions;
+﻿using System;
+using DataVisualization.Services.Exceptions;
 using DataVisualization.Services.Language.Expressions;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -231,6 +233,48 @@ namespace DataVisualization.Services.Language
         {
             var value = returnStatement.Value != null ? Evaluate(returnStatement.Value) : null;
             throw new ReturnException(value);
+        }
+
+        public override object VisitClassStatement(ClassStatement classStatement)
+        {
+            _environment.Define(classStatement.Name.Lexeme, null);
+
+            var methods = new Dictionary<string, DvFunction>();
+            foreach (var method in classStatement.Methods)
+            {
+                var function = new DvFunction(method, _environment);
+                methods.Add(method.Name.Lexeme, function);
+            }
+
+            var dvClass = new DvClass(classStatement.Name.Lexeme, methods);
+
+            _environment.Assign(classStatement.Name, dvClass);
+
+            return null;
+        }
+
+        public override object VisitGetExpression(GetExpression getExpression)
+        {
+            var @object = Evaluate(getExpression.Object);
+            if (@object is DvInstance instance)
+            {
+                return instance.Get(getExpression.Name);
+            }
+
+            throw new RuntimeException(getExpression.Name, "Only instances can access properties");
+        }
+
+        public override object VisitSetExpression(SetExpression setExpression)
+        {
+            var @object = Evaluate(setExpression.Object);
+
+            if(!(@object is DvInstance instance))
+                throw new RuntimeException("Only instances have fields");
+
+            var value = Evaluate(setExpression.Value);
+            instance.Set(setExpression.Name, value);
+
+            return value;
         }
 
         public override object VisitBinary(BinaryExpression expression)

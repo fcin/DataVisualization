@@ -223,6 +223,34 @@ namespace DataVisualization.Services.Language
             return null;
         }
 
+        public override object VisitClassStatement(ClassStatement classStatement)
+        {
+            Declare(classStatement.Name);
+            Define(classStatement.Name);
+
+            foreach (var method in classStatement.Methods)
+            {
+                const FunctionType declaration = FunctionType.Method;
+                ResolveFunction(method, declaration);
+            }
+
+            return null;
+        }
+
+        public override object VisitGetExpression(GetExpression getExpression)
+        {
+            Resolve(getExpression.Object);
+            return null;
+        }
+
+        public override object VisitSetExpression(SetExpression setExpression)
+        {
+            Resolve(setExpression.Value);
+            Resolve(setExpression.Object);
+
+            return null;
+        }
+
         public override object VisitBinary(BinaryExpression expression)
         {
             Resolve(expression.Left);

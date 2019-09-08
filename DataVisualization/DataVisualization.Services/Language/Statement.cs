@@ -142,4 +142,23 @@ namespace DataVisualization.Services.Language
             return visitor.VisitReturnStatement(this);
         }
     }
+
+    public class ClassStatement : Statement
+    {
+        public Token Name { get; }
+        public Expression SuperClass { get; }
+        public IEnumerable<FunctionStatement> Methods { get; }
+
+        public ClassStatement(Token name, Expression superClass, IEnumerable<FunctionStatement> methods)
+        {
+            Name = name;
+            SuperClass = superClass;
+            Methods = methods;
+        }
+
+        public override object Accept(ExpressionVisitor visitor)
+        {
+            return visitor.VisitClassStatement(this);
+        }
+    }
 }
