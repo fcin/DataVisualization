@@ -41,6 +41,12 @@ namespace DataVisualization.Services
                 memoryListener.WriteLine(parserError);
             }
 
+
+            if (lexer.Errors.Any() || parser.Errors.Any())
+            {
+                return memoryListener.Data;
+            }
+
             var interpreter = new Interpreter();
 
             var resolver = new Resolver(interpreter);
@@ -51,7 +57,7 @@ namespace DataVisualization.Services
                 memoryListener.WriteLine(resolverError);
             }
 
-            if (lexer.Errors.Any() || parser.Errors.Any() || resolver.Errors.Any())
+            if (resolver.Errors.Any())
             {
                 return memoryListener.Data;
             }

@@ -45,11 +45,11 @@ namespace DataVisualization.Services.Language
             throw new RuntimeException($"Undefined variable {token.Lexeme}");
         }
 
-        public void Assign(string name, object value)
+        public void Assign(Token name, object value)
         {
-            if (_values.ContainsKey(name))
+            if (_values.ContainsKey(name.Lexeme))
             {
-                _values[name] = value;
+                _values[name.Lexeme] = value;
                 return;
             }
 

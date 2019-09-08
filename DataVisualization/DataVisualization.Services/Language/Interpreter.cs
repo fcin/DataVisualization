@@ -16,7 +16,7 @@ namespace DataVisualization.Services.Language
         public Environment Globals { get; }
         private Environment _environment;
 
-        private Dictionary<Expression, int> _locals = new Dictionary<Expression, int>();
+        private readonly Dictionary<Expression, int> _locals = new Dictionary<Expression, int>();
 
         public Interpreter()
         {
@@ -119,13 +119,13 @@ namespace DataVisualization.Services.Language
         {
             var value = Evaluate(assignExpression.Value);
 
-            if (_locals.TryGetValue(assignExpression.Value, out var distance))
+            if (_locals.TryGetValue(assignExpression, out var distance))
             {
                 _environment.AssignAt(distance, assignExpression.Identifier, value);
             }
             else
             {
-                _environment.Assign(assignExpression.Identifier.Lexeme, value);
+                Globals.Assign(assignExpression.Identifier, value);
             }
 
             return value;

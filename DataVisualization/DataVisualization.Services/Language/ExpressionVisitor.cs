@@ -4,26 +4,10 @@ namespace DataVisualization.Services.Language
 {
     public abstract class ExpressionVisitor
     {
-        public virtual object VisitBinary(BinaryExpression expression)
-        {
-            return $"({expression.Operator.Lexeme} {expression.Left} {expression.Right})";
-        }
-
-        public virtual object VisitLiteral(LiteralExpression expression)
-        {
-            return $"({expression.Literal})";
-        }
-
-        public virtual object VisitGrouping(GroupingExpression expression)
-        {
-            return $"({expression.Expression})";
-        }
-
-        public virtual object VisitUnary(UnaryExpression expression)
-        {
-            return $"({expression.Operator} {expression.Right})";
-        }
-
+        public abstract object VisitBinary(BinaryExpression expression);
+        public abstract object VisitLiteral(LiteralExpression expression);
+        public abstract object VisitGrouping(GroupingExpression expression);
+        public abstract object VisitUnary(UnaryExpression expression);
         public abstract object VisitExpressionStatement(Expression expression);
         public abstract object VisitPrintStatement(Expression expression);
         public abstract object VisitVarStatement(VarStatement statement);

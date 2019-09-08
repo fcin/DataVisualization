@@ -1,6 +1,10 @@
-fun foo()
+var a = "global";
 {
-    print "Hello";
-}
+	fun showA() {
+		print a;
+	}
 
-foo();
+	showA();
+	var a = "block";
+	showA();
+}
