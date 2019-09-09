@@ -7,10 +7,12 @@ namespace DataVisualization.Services.Language
         public string Name { get; }
 
         private readonly Dictionary<string, DvFunction> _methods;
+        private readonly DvClass _superclass;
 
-        public DvClass(string name, Dictionary<string, DvFunction> methods)
+        public DvClass(string name, DvClass superclass, Dictionary<string, DvFunction> methods)
         {
             Name = name;
+            _superclass = superclass;
             _methods = methods;
         }
 
@@ -34,8 +36,12 @@ namespace DataVisualization.Services.Language
 
         public DvFunction FindMethod(string name)
         {
-            _methods.TryGetValue(name, out var value);
-            return value;
+            if (_methods.TryGetValue(name, out var value))
+            {
+                return value;
+            }
+
+            return _superclass?.FindMethod(name);
         }
     }
 }

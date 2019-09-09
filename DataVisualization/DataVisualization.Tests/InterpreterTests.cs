@@ -390,6 +390,59 @@ namespace DataVisualization.Tests
             Assert.AreEqual(expectedResult, _traceListener.Data);
         }
 
+        [Test]
+        public void ShouldHandleInheritance()
+        {
+            const string source = @"
+                class Parent {
+                  do() {
+                    print ""Parent"";
+                  }
+                }
+
+                class Child < Parent {}
+
+                Child().do();
+            ";
+
+            var expectedResult = $"Parent{_newLine}";
+
+            var (parser, resolver, interpreter, statements) = Prepare(source);
+
+            var result = interpreter.Interpret(statements, default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
+        [Test]
+        public void ShouldHandleSuper()
+        {
+            const string source = @"
+                class Parent {
+                  do() {
+                    print ""Parent"";
+                  }
+                }
+
+                class Child < Parent {
+                  do() {
+                    super.do();
+                    print ""Child"";
+                  }
+                }
+
+                Child().do();
+            ";
+
+            var expectedResult = $"Parent{_newLine}Child{_newLine}";
+
+            var (parser, resolver, interpreter, statements) = Prepare(source);
+
+            var result = interpreter.Interpret(statements, default(CancellationToken));
+
+            Assert.AreEqual(expectedResult, _traceListener.Data);
+        }
+
         private (Parser, Resolver, Interpreter, IEnumerable<Statement>) Prepare(string source)
         {
             var lexer = new Lexer(source);

@@ -20,7 +20,7 @@ namespace DataVisualization.Services.Language
 
         public override object Accept(ExpressionVisitor visitor)
         {
-            return visitor.VisitPrintStatement(Expression);
+            return visitor.VisitPrintStatement(this);
         }
     }
     public class ExpressionStatement : Statement
@@ -34,7 +34,7 @@ namespace DataVisualization.Services.Language
 
         public override object Accept(ExpressionVisitor visitor)
         {
-            return visitor.VisitExpressionStatement(Expression);
+            return visitor.VisitExpressionStatement(this);
         }
     }
 
@@ -146,10 +146,10 @@ namespace DataVisualization.Services.Language
     public class ClassStatement : Statement
     {
         public Token Name { get; }
-        public Expression SuperClass { get; }
+        public VarExpression SuperClass { get; }
         public IEnumerable<FunctionStatement> Methods { get; }
 
-        public ClassStatement(Token name, Expression superClass, IEnumerable<FunctionStatement> methods)
+        public ClassStatement(Token name, VarExpression superClass, IEnumerable<FunctionStatement> methods)
         {
             Name = name;
             SuperClass = superClass;

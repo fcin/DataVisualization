@@ -63,6 +63,15 @@ namespace DataVisualization.Services.Language
         private Statement ClassDeclaration()
         {
             var name = Consume(TokenType.Identifier, "Expected class name");
+
+            VarExpression superclass = null;
+
+            if (Match(TokenType.Less))
+            {
+                Consume(TokenType.Identifier, "Expected superclass name");
+                superclass = new VarExpression(Previous());
+            }
+
             Consume(TokenType.LeftBrace, "Expected '{' after class declaration");
             
             var methods = new List<FunctionStatement>();
@@ -75,7 +84,7 @@ namespace DataVisualization.Services.Language
 
             Consume(TokenType.RightBrace, "Expected '}' at the end of class declaration");
 
-            return new ClassStatement(name, null, methods);
+            return new ClassStatement(name, superclass, methods);
         }
 
         private Statement FunctionDeclaration()
@@ -444,6 +453,15 @@ namespace DataVisualization.Services.Language
             if (Match(TokenType.Number, TokenType.String))
             {
                 return new LiteralExpression(Previous().Literal);
+            }
+
+            if (Match(TokenType.Super))
+            {
+                var keyword = Previous();
+                Consume(TokenType.Dot, "Expected dot after 'super'");
+                var method = Consume(TokenType.Identifier, "Expected superclass method name");
+
+                return new SuperExpression(keyword, method);
             }
 
             if (Match(TokenType.This))

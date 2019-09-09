@@ -1,4 +1,5 @@
-﻿using DataVisualization.Services.Exceptions;
+﻿using System;
+using DataVisualization.Services.Exceptions;
 using DataVisualization.Services.Language.Expressions;
 using DataVisualization.Services.Language.Native;
 using System.Collections.Generic;
@@ -75,15 +76,15 @@ namespace DataVisualization.Services.Language
             return null;
         }
 
-        public override object VisitExpressionStatement(Expression expression)
+        public override object VisitExpressionStatement(ExpressionStatement expressionStatement)
         {
-            Evaluate(expression);
+            Evaluate(expressionStatement.Expression);
             return null;
         }
 
-        public override object VisitPrintStatement(Expression expression)
+        public override object VisitPrintStatement(PrintStatement printStatement)
         {
-            var result = Evaluate(expression);
+            var result = Evaluate(printStatement.Expression);
             Trace.WriteLine(result);
             return null;
         }
@@ -234,7 +235,23 @@ namespace DataVisualization.Services.Language
 
         public override object VisitClassStatement(ClassStatement classStatement)
         {
+            object superclass = null;
+            if (classStatement.SuperClass != null)
+            {
+                superclass = Evaluate(classStatement.SuperClass);
+                if (!(superclass is DvClass))
+                {
+                    throw new RuntimeException(classStatement.SuperClass.Name, "Superclass must be a class");
+                }
+            }
+
             _environment.Define(classStatement.Name.Lexeme, null);
+
+            if (classStatement.SuperClass != null)
+            {
+                _environment = new Environment(_environment);
+                _environment.Define("super", superclass);
+            }
 
             var methods = new Dictionary<string, DvFunction>();
             foreach (var method in classStatement.Methods)
@@ -243,7 +260,12 @@ namespace DataVisualization.Services.Language
                 methods.Add(method.Name.Lexeme, function);
             }
 
-            var dvClass = new DvClass(classStatement.Name.Lexeme, methods);
+            var dvClass = new DvClass(classStatement.Name.Lexeme, (DvClass)superclass, methods);
+
+            if (classStatement.SuperClass != null)
+            {
+                _environment = _environment.Enclosing;
+            }
 
             _environment.Assign(classStatement.Name, dvClass);
 
@@ -277,6 +299,22 @@ namespace DataVisualization.Services.Language
         public override object VisitThisExpression(ThisExpression thisExpression)
         {
             return LookupVariable(thisExpression, thisExpression.Keyword);
+        }
+
+        public override object VisitSuperExpression(SuperExpression superExpression)
+        {
+            if (_locals.TryGetValue(superExpression, out var distance))
+            {
+                var superclass = (DvClass)_environment.GetAt(distance, "super");
+                var @this = (DvInstance)_environment.GetAt(distance - 1, "this");
+                var method = superclass.FindMethod(superExpression.Method.Lexeme);
+                if(method == null)
+                    throw new RuntimeException(superExpression.Method, $"Undefined property '{superExpression.Method.Lexeme}'");
+
+                return method.Bind(@this);
+            }
+
+            throw new RuntimeException(superExpression.Method, "Super not found");
         }
 
         public override object VisitBinary(BinaryExpression expression)

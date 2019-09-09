@@ -8,8 +8,8 @@ namespace DataVisualization.Services.Language
         public abstract object VisitLiteral(LiteralExpression expression);
         public abstract object VisitGrouping(GroupingExpression expression);
         public abstract object VisitUnary(UnaryExpression expression);
-        public abstract object VisitExpressionStatement(Expression expression);
-        public abstract object VisitPrintStatement(Expression expression);
+        public abstract object VisitExpressionStatement(ExpressionStatement expression);
+        public abstract object VisitPrintStatement(PrintStatement printStatement);
         public abstract object VisitVarStatement(VarStatement statement);
         public abstract object VisitVarExpression(VarExpression expression);
         public abstract object VisitAssignExpression(AssignExpression assignExpression);
@@ -24,5 +24,6 @@ namespace DataVisualization.Services.Language
         public abstract object VisitGetExpression(GetExpression getExpression);
         public abstract object VisitSetExpression(SetExpression setExpression);
         public abstract object VisitThisExpression(ThisExpression thisExpression);
+        public abstract object VisitSuperExpression(SuperExpression superExpression);
     }
 }

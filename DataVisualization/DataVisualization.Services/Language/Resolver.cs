@@ -17,16 +17,16 @@ namespace DataVisualization.Services.Language
             _interpreter = interpreter;
         }
 
-        public override object VisitExpressionStatement(Expression expression)
+        public override object VisitExpressionStatement(ExpressionStatement expressionStatement)
         {
-            Resolve(expression);
+            Resolve(expressionStatement.Expression);
 
             return null;
         }
 
-        public override object VisitPrintStatement(Expression expression)
+        public override object VisitPrintStatement(PrintStatement printStatement)
         {
-            Resolve(expression);
+            Resolve(printStatement.Expression);
 
             return null;
         }
@@ -82,9 +82,11 @@ namespace DataVisualization.Services.Language
 
         private void ResolveLocal(Expression expression, Token name)
         {
-            for (int index = _scopes.Count - 1; index >= 0; index--)
+            var scopesArray = _scopes.ToArray();
+
+            for (var index = _scopes.Count - 1; index >= 0; index--)
             {
-                if (_scopes.ToArray()[index].ContainsKey(name.Lexeme))
+                if (scopesArray[index].ContainsKey(name.Lexeme))
                 {
                     _interpreter.Resolve(expression, _scopes.Count - 1 - index);
                     return;
@@ -232,6 +234,23 @@ namespace DataVisualization.Services.Language
             Declare(classStatement.Name);
             Define(classStatement.Name);
 
+            if (classStatement.SuperClass != null && classStatement.Name.Lexeme.Equals(classStatement.SuperClass.Name.Lexeme))
+            {
+                _errors.Add("A class cannot inherit from itself");
+                return null;
+            }
+
+            if (classStatement.SuperClass != null)
+            {
+                Resolve(classStatement.SuperClass);
+            }
+
+            if (classStatement.SuperClass != null)
+            {
+                BeginScope();
+                _scopes.Peek().Add("super", true);
+            }
+
             BeginScope();
 
             var scope = _scopes.Peek();
@@ -244,6 +263,9 @@ namespace DataVisualization.Services.Language
             }
 
             EndScope();
+
+            if(classStatement.SuperClass != null)
+                EndScope();
 
             return null;
         }
@@ -266,6 +288,12 @@ namespace DataVisualization.Services.Language
         {
             ResolveLocal(thisExpression, thisExpression.Keyword);
 
+            return null;
+        }
+
+        public override object VisitSuperExpression(SuperExpression superExpression)
+        {
+            ResolveLocal(superExpression, superExpression.Keyword);
             return null;
         }
 
